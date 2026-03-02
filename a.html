@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GioNews Accessible Edition - Large text, high contrast news for all readers">
+    <title>GioNews - Accessible Edition</title>
+    <style>
+        /* =============================================
+           RESET
+        ============================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+```
+    /* =============================================
+       BASE — all sizes in px, NOT rem, so flip
+       phones can't override them
+    ============================================= */
+    body {
+        background: #000;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;        /* JS will update this directly on body */
+        line-height: 1.7;
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 0 12px 40px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    /* =============================================
+       SKIP LINK
+    ============================================= */
+    .skip-link {
+        position: absolute; top: -999px; left: 0;
+        background: #fff; color: #000;
+        font-size: 18px; font-weight: bold;
+        padding: 12px 20px; z-index: 9999;
+        text-decoration: none; border: 4px solid #000;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* =============================================
+       HEADER
+    ============================================= */
+    header {
+        background: #000;
+        border-bottom: 6px solid #fff;
+        padding: 16px 0;
+        margin-bottom: 20px;
+    }
+    .site-title {
+        font-size: 34px; font-weight: 900;
+        color: #fff; text-decoration: none;
+        letter-spacing: 1px; display: block;
+        margin-bottom: 6px;
+    }
+    .site-subtitle { font-size: 15px; color: #fff; margin-bottom: 12px; }
+
+    /* =============================================
+       NAVIGATION
+    ============================================= */
+    nav[aria-label="Main navigation"] {
+        border-top: 3px solid #fff;
+        padding-top: 12px;
+    }
+    nav[aria-label="Main navigation"] ul {
+        list-style: none;
+        display: block; /* block not flex — safer for flip phones */
+    }
+    nav[aria-label="Main navigation"] li {
+        display: inline-block;
+        margin: 4px 4px 4px 0;
+    }
+    nav[aria-label="Main navigation"] a {
+        display: inline-block;
+        background: #fff; color: #000;
+        text-decoration: none;
+        padding: 11px 18px;
+        font-size: 16px; font-weight: 800;
+        border: 3px solid #fff;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    nav[aria-label="Main navigation"] a:hover,
+    nav[aria-label="Main navigation"] a:focus {
+        background: #000; color: #fff;
+        outline: 4px solid #fff; outline-offset: 2px;
+    }
+    nav[aria-label="Main navigation"] a[aria-current="page"] {
+        background: #000; color: #fff;
+        border: 3px solid #fff; text-decoration: underline;
+    }
+
+    /* =============================================
+       CONTROLS BAR  (font size + touch toggle)
+    ============================================= */
+    .controls-bar {
+        background: #fff; color: #000;
+        border: 4px solid #000;
+        padding: 14px 16px;
+        margin-bottom: 20px;
+    }
+    .controls-row {
+        display: block;
+        margin-bottom: 10px;
+    }
+    .controls-row:last-child { margin-bottom: 0; }
+    .controls-label {
+        display: inline-block;
+        font-size: 15px; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 1px;
+        margin-right: 8px; vertical-align: middle;
+        color: #000;
+    }
+
+    /* plain <a> links styled as buttons — work on ALL browsers incl. old flip */
+    .ctrl-btn {
+        display: inline-block;
+        background: #000; color: #fff;
+        border: 3px solid #000;
+        padding: 10px 18px;
+        font-size: 17px; font-weight: 900;
+        text-decoration: none;
+        margin-right: 6px; margin-top: 4px;
+        vertical-align: middle;
+        cursor: pointer;
+        /* min tap size */
+        min-width: 48px; min-height: 48px;
+        text-align: center;
+        /* needed for <button> */
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    .ctrl-btn:hover, .ctrl-btn:focus {
+        background: #fff; color: #000;
+        outline: 4px solid #000; outline-offset: 2px;
+    }
+    .ctrl-btn.active-mode {
+        background: #000; color: #fff;
+        border: 3px solid #000;
+        text-decoration: underline;
+    }
+    #font-size-display {
+        display: inline-block;
+        font-size: 15px; font-weight: 700;
+        color: #000; vertical-align: middle;
+        margin-left: 6px;
+    }
+
+    /* =============================================
+       LIVE BANNER
+    ============================================= */
+    .live-banner {
+        background: #fff; color: #000;
+        border: 5px solid #000;
+        padding: 14px 18px;
+        margin-bottom: 24px;
+        font-size: 18px; font-weight: 900;
+    }
+
+    /* =============================================
+       SECTION HEADINGS
+    ============================================= */
+    .section-label {
+        font-size: 13px; font-weight: 900;
+        text-transform: uppercase; letter-spacing: 2px;
+        background: #fff; color: #000;
+        display: inline-block;
+        padding: 5px 14px; margin-bottom: 12px;
+    }
+    h2.section-heading {
+        font-size: 26px; font-weight: 900;
+        color: #fff;
+        border-bottom: 4px solid #fff;
+        padding-bottom: 10px; margin-bottom: 20px;
+        text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    /* =============================================
+       FEATURED STORY
+    ============================================= */
+    .featured-story {
+        border: 5px solid #fff;
+        padding: 22px; margin-bottom: 28px;
+    }
+    .breaking-tag {
+        background: #fff; color: #000;
+        font-size: 14px; font-weight: 900;
+        text-transform: uppercase; letter-spacing: 2px;
+        padding: 5px 12px; display: inline-block;
+        margin-bottom: 14px;
+    }
+    .featured-story h2 {
+        font-size: 28px; font-weight: 900;
+        line-height: 1.25; color: #fff; margin-bottom: 14px;
+    }
+    .story-excerpt {
+        font-size: 18px; line-height: 1.7;
+        color: #fff; margin-bottom: 18px;
+    }
+    .story-meta {
+        font-size: 14px; color: #fff;
+        text-transform: uppercase; letter-spacing: 1px;
+        border-top: 2px solid #fff;
+        padding-top: 12px; margin-top: 12px;
+    }
+    .story-meta span, .story-meta time {
+        display: inline-block; margin-right: 20px;
+    }
+
+    /* =============================================
+       READ BUTTON  — <a> tag, works on flip phones
+    ============================================= */
+    .read-btn {
+        display: block;           /* full width = easier to press */
+        background: #fff; color: #000;
+        border: 4px solid #fff;
+        padding: 16px 20px;
+        font-size: 18px; font-weight: 900;
+        text-transform: uppercase; letter-spacing: 1px;
+        text-decoration: none;
+        text-align: center;
+        margin-top: 16px;
+        /* no cursor:pointer needed on real links */
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    .read-btn:hover, .read-btn:focus {
+        background: #000; color: #fff;
+        outline: 4px solid #fff; outline-offset: 3px;
+    }
+
+    /* =============================================
+       NEWS LIST
+    ============================================= */
+    .news-list { list-style: none; }
+    .news-item {
+        border: 3px solid #fff;
+        border-bottom: none;
+        padding: 22px; background: #000;
+    }
+    .news-item:last-child { border-bottom: 3px solid #fff; }
+    .category-tag {
+        font-size: 13px; font-weight: 900;
+        text-transform: uppercase; letter-spacing: 2px;
+        color: #000; background: #fff;
+        padding: 4px 10px; display: inline-block;
+        margin-bottom: 10px;
+    }
+    .news-item h3 {
+        font-size: 22px; font-weight: 900;
+        line-height: 1.3; color: #fff; margin-bottom: 10px;
+    }
+    .news-item p {
+        font-size: 17px; line-height: 1.7;
+        color: #fff; margin-bottom: 14px;
+    }
+    .item-meta {
+        font-size: 13px; color: #fff;
+        text-transform: uppercase; letter-spacing: 1px;
+        border-top: 2px solid #fff;
+        padding-top: 10px; margin-top: 4px;
+    }
+    .item-meta time, .item-meta span {
+        display: inline-block; margin-right: 16px;
+    }
+
+    /* =============================================
+       ARTICLE VIEW — inline expand, NO position:fixed
+       Works on every browser including old flip phones
+    ============================================= */
+    #article-view {
+        display: none;
+        border: 5px solid #fff;
+        padding: 22px;
+        margin-bottom: 28px;
+        background: #000;
+    }
+    #article-view.open { display: block; }
+
+    #article-view .art-back-btn {
+        display: block;
+        background: #fff; color: #000;
+        border: 4px solid #fff;
+        padding: 14px 20px;
+        font-size: 18px; font-weight: 900;
+        text-transform: uppercase; letter-spacing: 1px;
+        text-decoration: none;
+        text-align: center;
+        margin-bottom: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        cursor: pointer;
+    }
+    #article-view .art-back-btn:hover,
+    #article-view .art-back-btn:focus {
+        background: #000; color: #fff;
+        outline: 4px solid #fff; outline-offset: 2px;
+    }
+    .art-cat {
+        font-size: 13px; font-weight: 900;
+        text-transform: uppercase; letter-spacing: 2px;
+        background: #fff; color: #000;
+        padding: 5px 12px; display: inline-block;
+        margin-bottom: 14px;
+    }
+    #art-title {
+        font-size: 26px; font-weight: 900;
+        line-height: 1.25; color: #fff;
+        margin-bottom: 14px;
+    }
+    .art-meta {
+        font-size: 14px; color: #fff;
+        text-transform: uppercase; letter-spacing: 1px;
+        border-bottom: 2px solid #fff;
+        padding-bottom: 14px; margin-bottom: 20px;
+    }
+    .art-meta span, .art-meta time {
+        display: inline-block; margin-right: 16px;
+    }
+    #art-body {
+        font-size: 19px; line-height: 1.85; color: #fff;
+    }
+    #art-body p { margin-bottom: 20px; }
+
+    /* =============================================
+       TTS PLAYER BAR
+    ============================================= */
+    #tts-bar {
+        display: none;          /* shown only when article is open */
+        background: #fff;
+        color: #000;
+        border: 4px solid #fff;
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+    #article-view.open #tts-bar { display: block; }
+
+    .tts-title-row {
+        font-size: 14px; font-weight: 900;
+        text-transform: uppercase; letter-spacing: 2px;
+        margin-bottom: 12px; color: #000;
+    }
+
+    /* big status line — what's being read right now */
+    #tts-status {
+        font-size: 16px; font-weight: 700;
+        color: #000; margin-bottom: 14px;
+        min-height: 24px;
+        border-left: 5px solid #000;
+        padding-left: 10px;
+    }
+
+    /* highlight the sentence currently being spoken */
+    .tts-highlight {
+        background: #000; color: #fff;
+        padding: 0 3px;
+    }
+
+    /* progress bar */
+    .tts-progress-track {
+        background: #ccc;
+        height: 10px;
+        margin-bottom: 14px;
+        border: 2px solid #000;
+    }
+    #tts-progress-fill {
+        background: #000;
+        height: 100%;
+        width: 0%;
+        transition: width 0.4s linear;
+    }
+
+    /* control buttons row */
+    .tts-controls {
+        display: block;
+        margin-bottom: 12px;
+    }
+    .tts-btn {
+        display: inline-block;
+        background: #000; color: #fff;
+        border: 3px solid #000;
+        padding: 12px 18px;
+        font-size: 17px; font-weight: 900;
+        text-transform: uppercase; letter-spacing: 1px;
+        cursor: pointer; margin: 3px 4px 3px 0;
+        min-width: 48px; min-height: 48px;
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center; vertical-align: middle;
+        text-decoration: none;
+    }
+    .tts-btn:hover, .tts-btn:focus {
+        background: #fff; color: #000;
+        outline: 4px solid #000; outline-offset: 2px;
+    }
+    .tts-btn:disabled {
+        opacity: 0.4; cursor: default;
+    }
+    .tts-btn.tts-active {
+        background: #000; color: #fff;
+        text-decoration: underline;
+    }
+
+    /* speed + voice selectors */
+    .tts-options {
+        margin-top: 10px;
+        font-size: 15px; color: #000;
+    }
+    .tts-options label {
+        display: inline-block;
+        font-weight: 800; margin-right: 6px;
+        font-size: 14px; text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .tts-options select {
+        background: #000; color: #fff;
+        border: 3px solid #000;
+        padding: 8px 10px;
+        font-size: 15px; font-weight: 700;
+        font-family: Arial, Helvetica, sans-serif;
+        margin-right: 16px; margin-bottom: 6px;
+        min-height: 42px; cursor: pointer;
+    }
+    .tts-options select:focus {
+        outline: 4px solid #000; outline-offset: 2px;
+    }
+
+    /* not-supported message */
+    #tts-unsupported {
+        display: none;
+        background: #fff; color: #000;
+        border: 4px solid #000; padding: 14px 16px;
+        font-size: 16px; font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    /* hides the main content list while article is open */
+    body.article-open .news-list,
+    body.article-open .featured-story,
+    body.article-open .section-label,
+    body.article-open h2.section-heading,
+    body.article-open .live-banner {
+        display: none;
+    }
+
+    /* =============================================
+       TOUCH MODE ENHANCEMENTS
+    ============================================= */
+    /* Whole card tappable in touch mode */
+    body.touch-mode .news-item {
+        cursor: pointer;
+        padding-bottom: 8px;
+    }
+    body.touch-mode .news-item:active { background: #1a1a1a; }
+    body.touch-mode .news-item .read-btn { display: none; }
+    body.touch-mode .news-item::after {
+        content: "TAP TO READ >";
+        display: block;
+        font-size: 13px; font-weight: 900;
+        letter-spacing: 2px;
+        color: #000; background: #fff;
+        padding: 6px 14px;
+        margin-top: 14px;
+        width: auto; text-align: center;
+    }
+    body.touch-mode .featured-story { cursor: pointer; }
+    body.touch-mode .featured-story:active { background: #1a1a1a; }
+    body.touch-mode .featured-story .read-btn { display: none; }
+    body.touch-mode .featured-story::after {
+        content: "TAP TO READ >";
+        display: block;
+        font-size: 13px; font-weight: 900;
+        letter-spacing: 2px;
+        color: #000; background: #fff;
+        padding: 6px 14px; margin-top: 14px;
+        width: auto; text-align: center;
+    }
+    /* Bigger back button in touch mode */
+    body.touch-mode #article-view .art-back-btn {
+        font-size: 22px; padding: 20px;
+    }
+
+    /* Bottom nav — touch mode only */
+    #bottom-nav {
+        display: none;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        background: #000;
+        border-top: 5px solid #fff;
+        z-index: 200;
+    }
+    body.touch-mode #bottom-nav { display: block; }
+    body.touch-mode { padding-bottom: 100px; }
+    #bottom-nav ul {
+        list-style: none;
+        display: block;
+        margin: 0; padding: 0;
+    }
+    #bottom-nav li { display: inline-block; }
+    #bottom-nav a, #bottom-nav button {
+        display: inline-block;
+        background: #000; color: #fff;
+        border: none; border-right: 2px solid #fff;
+        padding: 12px 6px;
+        font-size: 12px; font-weight: 900;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        text-decoration: none; text-align: center;
+        cursor: pointer; min-height: 64px;
+        vertical-align: top;
+        font-family: Arial, Helvetica, sans-serif;
+        width: 20%; /* 5 items */
+    }
+    #bottom-nav button { border-right: none; }
+    #bottom-nav a:focus, #bottom-nav button:focus {
+        background: #fff; color: #000;
+        outline: 4px solid #fff; outline-offset: -4px;
+    }
+    .bnav-icon { display: block; font-size: 22px; margin-bottom: 2px; }
+
+    /* Scroll to top button */
+    #scroll-top-btn {
+        display: none;
+        position: fixed;
+        right: 12px; bottom: 78px;
+        background: #fff; color: #000;
+        border: 3px solid #fff;
+        width: 64px; height: 64px;
+        font-size: 28px; font-weight: 900;
+        cursor: pointer; z-index: 210;
+        text-align: center; line-height: 58px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    body.touch-mode #scroll-top-btn { display: block; }
+    #scroll-top-btn:focus { outline: 4px solid #fff; }
+
+    /* =============================================
+       FOOTER
+    ============================================= */
+    footer {
+        border-top: 6px solid #fff;
+        padding: 28px 0; margin-top: 40px;
+        text-align: center;
+    }
+    footer p { font-size: 15px; color: #fff; line-height: 1.8; }
+    .footer-links { list-style: none; margin-bottom: 16px; }
+    .footer-links li { display: inline-block; margin: 4px; }
+    .footer-links a {
+        color: #fff; text-decoration: underline;
+        font-size: 16px; font-weight: 700;
+        padding: 8px 12px; display: inline-block;
+    }
+    .footer-links a:hover, .footer-links a:focus {
+        background: #fff; color: #000; text-decoration: none;
+        outline: 3px solid #fff;
+    }
+    .main-site-link {
+        display: inline-block;
+        background: #fff; color: #000;
+        text-decoration: none;
+        padding: 14px 24px;
+        font-size: 17px; font-weight: 900;
+        text-transform: uppercase; letter-spacing: 1px;
+        margin-bottom: 20px; border: 3px solid #fff;
+    }
+    .main-site-link:hover, .main-site-link:focus {
+        background: #000; color: #fff;
+        outline: 4px solid #fff; outline-offset: 2px;
+    }
+
+    /* =============================================
+       FOCUS (global)
+    ============================================= */
+    *:focus { outline: 4px solid #fff; outline-offset: 2px; }
+
+    /* =============================================
+       NARROW / FLIP PHONE
+    ============================================= */
+    @media (max-width: 340px) {
+        body { font-size: 18px; padding: 0 8px 40px; }
+        .site-title { font-size: 26px; }
+        nav[aria-label="Main navigation"] li { display: block; margin-bottom: 6px; }
+        nav[aria-label="Main navigation"] a { display: block; width: 100%; }
+        .featured-story h2 { font-size: 22px; }
+        .news-item h3 { font-size: 19px; }
+        #bottom-nav a, #bottom-nav button { font-size: 10px; padding: 10px 2px; }
+        .bnav-icon { font-size: 18px; }
+    }
+
+    /* =============================================
+       PRINT
+    ============================================= */
+    @media print {
+        .controls-bar, #bottom-nav, #scroll-top-btn,
+        nav[aria-label="Main navigation"], .read-btn { display: none !important; }
+        body { color: #000; background: #fff; }
+        .featured-story, .news-item { border-color: #000; }
+        .featured-story h2, .news-item h3 { color: #000; }
+    }
+
+    /* utility */
+    .visually-hidden {
+        position: absolute; width: 1px; height: 1px;
+        padding: 0; margin: -1px; overflow: hidden;
+        clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+</style>
+```
+
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- ====================================================
+     HEADER
+===================================================== -->
+
+<header role="banner">
+    <a href="accessible.html" class="site-title" aria-label="GioNews Accessible Edition Home">GioNews</a>
+    <p class="site-subtitle">Accessible Edition &mdash; Large Text &bull; High Contrast &bull; All Devices</p>
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="accessible.html" aria-current="page">Home</a></li>
+            <li><a href="stream.html">Live</a></li>
+            <li><a href="breaking.html">Archive</a></li>
+            <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSevr5ncTSlYSwAR442zXlW818Zkp36C0Us_VY6b57HCztYq7g/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">Alerts</a></li>
+            <li><a href="index.html">Full Site</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- ====================================================
+     CONTROLS  (font size + touch mode)
+===================================================== -->
+
+<div class="controls-bar" role="group" aria-label="Display controls">
+
+```
+<!-- Font size row -->
+<div class="controls-row">
+    <span class="controls-label">Text Size:</span>
+    <button class="ctrl-btn" onclick="changeFont(-1)" aria-label="Make text smaller">A-</button>
+    <button class="ctrl-btn" onclick="changeFont(0)"  aria-label="Reset text to normal">A</button>
+    <button class="ctrl-btn" onclick="changeFont(1)"  aria-label="Make text larger">A+</button>
+    <span id="font-size-display" aria-live="polite"></span>
+</div>
+
+<!-- Touch mode row -->
+<div class="controls-row">
+    <span class="controls-label">Mode:</span>
+    <button class="ctrl-btn" id="touch-toggle-btn"
+            onclick="toggleTouchMode()"
+            aria-pressed="false">
+        Standard
+    </button>
+    <span id="touch-mode-label" style="font-size:14px;color:#000;vertical-align:middle;margin-left:6px;">
+        Switch to big tap targets + bottom nav bar
+    </span>
+</div>
+```
+
+</div>
+
+<!-- ====================================================
+     LIVE BANNER
+===================================================== -->
+
+<div role="status" aria-live="polite" class="live-banner">
+    &#9679; <strong>LIVE &mdash; Feb 28, 2026:</strong>
+    Pakistan-Afghanistan conflict escalates &bull; Markets fall on inflation data &bull; Jesse Jackson Sr. memorial in Chicago
+</div>
+
+<!-- ====================================================
+     ARTICLE VIEW  (shown instead of list when reading)
+     Uses normal page flow — no position:fixed overlay
+     Works on every browser including old flip phones
+===================================================== -->
+
+<div id="article-view" role="main" aria-label="Article">
+    <button class="art-back-btn" onclick="closeArticle()" aria-label="Go back to headlines list">
+        &lt; Back to Headlines
+    </button>
+
+```
+<!-- TTS NOT SUPPORTED fallback -->
+<div id="tts-unsupported" role="alert">
+    &#9888; Text-to-speech is not supported on this browser.
+    Try Chrome, Firefox, Edge, or Safari on a modern device.
+</div>
+
+<!-- TTS PLAYER BAR -->
+<div id="tts-bar" role="region" aria-label="Article audio player">
+    <div class="tts-title-row">&#128266; Listen to This Article</div>
+
+    <!-- Live status — screen readers announce this -->
+    <div id="tts-status" aria-live="assertive" aria-atomic="true">
+        Press Play to listen
+    </div>
+
+    <!-- Progress -->
+    <div class="tts-progress-track" role="progressbar"
+         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+         aria-label="Reading progress" id="tts-progress-bar">
+        <div id="tts-progress-fill"></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="tts-controls" role="group" aria-label="Playback controls">
+        <button class="tts-btn" id="tts-play-btn"
+                onclick="ttsPlay()"
+                aria-label="Play article aloud">
+            &#9654; Play
+        </button>
+        <button class="tts-btn" id="tts-pause-btn"
+                onclick="ttsPause()"
+                aria-label="Pause reading"
+                disabled>
+            &#9646;&#9646; Pause
+        </button>
+        <button class="tts-btn" id="tts-stop-btn"
+                onclick="ttsStop()"
+                aria-label="Stop reading"
+                disabled>
+            &#9632; Stop
+        </button>
+        <button class="tts-btn" id="tts-restart-btn"
+                onclick="ttsRestart()"
+                aria-label="Restart from beginning"
+                disabled>
+            &#8635; Restart
+        </button>
+    </div>
+
+    <!-- Speed + Voice -->
+    <div class="tts-options">
+        <label for="tts-speed">Speed:</label>
+        <select id="tts-speed" onchange="ttsChangeSpeed()" aria-label="Reading speed">
+            <option value="0.6">Very Slow</option>
+            <option value="0.8">Slow</option>
+            <option value="1.0" selected>Normal</option>
+            <option value="1.25">Fast</option>
+            <option value="1.5">Very Fast</option>
+        </select>
+
+        <label for="tts-voice">Voice:</label>
+        <select id="tts-voice" onchange="ttsChangeVoice()" aria-label="Choose reading voice">
+            <option value="">Default Voice</option>
+        </select>
+    </div>
+</div><!-- end #tts-bar -->
+
+<span class="art-cat" id="art-cat"></span>
+<h1 id="art-title"></h1>
+<div class="art-meta">
+    <span id="art-author"></span>
+    <time id="art-date"></time>
+</div>
+<div id="art-body"></div>
+<button class="art-back-btn" onclick="closeArticle()" style="margin-top:28px;" aria-label="Go back to headlines list">
+    &lt; Back to Headlines
+</button>
+```
+
+</div>
+
+<!-- ====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main id="main-content" role="main">
+
+```
+<section aria-labelledby="featured-heading">
+    <div class="section-label" aria-hidden="true">Top Story</div>
+
+    <article class="featured-story" id="card-pakistan-afghanistan" aria-labelledby="featured-title">
+        <div class="breaking-tag">&#9679; Breaking Now</div>
+        <h2 id="featured-title">Pakistan Bombs Kabul, Declares "Open War" on Afghanistan's Taliban</h2>
+        <p class="story-excerpt">
+            Pakistan launched airstrikes on Afghanistan's capital and two provinces overnight, escalating months of border clashes into outright war. China is urgently calling for a ceasefire.
+        </p>
+        <a href="#article-view" class="read-btn" onclick="openStory('pakistan-afghanistan'); return false;"
+           role="button" aria-expanded="false" aria-controls="article-view">
+            Read Full Story
+        </a>
+        <div class="story-meta">
+            <span><strong>Category:</strong> World</span>
+            <time datetime="2026-02-27"><strong>Date:</strong> February 27, 2026</time>
+        </div>
+    </article>
+</section>
+
+<section aria-labelledby="headlines-heading">
+    <h2 class="section-heading" id="headlines-heading">Latest Headlines</h2>
+    <ul class="news-list" aria-label="News stories">
+
+        <li class="news-item" id="card-iran-talks">
+            <span class="category-tag">World</span>
+            <h3>US-Iran Nuclear Talks End Without Deal; Vienna Talks Planned</h3>
+            <p>A third round of indirect U.S.-Iran nuclear negotiations concluded in Geneva without a breakthrough. Further discussions are planned for Vienna next week as the U.S. maintains a large military presence in the Middle East.</p>
+            <div class="item-meta">
+                <time datetime="2026-02-27">Feb 27, 2026</time>
+                <span>World Desk</span>
+            </div>
+            <a href="#article-view" class="read-btn" onclick="openStory('iran-talks'); return false;"
+               role="button" aria-expanded="false" aria-controls="article-view">Read Full Story</a>
+        </li>
+
+        <li class="news-item" id="card-markets-selloff">
+            <span class="category-tag">Business</span>
+            <h3>Dow Drops 521 Points as Hot Inflation Data Rattles Markets</h3>
+            <p>Stocks fell sharply after producer price index data came in hotter than expected. Dell surged 21% on AI server outlook while Duolingo plunged 14%. Block announced layoffs of over 4,000 employees.</p>
+            <div class="item-meta">
+                <time datetime="2026-02-27">Feb 27, 2026</time>
+                <span>Business Desk</span>
+            </div>
+            <a href="#article-view" class="read-btn" onclick="openStory('markets-selloff'); return false;"
+               role="button" aria-expanded="false" aria-controls="article-view">Read Full Story</a>
+        </li>
+
+        <li class="news-item" id="card-irs-ice-leak">
+            <span class="category-tag">Politics</span>
+            <h3>Judge Rules IRS Illegally Disclosed Tax Info on 42,695 Taxpayers to ICE</h3>
+            <p>A federal judge found the IRS violated taxpayer privacy laws by sharing confidential return information with immigration enforcement agents without proper legal authority.</p>
+            <div class="item-meta">
+                <time datetime="2026-02-27">Feb 27, 2026</time>
+                <span>Politics Desk</span>
+            </div>
+            <a href="#article-view" class="read-btn" onclick="openStory('irs-ice-leak'); return false;"
+               role="button" aria-expanded="false" aria-controls="article-view">Read Full Story</a>
+        </li>
+
+        <li class="news-item" id="card-russia-ukraine-strike">
+            <span class="category-tag">World</span>
+            <h3>Russia Launches Massive Drone and Missile Barrage Across Ukraine</h3>
+            <p>Russian drones and missiles struck multiple Ukrainian cities overnight, wounding at least 23 people. The attacks came hours before U.S. and Ukrainian envoys met in Geneva.</p>
+            <div class="item-meta">
+                <time datetime="2026-02-27">Feb 27, 2026</time>
+                <span>World Desk</span>
+            </div>
+            <a href="#article-view" class="read-btn" onclick="openStory('russia-ukraine-strike'); return false;"
+               role="button" aria-expanded="false" aria-controls="article-view">Read Full Story</a>
+        </li>
+
+        <li class="news-item" id="card-jesse-jackson">
+            <span class="category-tag">National</span>
+            <h3>Nation Pays Final Respects to Rev. Jesse Jackson Sr. at Chicago Memorial</h3>
+            <p>Memorial services for Reverend Jesse Jackson Sr. began in Chicago. Services will continue in Washington D.C. and South Carolina, where he was born.</p>
+            <div class="item-meta">
+                <time datetime="2026-02-27">Feb 27, 2026</time>
+                <span>National Desk</span>
+            </div>
+            <a href="#article-view" class="read-btn" onclick="openStory('jesse-jackson'); return false;"
+               role="button" aria-expanded="false" aria-controls="article-view">Read Full Story</a>
+        </li>
+
+        <li class="news-item" id="card-paramount-warner">
+            <span class="category-tag">Business</span>
+            <h3>Netflix Drops Warner Bid; Paramount Skydance Poised to Win $31-Per-Share Deal</h3>
+            <p>Netflix has withdrawn from the bidding war for Warner Bros. Discovery, clearing the path for Paramount Skydance to acquire the entertainment giant.</p>
+            <div class="item-meta">
+                <time datetime="2026-02-27">Feb 27, 2026</time>
+                <span>Business Desk</span>
+            </div>
+            <a href="#article-view" class="read-btn" onclick="openStory('paramount-warner'); return false;"
+               role="button" aria-expanded="false" aria-controls="article-view">Read Full Story</a>
+        </li>
+
+        <li class="news-item" id="card-military-laser-drone">
+            <span class="category-tag">National Security</span>
+            <h3>U.S. Military Uses Laser to Shoot Down Border Patrol Drone Near El Paso</h3>
+            <p>The U.S. military used a directed-energy laser weapon to destroy a CBP surveillance drone near El Paso, Texas. The FAA closed additional airspace over the region.</p>
+            <div class="item-meta">
+                <time datetime="2026-02-27">Feb 27, 2026</time>
+                <span>National Security Desk</span>
+            </div>
+            <a href="#article-view" class="read-btn" onclick="openStory('military-laser-drone'); return false;"
+               role="button" aria-expanded="false" aria-controls="article-view">Read Full Story</a>
+        </li>
+
+        <li class="news-item" id="card-hillary-epstein">
+            <span class="category-tag">Politics</span>
+            <h3>Hillary Clinton Testifies Before Congress in Epstein Investigation</h3>
+            <p>Former Secretary of State Hillary Clinton appeared before the House Oversight Committee, telling lawmakers she never met Jeffrey Epstein.</p>
+            <div class="item-meta">
+                <time datetime="2026-02-27">Feb 27, 2026</time>
+                <span>Politics Desk</span>
+            </div>
+            <a href="#article-view" class="read-btn" onclick="openStory('hillary-epstein'); return false;"
+               role="button" aria-expanded="false" aria-controls="article-view">Read Full Story</a>
+        </li>
+
+        <li class="news-item" id="card-columbia-student-ice">
+            <span class="category-tag">Immigration</span>
+            <h3>ICE Used False Pretense to Detain Columbia University Student Without Warrant</h3>
+            <p>Leqaa Kordia, held at an ICE detention facility in Texas for nearly a year, is the last Columbia student in federal custody. Attorneys allege agents misrepresented their authority.</p>
+            <div class="item-meta">
+                <time datetime="2026-02-27">Feb 27, 2026</time>
+                <span>Immigration Desk</span>
+            </div>
+            <a href="#article-view" class="read-btn" onclick="openStory('columbia-student-ice'); return false;"
+               role="button" aria-expanded="false" aria-controls="article-view">Read Full Story</a>
+        </li>
+
+        <li class="news-item" id="card-wef-ceo-epstein">
+            <span class="category-tag">World</span>
+            <h3>World Economic Forum CEO Borge Brende Resigns After Epstein Investigation</h3>
+            <p>The head of the WEF announced his resignation following an independent investigation into ties to the late convicted sex offender Jeffrey Epstein.</p>
+            <div class="item-meta">
+                <time datetime="2026-02-26">Feb 26, 2026</time>
+                <span>World Desk</span>
+            </div>
+            <a href="#article-view" class="read-btn" onclick="openStory('wef-ceo-epstein'); return false;"
+               role="button" aria-expanded="false" aria-controls="article-view">Read Full Story</a>
+        </li>
+
+    </ul>
+</section>
+```
+
+</main>
+
+<!-- ====================================================
+     FOOTER
+===================================================== -->
+
+<footer role="contentinfo">
+    <a href="index.html" class="main-site-link">Switch to Standard Site</a>
+    <nav aria-label="Footer navigation">
+        <ul class="footer-links">
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="sitemap.html">Sitemap</a></li>
+        </ul>
+    </nav>
+    <p>&copy; 2026 GioNews Network. All Rights Reserved.</p>
+    <p>Accessible Edition &mdash; For low vision, screen readers, and all devices.</p>
+</footer>
+
+<!-- ====================================================
+     BOTTOM NAV  (touch mode only — fixed at bottom)
+===================================================== -->
+
+<nav id="bottom-nav" aria-label="Bottom navigation" aria-hidden="true">
+    <ul>
+        <li style="width:20%;display:inline-block;">
+            <a href="accessible.html" aria-label="Home">
+                <span class="bnav-icon" aria-hidden="true">&#127968;</span>Home
+            </a>
+        </li>
+        <li style="width:20%;display:inline-block;">
+            <a href="stream.html" aria-label="Live">
+                <span class="bnav-icon" aria-hidden="true">&#128252;</span>Live
+            </a>
+        </li>
+        <li style="width:20%;display:inline-block;">
+            <a href="breaking.html" aria-label="Archive">
+                <span class="bnav-icon" aria-hidden="true">&#128196;</span>Archive
+            </a>
+        </li>
+        <li style="width:20%;display:inline-block;">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSevr5ncTSlYSwAR442zXlW818Zkp36C0Us_VY6b57HCztYq7g/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" aria-label="Alerts">
+                <span class="bnav-icon" aria-hidden="true">&#128276;</span>Alerts
+            </a>
+        </li>
+        <li style="width:20%;display:inline-block;">
+            <button onclick="toggleTouchMode()" aria-label="Switch to standard mode" style="border-right:none;">
+                <span class="bnav-icon" aria-hidden="true">&#128065;</span>Standard
+            </button>
+        </li>
+    </ul>
+</nav>
+
+<button id="scroll-top-btn"
+onclick="window.scrollTo(0,0)"
+aria-label="Go back to top of page">
+^
+</button>
+
+<script>
+/* =====================================================
+   STORY DATA
+===================================================== */
+var stories = {
+    'pakistan-afghanistan': {
+        cat: 'World', date: 'February 27, 2026', author: 'World News Desk',
+        title: 'Pakistan Bombs Kabul, Declares "Open War" on Afghanistan\'s Taliban',
+        body: '<p>Pakistan launched airstrikes on Afghanistan\'s capital Kabul and two other provinces overnight, dramatically escalating months of border tensions into what Islamabad\'s defense minister now calls an "open war" with the Taliban government.</p><p>Pakistani Defense Minister Khawaja Muhammad Asif said his country\'s "cup of patience has overflowed," declaring open conflict after Afghanistan launched retaliatory strikes on Pakistani border positions. Pakistan\'s military claimed its operations killed at least 274 Taliban fighters and wounded more than 400, while sustaining 12 soldiers killed and 27 wounded.</p><p>China urged both sides to exercise restraint and pursue a ceasefire through dialogue. Iranian Foreign Minister Abbas Araghchi called for calm during Ramadan and offered Tehran\'s assistance as a mediator. The fighting has largely shut down land border crossings, worsening Afghanistan\'s already severe humanitarian crisis.</p><p>The escalation follows a deadly suicide bombing at a mosque in Islamabad last week that killed over 30 people, which Pakistani officials blamed on militants sheltered in Afghanistan — an accusation Kabul has consistently denied.</p>'
+    },
+    'iran-talks': {
+        cat: 'World', date: 'February 27, 2026', author: 'World News Desk',
+        title: 'US-Iran Nuclear Talks End Without Deal; Vienna Talks Planned',
+        body: '<p>A third round of indirect negotiations between the United States and Iran over Tehran\'s nuclear program concluded in Geneva without a breakthrough deal, though mediators cited meaningful progress.</p><p>The session saw both sides make limited adjustments to their positions. Iran\'s foreign minister indicated further technical discussions are scheduled for next week in Vienna, home of the International Atomic Energy Agency.</p><p>The core dispute remains unresolved: the U.S. insists on significant limits to Iran\'s uranium enrichment and long-term verification mechanisms, while Tehran insists enrichment must continue inside the country under IAEA supervision.</p><p>President Trump has assembled a large U.S. military presence in the Middle East as he weighs potential strikes on Iranian nuclear facilities. Secretary of State Marco Rubio is set to travel to Israel next week as deliberations continue.</p>'
+    },
+    'markets-selloff': {
+        cat: 'Business', date: 'February 27, 2026', author: 'Business Desk',
+        title: 'Dow Drops 521 Points as Hot Inflation Data Rattles Markets',
+        body: '<p>U.S. stocks closed sharply lower Friday after producer price index data came in significantly hotter than expected, adding renewed inflation concerns to a turbulent February for markets.</p><p>The Dow Jones Industrial Average fell 521 points, or 1.05%, to close at 48,977. The S&P 500 dropped 0.43% to 6,878, while the Nasdaq Composite lost 0.92% to settle at 22,668. Both the S&P 500 and Nasdaq finished February in negative territory.</p><p>Dell Technologies surged more than 21% after projecting AI server revenue would more than double in fiscal 2027. Duolingo tumbled 14% after issuing guidance below analyst expectations. Block, founded by Jack Dorsey, announced it would lay off more than 4,000 employees — nearly half of its workforce.</p>'
+    },
+    'irs-ice-leak': {
+        cat: 'Politics', date: 'February 27, 2026', author: 'Politics Desk',
+        title: 'Judge Rules IRS Illegally Disclosed Tax Info on 42,695 Taxpayers to ICE',
+        body: '<p>A federal judge has ruled that the Internal Revenue Service illegally disclosed confidential tax return information on tens of thousands of taxpayers to Immigration and Customs Enforcement agents, in a significant legal rebuke of the data-sharing arrangement between the two agencies.</p><p>The ruling found that the IRS shared private tax records on 42,695 individuals with ICE without the proper legal authority to do so, violating federal privacy protections that strictly limit the disclosure of taxpayer information.</p><p>Democrats in Congress called for hearings and demanded the practice be halted immediately. The decision is expected to be appealed. It follows a separate ruling requiring ICE to halt certain warrantless surveillance practices.</p>'
+    },
+    'russia-ukraine-strike': {
+        cat: 'World', date: 'February 27, 2026', author: 'World News Desk',
+        title: 'Russia Launches Massive Drone and Missile Barrage Across Ukraine',
+        body: '<p>Russia launched a massive drone and missile attack against multiple Ukrainian cities overnight Thursday, wounding at least 23 people including a child, in a strike that preceded diplomatic talks between U.S. and Ukrainian officials in Geneva.</p><p>Ukrainian President Volodymyr Zelensky condemned the timing of the assault, which came as his country\'s envoys were preparing to meet with U.S. counterparts to discuss postwar reconstruction and an economic framework for Ukraine.</p><p>Zelensky said a further round of negotiations with Russia is likely to take place in Abu Dhabi in early March. The war has entered its fifth year following Russia\'s full-scale invasion in February 2022.</p>'
+    },
+    'jesse-jackson': {
+        cat: 'National', date: 'February 27, 2026', author: 'National Desk',
+        title: 'Nation Pays Final Respects to Rev. Jesse Jackson Sr. at Chicago Memorial',
+        body: '<p>Memorial services for the Reverend Jesse Jackson Sr. began Friday in Chicago as mourners gathered to honor one of America\'s most consequential civil rights leaders.</p><p>Jackson lies in repose at the Rainbow PUSH Coalition headquarters on Chicago\'s South Side — the organization he founded. Services will then continue in Washington, D.C., and conclude in South Carolina, where he was born.</p><p>Jackson rose to prominence as a close aide to Dr. Martin Luther King Jr. and ran for the Democratic presidential nomination in 1984 and 1988. His campaigns were groundbreaking in their breadth of support across racial lines. Tributes have poured in from across the political spectrum.</p>'
+    },
+    'paramount-warner': {
+        cat: 'Business', date: 'February 27, 2026', author: 'Business Desk',
+        title: 'Netflix Drops Warner Bid; Paramount Skydance Poised to Win $31-Per-Share Deal',
+        body: '<p>Netflix has withdrawn from the bidding war for Warner Bros. Discovery, clearing the path for Paramount Skydance to acquire the entertainment giant in a deal that would unite two of Hollywood\'s most storied studios.</p><p>Warner\'s board determined that Paramount Skydance\'s offer of $31 per share was superior to Netflix\'s bid. The transaction would bring together HBO, CNN, Warner Bros. films, Superman, Harry Potter, CBS News, and Paramount\'s legacy studio assets.</p><p>Netflix shares rose more than 7% on Friday after the company stepped back from the bidding contest, signaling investor relief that it avoided what some analysts called an overpriced acquisition.</p>'
+    },
+    'military-laser-drone': {
+        cat: 'National Security', date: 'February 27, 2026', author: 'National Security Desk',
+        title: 'U.S. Military Uses Laser to Shoot Down Border Patrol Drone Near El Paso',
+        body: '<p>The U.S. military used a directed-energy laser weapon to shoot down a Customs and Border Protection surveillance drone near El Paso, Texas, members of Congress confirmed Thursday.</p><p>The incident marks an unusual case of one U.S. government agency\'s asset being destroyed by another\'s weapons system. The FAA responded by closing additional airspace in the El Paso area.</p><p>The incident raises significant questions about coordination protocols between federal agencies operating in the same airspace along the U.S.-Mexico border, where multiple agencies have ramped up operations in recent months.</p>'
+    },
+    'hillary-epstein': {
+        cat: 'Politics', date: 'February 27, 2026', author: 'Politics Desk',
+        title: 'Hillary Clinton Testifies Before Congress in Epstein Investigation',
+        body: '<p>Former Secretary of State Hillary Clinton testified in a closed-door deposition before the House Oversight Committee as part of its ongoing investigation into Jeffrey Epstein and his network, telling lawmakers she never met the late convicted sex offender.</p><p>Clinton described the questioning as repetitive and spoke briefly with reporters after emerging from the Capitol. The committee\'s investigation has drawn controversy, with Democrats arguing it is politically motivated.</p><p>World Economic Forum CEO Borge Brende separately announced his resignation following a WEF investigation into his connections to Epstein, a sign of how renewed scrutiny continues to reverberate across institutions.</p>'
+    },
+    'columbia-student-ice': {
+        cat: 'Immigration', date: 'February 27, 2026', author: 'Immigration Desk',
+        title: 'ICE Used False Pretense to Detain Columbia University Student Without Warrant',
+        body: '<p>Federal immigration agents used deceptive tactics to detain a Columbia University graduate student without a warrant, according to the student\'s legal team and civil liberties advocates.</p><p>Leqaa Kordia has been held at an ICE detention facility in Texas for nearly a year, making her the last Columbia student remaining in federal immigration custody. Her attorneys allege agents misrepresented their authority at the time of her arrest.</p><p>The case has become a focal point in the debate over the Trump administration\'s targeting of international students and pro-Palestinian activists on university campuses.</p>'
+    },
+    'wef-ceo-epstein': {
+        cat: 'World', date: 'February 26, 2026', author: 'World News Desk',
+        title: 'World Economic Forum CEO Borge Brende Resigns After Epstein Investigation',
+        body: '<p>Borge Brende, the chief executive of the World Economic Forum, announced his resignation Thursday following an independent investigation into his ties to Jeffrey Epstein, the financier who died in federal custody in 2019.</p><p>The WEF commissioned the review after questions arose about the nature of Brende\'s interactions with Epstein. The organization did not release the full findings but confirmed that Brende informed the board of his decision to step down.</p><p>Brende, a former Norwegian foreign minister, had served as WEF president since 2013. His departure is part of a broader reckoning following the unsealing of court documents related to Epstein\'s network.</p>'
+    }
+};
+
+/* =====================================================
+   FONT SIZE — sets px directly on body
+   Works even when browsers override html font-size
+===================================================== */
+var fontSteps = [14, 16, 18, 20, 22, 26, 30, 36];
+var fontIdx = 4; // default = 22px
+
+function changeFont(dir) {
+    if (dir === 0) {
+        fontIdx = 4;
+    } else {
+        fontIdx = Math.max(0, Math.min(fontSteps.length - 1, fontIdx + dir));
+    }
+    var sz = fontSteps[fontIdx];
+    // Set on BODY directly (not html) — flip phones respect this
+    document.body.style.fontSize = sz + 'px';
+    // Update display
+    var disp = document.getElementById('font-size-display');
+    if (disp) disp.innerHTML = sz + 'px';
+    // Save
+    try { localStorage.setItem('gn-font', fontIdx); } catch(e) {}
+}
+
+/* =====================================================
+   ARTICLE OPEN / CLOSE
+   No overlay, no fixed position — pure inline show/hide
+   Scrolls to top of page after opening (works on all browsers)
+===================================================== */
+function openStory(id) {
+    var s = stories[id];
+    if (!s) return;
+
+    document.getElementById('art-cat').innerHTML    = s.cat;
+    document.getElementById('art-title').innerHTML  = s.title;
+    document.getElementById('art-author').innerHTML = 'By ' + s.author;
+    document.getElementById('art-date').innerHTML   = s.date;
+    document.getElementById('art-body').innerHTML   = s.body;
+
+    document.getElementById('article-view').className = 'open';
+    document.body.className = (document.body.className + ' article-open').trim();
+
+    // Reset TTS player for the new article
+    if (typeof ttsReset === 'function') ttsReset();
+
+    // Scroll to very top — three methods for cross-browser compat
+    window.scrollTo(0, 0);
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+
+    // Focus the back button
+    var back = document.querySelector('#article-view .art-back-btn');
+    if (back) { setTimeout(function(){ back.focus(); }, 50); }
+}
+
+function closeArticle() {
+    // Stop TTS before leaving article
+    if (typeof ttsReset === 'function') ttsReset();
+
+    document.getElementById('article-view').className = '';
+    document.body.className = document.body.className.replace('article-open', '').trim();
+    window.scrollTo(0, 0);
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+}
+
+/* =====================================================
+   TOUCH MODE
+===================================================== */
+var touchOn = false;
+
+function toggleTouchMode() {
+    touchOn = !touchOn;
+    var btn  = document.getElementById('touch-toggle-btn');
+    var lbl  = document.getElementById('touch-mode-label');
+    var bnav = document.getElementById('bottom-nav');
+
+    if (touchOn) {
+        document.body.className = (document.body.className + ' touch-mode').trim();
+        btn.innerHTML = 'Touch ON';
+        btn.setAttribute('aria-pressed', 'true');
+        lbl.innerHTML = 'Touch mode active. Big targets. Bottom nav bar visible.';
+        bnav.setAttribute('aria-hidden', 'false');
+        attachTouchCards();
+        try { localStorage.setItem('gn-touch', '1'); } catch(e) {}
+    } else {
+        document.body.className = document.body.className.replace('touch-mode','').trim();
+        btn.innerHTML = 'Standard';
+        btn.setAttribute('aria-pressed', 'false');
+        lbl.innerHTML = 'Switch to big tap targets + bottom nav bar';
+        bnav.setAttribute('aria-hidden', 'true');
+        detachTouchCards();
+        try { localStorage.setItem('gn-touch', '0'); } catch(e) {}
+    }
+}
+
+function attachTouchCards() {
+    var cards = document.querySelectorAll('.news-item, .featured-story');
+    for (var i = 0; i < cards.length; i++) {
+        (function(card) {
+            card._touchHandler = function(e) {
+                if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
+                var id = card.id.replace('card-', '');
+                if (id) openStory(id);
+            };
+            card.addEventListener('click', card._touchHandler);
+        })(cards[i]);
+    }
+}
+
+function detachTouchCards() {
+    var cards = document.querySelectorAll('.news-item, .featured-story');
+    for (var i = 0; i < cards.length; i++) {
+        if (cards[i]._touchHandler) {
+            cards[i].removeEventListener('click', cards[i]._touchHandler);
+        }
+    }
+}
+
+/* =====================================================
+   AUTO-DETECT + RESTORE PREFS ON LOAD
+===================================================== */
+window.onload = function() {
+    // Restore font
+    try {
+        var f = localStorage.getItem('gn-font');
+        if (f !== null) { fontIdx = parseInt(f, 10) - 1; changeFont(1); }
+        else { changeFont(0); }
+    } catch(e) { changeFont(0); }
+
+    // Restore or auto-detect touch mode
+    try {
+        var t = localStorage.getItem('gn-touch');
+        if (t === '1') { toggleTouchMode(); return; }
+        if (t === '0') return;
+    } catch(e) {}
+
+    var isTouch = false;
+    try {
+        isTouch = ('ontouchstart' in window) ||
+                  (navigator.maxTouchPoints > 0) ||
+                  (window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
+    } catch(e) {}
+    if (isTouch) toggleTouchMode();
+
+    // Init TTS
+    TTS.init();
+};
+
+/* =====================================================
+   TEXT-TO-SPEECH ENGINE
+   Uses Web Speech API (SpeechSynthesis) — built into
+   Chrome, Firefox, Edge, Safari, Android, iOS.
+   Falls back gracefully on unsupported browsers.
+===================================================== */
+var TTS = {
+    synth     : window.speechSynthesis || null,
+    supported : !!window.speechSynthesis,
+    sentences : [],
+    current   : 0,
+    paused    : false,
+    rate      : 1.0,
+    voice     : null,
+    voiceList : [],
+
+    init: function() {
+        if (!TTS.supported) {
+            var u = document.getElementById('tts-unsupported');
+            var b = document.getElementById('tts-bar');
+            if (u) u.style.display = 'block';
+            if (b) b.style.display = 'none';
+            return;
+        }
+        function loadVoices() {
+            TTS.voiceList = TTS.synth.getVoices();
+            var sel = document.getElementById('tts-voice');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">Default Voice</option>';
+            for (var i = 0; i < TTS.voiceList.length; i++) {
+                var v = TTS.voiceList[i];
+                var opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = v.name + ' (' + v.lang + ')' + (v.default ? ' *' : '');
+                sel.appendChild(opt);
+            }
+        }
+        loadVoices();
+        if (TTS.synth.onvoiceschanged !== undefined) {
+            TTS.synth.onvoiceschanged = loadVoices;
+        }
+    },
+
+    getArticleText: function() {
+        var titleEl = document.getElementById('art-title');
+        var bodyEl  = document.getElementById('art-body');
+        var title   = titleEl ? (titleEl.textContent || titleEl.innerText || '') : '';
+        var body    = bodyEl  ? (bodyEl.textContent  || bodyEl.innerText  || '') : '';
+        return (title + '. ' + body).replace(/\s+/g, ' ').trim();
+    },
+
+    /* Split into sentences — fixes Chrome 15-second utterance cutoff bug */
+    splitSentences: function(text) {
+        var raw = text.match(/[^.!?]+[.!?]+[\s]*/g) || [text];
+        var out = [];
+        for (var i = 0; i < raw.length; i++) {
+            var s = raw[i].trim();
+            if (s.length > 0) out.push(s);
+        }
+        return out.length ? out : [text];
+    },
+
+    setButtons: function(playing) {
+        var play    = document.getElementById('tts-play-btn');
+        var pause   = document.getElementById('tts-pause-btn');
+        var stop    = document.getElementById('tts-stop-btn');
+        var restart = document.getElementById('tts-restart-btn');
+        if (!play) return;
+        if (playing) {
+            play.disabled    = true;
+            pause.disabled   = false;
+            stop.disabled    = false;
+            restart.disabled = false;
+        } else {
+            play.disabled    = false;
+            pause.disabled   = true;
+            stop.disabled    = true;
+            restart.disabled = (TTS.current === 0);
+        }
+    },
+
+    updateProgress: function() {
+        var pct  = TTS.sentences.length > 1
+                   ? Math.round((TTS.current / TTS.sentences.length) * 100) : 0;
+        var fill = document.getElementById('tts-progress-fill');
+        var bar  = document.getElementById('tts-progress-bar');
+        var stat = document.getElementById('tts-status');
+        if (fill) fill.style.width = pct + '%';
+        if (bar)  bar.setAttribute('aria-valuenow', pct);
+        if (stat) {
+            stat.textContent = TTS.sentences.length === 0
+                ? 'Press Play to listen'
+                : 'Reading ' + (TTS.current + 1) + ' of ' + TTS.sentences.length +
+                  ' sentences \u2014 ' + pct + '% complete';
+        }
+    },
+
+    speakSentence: function(idx) {
+        if (idx >= TTS.sentences.length) {
+            TTS.current = 0;
+            TTS.paused  = false;
+            TTS.setButtons(false);
+            var stat = document.getElementById('tts-status');
+            if (stat) stat.textContent = 'Finished. Press Play to listen again.';
+            var fill = document.getElementById('tts-progress-fill');
+            if (fill) fill.style.width = '100%';
+            var bar  = document.getElementById('tts-progress-bar');
+            if (bar)  bar.setAttribute('aria-valuenow', 100);
+            var play = document.getElementById('tts-play-btn');
+            if (play) play.innerHTML = '&#9654; Play';
+            return;
+        }
+        TTS.current = idx;
+        TTS.updateProgress();
+
+        var utt  = new SpeechSynthesisUtterance(TTS.sentences[idx]);
+        utt.rate = TTS.rate;
+        if (TTS.voice) utt.voice = TTS.voice;
+
+        utt.onend = function() {
+            if (!TTS.paused) TTS.speakSentence(idx + 1);
+        };
+        utt.onerror = function(e) {
+            if (e.error && e.error !== 'interrupted' && e.error !== 'canceled') {
+                var stat = document.getElementById('tts-status');
+                if (stat) stat.textContent = 'Audio error: ' + e.error + '. Try Play again.';
+                TTS.setButtons(false);
+            }
+        };
+        TTS.synth.speak(utt);
+    }
+};
+
+/* ---- Public playback controls called by buttons ---- */
+
+function ttsPlay() {
+    if (!TTS.supported) return;
+    if (TTS.paused) {
+        TTS.paused = false;
+        TTS.synth.resume();
+        TTS.setButtons(true);
+        var play = document.getElementById('tts-play-btn');
+        if (play) play.innerHTML = '&#9654; Play';
+        return;
+    }
+    TTS.synth.cancel();
+    var text = TTS.getArticleText();
+    TTS.sentences = TTS.splitSentences(text);
+    if (TTS.current >= TTS.sentences.length) TTS.current = 0;
+    TTS.paused = false;
+    TTS.setButtons(true);
+    TTS.speakSentence(TTS.current);
+}
+
+function ttsPause() {
+    if (!TTS.supported) return;
+    TTS.paused = true;
+    TTS.synth.pause();
+    TTS.setButtons(false);
+    var play = document.getElementById('tts-play-btn');
+    if (play) play.innerHTML = '&#9654; Resume';
+}
+
+function ttsStop() {
+    if (!TTS.supported) return;
+    TTS.paused = false;
+    TTS.synth.cancel();
+    TTS.current = 0;
+    TTS.setButtons(false);
+    var stat = document.getElementById('tts-status');
+    if (stat) stat.textContent = 'Stopped. Press Play to start again.';
+    var fill = document.getElementById('tts-progress-fill');
+    if (fill) fill.style.width = '0%';
+    var bar  = document.getElementById('tts-progress-bar');
+    if (bar)  bar.setAttribute('aria-valuenow', 0);
+    var play = document.getElementById('tts-play-btn');
+    if (play) play.innerHTML = '&#9654; Play';
+}
+
+function ttsRestart() {
+    if (!TTS.supported) return;
+    TTS.synth.cancel();
+    TTS.current = 0;
+    TTS.paused  = false;
+    var play = document.getElementById('tts-play-btn');
+    if (play) play.innerHTML = '&#9654; Play';
+    TTS.setButtons(true);
+    var text = TTS.getArticleText();
+    TTS.sentences = TTS.splitSentences(text);
+    TTS.speakSentence(0);
+}
+
+function ttsChangeSpeed() {
+    var sel = document.getElementById('tts-speed');
+    if (sel) TTS.rate = parseFloat(sel.value);
+    if (!TTS.paused && TTS.synth && TTS.synth.speaking) {
+        var pos = TTS.current;
+        TTS.synth.cancel();
+        setTimeout(function() { TTS.speakSentence(pos); }, 80);
+    }
+}
+
+function ttsChangeVoice() {
+    var sel = document.getElementById('tts-voice');
+    if (!sel) return;
+    TTS.voice = (sel.value === '' || !TTS.voiceList[sel.value])
+        ? null : TTS.voiceList[parseInt(sel.value, 10)];
+    if (!TTS.paused && TTS.synth && TTS.synth.speaking) {
+        var pos = TTS.current;
+        TTS.synth.cancel();
+        setTimeout(function() { TTS.speakSentence(pos); }, 80);
+    }
+}
+
+function ttsReset() {
+    if (TTS.supported && TTS.synth) TTS.synth.cancel();
+    TTS.current   = 0;
+    TTS.paused    = false;
+    TTS.sentences = [];
+    var fill = document.getElementById('tts-progress-fill');
+    if (fill) fill.style.width = '0%';
+    var bar  = document.getElementById('tts-progress-bar');
+    if (bar)  bar.setAttribute('aria-valuenow', 0);
+    var stat = document.getElementById('tts-status');
+    if (stat) stat.textContent = 'Press Play to listen';
+    var play = document.getElementById('tts-play-btn');
+    if (play) play.innerHTML = '&#9654; Play';
+    TTS.setButtons(false);
+}
+</script>
+
+</body>
+</html>

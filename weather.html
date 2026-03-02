@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GioNews Weather - St. Charles, MO forecasts">
+    <title>GioNews Weather - St. Charles, MO</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+    
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+<style>
+    :root {
+        --primary: #0a0f1a;
+        --primary-light: #111827;
+        --accent: #3b82f6;
+        --accent-hover: #2563eb;
+        --accent-glow: rgba(59, 130, 246, 0.4);
+        --warning: #f59e0b;
+        --warning-glow: rgba(245, 158, 11, 0.4);
+        --danger: #ef4444;
+        --text: #f8fafc;
+        --text-muted: #94a3b8;
+        --bg: #020617;
+        --card-bg: rgba(15, 23, 42, 0.6);
+        --glass: rgba(15, 23, 42, 0.4);
+        --border: rgba(148, 163, 184, 0.1);
+        --border-glow: rgba(59, 130, 246, 0.2);
+        
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.15);
+        --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        
+        --radius: 16px;
+        --radius-sm: 12px;
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.light-mode {
+        --primary: #ffffff;
+        --primary-light: #f8fafc;
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --bg: #f1f5f9;
+        --card-bg: rgba(255, 255, 255, 0.7);
+        --glass: rgba(255, 255, 255, 0.5);
+        --border: rgba(148, 163, 184, 0.2);
+        --border-glow: rgba(59, 130, 246, 0.15);
+        --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--bg);
+        background-image: 
+            radial-gradient(ellipse at 20% 0%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 100%, rgba(30, 58, 138, 0.08) 0%, transparent 50%);
+        background-attachment: fixed;
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        opacity: 0.03;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    body.light-mode::before { opacity: 0.02; }
+
+    header {
+        background: var(--glass);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        transition: var(--transition);
+    }
+
+    header::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    }
+
+    body.light-mode header { 
+        background: rgba(255, 255, 255, 0.8);
+    }
+    
+    header.hide-mobile { transform: translateY(-100%); }
+
+    .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .brand { 
+        display: flex; 
+        align-items: center;
+        position: relative;
+    }
+    
+    .brand::after {
+        content: '';
+        position: absolute;
+        bottom: -8px; left: 0;
+        width: 100%; height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+        transform: scaleX(0);
+        transition: var(--transition);
+    }
+    
+    .brand:hover::after { transform: scaleX(1); }
+
+    .logo-img { height: 48px; width: auto; display: block; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+
+    .nav-desktop { display: flex; gap: 12px; align-items: center; }
+
+    .nav-pill {
+        display: flex;
+        gap: 4px;
+        background: var(--card-bg);
+        padding: 6px;
+        border-radius: 100px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.05);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .nav-pill a {
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 10px 22px;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 100px;
+        transition: var(--transition);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .nav-pill a:hover, .nav-pill a.active {
+        background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+        color: #ffffff;
+        box-shadow: 0 4px 20px var(--accent-glow), 0 0 0 1px rgba(255,255,255,0.1) inset;
+        transform: translateY(-1px);
+    }
+
+    .theme-toggle {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        color: var(--text);
+        width: 44px; height: 44px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 20px;
+        transition: var(--transition);
+        display: flex; align-items: center; justify-content: center;
+        margin-left: 8px;
+    }
+
+    .theme-toggle:hover { 
+        background: var(--accent); 
+        border-color: var(--accent); 
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    .nav-toggle {
+        display: none;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        color: var(--text);
+        width: 44px; height: 44px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 20px;
+        transition: var(--transition);
+    }
+
+    .nav-toggle:hover { 
+        background: var(--accent); 
+        border-color: var(--accent);
+        box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .nav-mobile {
+        display: none;
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        background: rgba(15, 23, 42, 0.98);
+        backdrop-filter: blur(20px) saturate(180%);
+        border-bottom: 1px solid var(--border);
+        padding: 24px;
+        flex-direction: column;
+        gap: 8px;
+        box-shadow: var(--shadow);
+    }
+
+    body.light-mode .nav-mobile { background: rgba(255, 255, 255, 0.98); }
+    .nav-mobile.active { display: flex; }
+
+    .nav-mobile a {
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 16px 20px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: var(--transition);
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+    }
+
+    .nav-mobile a:hover {
+        background: var(--primary-light);
+        color: var(--text);
+        border-color: var(--border-glow);
+        transform: translateX(8px);
+    }
+
+    .container { 
+        max-width: 1400px; 
+        margin: 0 auto; 
+        padding: 32px 24px; 
+        position: relative; 
+        z-index: 2; 
+    }
+
+    /* Attention Sticker */
+    .attention-sticker {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
+        border: 2px solid var(--warning);
+        border-radius: var(--radius);
+        padding: 24px 28px;
+        margin-bottom: 32px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.15);
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .attention-sticker::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 6px; height: 100%;
+        background: linear-gradient(to bottom, var(--warning), #d97706);
+        box-shadow: 0 0 20px var(--warning-glow);
+    }
+
+    .attention-icon {
+        width: 56px; height: 56px;
+        background: linear-gradient(135deg, var(--warning), #d97706);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 20px var(--warning-glow);
+        animation: attentionPulse 2s infinite;
+    }
+
+    @keyframes attentionPulse {
+        0%, 100% { box-shadow: 0 4px 20px var(--warning-glow); transform: scale(1); }
+        50% { box-shadow: 0 4px 30px var(--warning-glow), 0 0 20px rgba(245, 158, 11, 0.4); transform: scale(1.05); }
+    }
+
+    .attention-content h3 {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--warning);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .attention-content p {
+        font-size: 15px;
+        color: var(--text);
+        line-height: 1.6;
+        font-weight: 500;
+    }
+
+    .attention-content strong {
+        color: var(--warning);
+        font-weight: 700;
+    }
+
+    .last-updated {
+        margin-top: 12px;
+        font-size: 13px;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Current Weather */
+    .current-weather {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 48px;
+        margin-bottom: 32px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+    }
+
+    .current-weather:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg), var(--shadow-glow);
+        border-color: var(--border-glow);
+    }
+
+    .weather-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 32px;
+    }
+
+    .location-info h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 42px;
+        font-weight: 900;
+        margin-bottom: 8px;
+        letter-spacing: -1px;
+    }
+
+    .location-info .subtitle {
+        font-size: 14px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 600;
+    }
+
+    .alert-badge {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 100px;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .alert-badge::before {
+        content: '';
+        width: 8px; height: 8px;
+        background: white;
+        border-radius: 50%;
+        animation: statusPulse 2s infinite;
+    }
+
+    @keyframes statusPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .weather-main {
+        display: flex;
+        align-items: center;
+        gap: 48px;
+        margin-bottom: 40px;
+    }
+
+    .weather-icon-large {
+        font-size: 140px;
+        line-height: 1;
+        filter: drop-shadow(0 0 40px rgba(59, 130, 246, 0.3));
+        animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+
+    .temp-display {
+        flex: 1;
+    }
+
+    .current-temp {
+        font-family: 'Playfair Display', serif;
+        font-size: 120px;
+        font-weight: 900;
+        line-height: 1;
+        background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+    }
+
+    .feels-like {
+        font-size: 18px;
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+
+    .condition-text {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text);
+        margin-top: 16px;
+    }
+
+    .weather-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        padding-top: 32px;
+        border-top: 1px solid var(--border);
+    }
+
+    .weather-stat {
+        text-align: center;
+        padding: 20px;
+        background: rgba(255,255,255,0.03);
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        transition: var(--transition);
+    }
+
+    .weather-stat:hover {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: var(--border-glow);
+        transform: translateY(-4px);
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+
+    .stat-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    /* Forecast Section */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+        position: relative;
+    }
+
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: -1px; left: 0;
+        width: 80px; height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+        box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .section-title {
+        font-size: 24px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: -0.5px;
+    }
+
+    .forecast-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .forecast-day {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px 16px;
+        text-align: center;
+        transition: var(--transition);
+        cursor: pointer;
+    }
+
+    .forecast-day:hover {
+        transform: translateY(-8px);
+        border-color: var(--border-glow);
+        box-shadow: var(--shadow), var(--shadow-glow);
+    }
+
+    .day-name {
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-muted);
+        margin-bottom: 16px;
+    }
+
+    .day-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+        line-height: 1;
+    }
+
+    .day-temps {
+        margin-bottom: 12px;
+    }
+
+    .day-high {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    .day-low {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-muted);
+        margin-left: 8px;
+    }
+
+    .day-condition {
+        font-size: 13px;
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+
+    /* Hourly Scroll */
+    .hourly-container {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px;
+        margin-bottom: 32px;
+        box-shadow: var(--shadow);
+    }
+
+    .hourly-scroll {
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent) var(--primary);
+    }
+
+    .hourly-scroll::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .hourly-scroll::-webkit-scrollbar-track {
+        background: var(--primary);
+        border-radius: 3px;
+    }
+
+    .hourly-scroll::-webkit-scrollbar-thumb {
+        background: var(--accent);
+        border-radius: 3px;
+    }
+
+    .hour-item {
+        flex: 0 0 auto;
+        width: 80px;
+        text-align: center;
+        padding: 16px 12px;
+        background: rgba(255,255,255,0.03);
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        transition: var(--transition);
+    }
+
+    .hour-item:hover {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: var(--border-glow);
+        transform: translateY(-4px);
+    }
+
+    .hour-time {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+    }
+
+    .hour-icon {
+        font-size: 28px;
+        margin-bottom: 12px;
+    }
+
+    .hour-temp {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    footer {
+        background: var(--primary);
+        border-top: 1px solid var(--border);
+        padding: 48px 24px;
+        text-align: center;
+        margin-top: 64px;
+        position: relative;
+    }
+    
+    footer::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        opacity: 0.5;
+    }
+
+    .footer-logo { margin-bottom: 24px; }
+    .footer-logo img { height: 48px; width: auto; opacity: 0.9; }
+
+    .footer-links { 
+        display: flex; 
+        justify-content: center; 
+        gap: 32px; 
+        margin-bottom: 24px; 
+        flex-wrap: wrap;
+    }
+    
+    .footer-links a { 
+        color: var(--text-muted); 
+        text-decoration: none; 
+        font-size: 14px; 
+        font-weight: 600; 
+        transition: var(--transition);
+    }
+    
+    .footer-links a:hover { color: var(--accent); }
+
+    footer p { 
+        color: var(--text-muted); 
+        font-size: 13px;
+        opacity: 0.8;
+    }
+
+    @media (max-width: 1024px) {
+        .weather-grid { grid-template-columns: repeat(2, 1fr); }
+        .forecast-grid { grid-template-columns: repeat(3, 1fr); }
+        .current-temp { font-size: 80px; }
+        .weather-icon-large { font-size: 100px; }
+    }
+
+    @media (max-width: 768px) {
+        .nav-desktop { display: none; }
+        .nav-toggle { display: flex; align-items: center; justify-content: center; }
+        .attention-sticker { flex-direction: column; text-align: center; }
+        .attention-icon { margin: 0 auto; }
+        .weather-main { flex-direction: column; text-align: center; }
+        .weather-header { flex-direction: column; gap: 16px; }
+        .weather-grid { grid-template-columns: 1fr; }
+        .forecast-grid { grid-template-columns: repeat(2, 1fr); }
+        .current-weather { padding: 32px 24px; }
+        .location-info h1 { font-size: 32px; }
+        .current-temp { font-size: 64px; }
+        .weather-icon-large { font-size: 80px; }
+    }
+
+    @media (max-width: 480px) {
+        .header-content { padding: 12px 16px; }
+        .logo-img { height: 40px; }
+        .container { padding: 20px 16px; }
+        .forecast-grid { grid-template-columns: 1fr; }
+        .attention-content h3 { font-size: 16px; }
+        .attention-content p { font-size: 14px; }
+    }
+</style>
+
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="mainHeader">
+        <div class="header-content">
+            <a href="index.html" class="brand">
+                <img src="Gio.png" alt="GioNews" class="logo-img">
+            </a>
+
+            <nav class="nav-desktop">
+                <div class="nav-pill">
+                    <a href="index.html">Home</a>
+                    <a href="stream.html">Live</a>
+                    <a href="breaking.html">Archive</a>
+                    <a href="weather.html" class="active">Weather</a>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSevr5ncTSlYSwAR442zXlW818Zkp36C0Us_VY6b57HCztYq7g/viewform?usp=dialog" target="_blank">Alerts</a>
+                </div>
+                <button class="theme-toggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode">🌙</button>
+            </nav>
+
+            <button class="nav-toggle" onclick="toggleMobileNav()" aria-label="Toggle menu">☰</button>
+        </div>
+
+        <nav class="nav-mobile" id="mobileNav">
+            <a href="index.html">Home</a>
+            <a href="stream.html">Live Stream</a>
+            <a href="breaking.html">Archive</a>
+            <a href="weather.html">Weather</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSevr5ncTSlYSwAR442zXlW818Zkp36C0Us_VY6b57HCztYq7g/viewform?usp=dialog" target="_blank">Live Alert Sign Up</a>
+            <a href="#" onclick="toggleDarkMode(); return false;" id="mobileThemeToggle">🌙 Dark Mode</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- Attention Sticker -->
+        <div class="attention-sticker">
+            <div class="attention-icon">⚠️</div>
+            <div class="attention-content">
+                <h3>Update Schedule Notice</h3>
+                <p>This page is only updated <strong>once daily</strong> and has not been updated since this morning. This will <strong>not</strong> be updated 2 times in a day unless a <strong>weather alert is issued</strong>. For real-time updates, please check local NOAA Weather Radio or the National Weather Service.</p>
+                <div class="last-updated">Last Updated: Monday, March 2, 2026 at 6:00 AM CST</div>
+            </div>
+        </div>
+
+        <!-- Current Weather -->
+        <div class="current-weather">
+            <div class="weather-header">
+                <div class="location-info">
+                    <h1>St. Charles, MO</h1>
+                    <div class="subtitle">St. Charles County • Updated This Morning</div>
+                </div>
+                <div class="alert-badge">No Active Alerts</div>
+            </div>
+
+            <div class="weather-main">
+                <div class="weather-icon-large">☁️</div>
+                <div class="temp-display">
+                    <div class="current-temp">39°</div>
+                    <div class="feels-like">Feels like 33°</div>
+                    <div class="condition-text">Cloudy with Slight Chance of Rain</div>
+                </div>
+            </div>
+
+            <div class="weather-grid">
+                <div class="weather-stat">
+                    <div class="stat-label">Today's High</div>
+                    <div class="stat-value">46°</div>
+                </div>
+                <div class="weather-stat">
+                    <div class="stat-label">Tonight's Low</div>
+                    <div class="stat-value">40°</div>
+                </div>
+                <div class="weather-stat">
+                    <div class="stat-label">Wind</div>
+                    <div class="stat-value">E 5-10 mph</div>
+                </div>
+                <div class="weather-stat">
+                    <div class="stat-label">Humidity</div>
+                    <div class="stat-value">77%</div>
+                </div>
+                <div class="weather-stat">
+                    <div class="stat-label">Precipitation</div>
+                    <div class="stat-value">21%</div>
+                </div>
+                <div class="weather-stat">
+                    <div class="stat-label">UV Index</div>
+                    <div class="stat-value">2 (Low)</div>
+                </div>
+                <div class="weather-stat">
+                    <div class="stat-label">Visibility</div>
+                    <div class="stat-value">10 mi</div>
+                </div>
+                <div class="weather-stat">
+                    <div class="stat-label">Pressure</div>
+                    <div class="stat-value">29.8"</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5-Day Forecast -->
+        <div class="section-header">
+            <h2 class="section-title">5-Day Forecast</h2>
+        </div>
+
+        <div class="forecast-grid">
+            <div class="forecast-day">
+                <div class="day-name">Tonight</div>
+                <div class="day-icon">🌧️</div>
+                <div class="day-temps">
+                    <span class="day-low">40°</span>
+                </div>
+                <div class="day-condition">Rain Showers Likely</div>
+            </div>
+            <div class="forecast-day">
+                <div class="day-name">Tuesday</div>
+                <div class="day-icon">🌧️</div>
+                <div class="day-temps">
+                    <span class="day-high">62°</span>
+                    <span class="day-low">49°</span>
+                </div>
+                <div class="day-condition">Showers & Thunderstorms</div>
+            </div>
+            <div class="forecast-day">
+                <div class="day-name">Wednesday</div>
+                <div class="day-icon">⛈️</div>
+                <div class="day-temps">
+                    <span class="day-high">63°</span>
+                    <span class="day-low">52°</span>
+                </div>
+                <div class="day-condition">Thunderstorms Likely</div>
+            </div>
+            <div class="forecast-day">
+                <div class="day-name">Thursday</div>
+                <div class="day-icon">🌧️</div>
+                <div class="day-temps">
+                    <span class="day-high">69°</span>
+                    <span class="day-low">55°</span>
+                </div>
+                <div class="day-condition">Rain Showers</div>
+            </div>
+            <div class="forecast-day">
+                <div class="day-name">Friday</div>
+                <div class="day-icon">⛈️</div>
+                <div class="day-temps">
+                    <span class="day-high">74°</span>
+                    <span class="day-low">52°</span>
+                </div>
+                <div class="day-condition">Thunderstorms</div>
+            </div>
+        </div>
+
+        <!-- Hourly Forecast -->
+        <div class="hourly-container">
+            <div class="section-header" style="margin-bottom: 16px;">
+                <h2 class="section-title">Hourly Forecast for Monday</h2>
+            </div>
+            <div class="hourly-scroll">
+                <div class="hour-item">
+                    <div class="hour-time">Now</div>
+                    <div class="hour-icon">☁️</div>
+                    <div class="hour-temp">39°</div>
+                </div>
+                <div class="hour-item">
+                    <div class="hour-time">10 AM</div>
+                    <div class="hour-icon">☁️</div>
+                    <div class="hour-temp">41°</div>
+                </div>
+                <div class="hour-item">
+                    <div class="hour-time">11 AM</div>
+                    <div class="hour-icon">🌧️</div>
+                    <div class="hour-temp">43°</div>
+                </div>
+                <div class="hour-item">
+                    <div class="hour-time">12 PM</div>
+                    <div class="hour-icon">🌧️</div>
+                    <div class="hour-temp">45°</div>
+                </div>
+                <div class="hour-item">
+                    <div class="hour-time">1 PM</div>
+                    <div class="hour-icon">🌧️</div>
+                    <div class="hour-temp">46°</div>
+                </div>
+                <div class="hour-item">
+                    <div class="hour-time">2 PM</div>
+                    <div class="hour-icon">☁️</div>
+                    <div class="hour-temp">46°</div>
+                </div>
+                <div class="hour-item">
+                    <div class="hour-time">3 PM</div>
+                    <div class="hour-icon">☁️</div>
+                    <div class="hour-temp">45°</div>
+                </div>
+                <div class="hour-item">
+                    <div class="hour-time">4 PM</div>
+                    <div class="hour-icon">☁️</div>
+                    <div class="hour-temp">44°</div>
+                </div>
+                <div class="hour-item">
+                    <div class="hour-time">5 PM</div>
+                    <div class="hour-icon">🌧️</div>
+                    <div class="hour-temp">43°</div>
+                </div>
+                <div class="hour-item">
+                    <div class="hour-time">6 PM</div>
+                    <div class="hour-icon">🌧️</div>
+                    <div class="hour-temp">42°</div>
+                </div>
+                <div class="hour-item">
+                    <div class="hour-time">7 PM</div>
+                    <div class="hour-icon">🌧️</div>
+                    <div class="hour-temp">41°</div>
+                </div>
+                <div class="hour-item">
+                    <div class="hour-time">8 PM</div>
+                    <div class="hour-icon">🌧️</div>
+                    <div class="hour-temp">40°</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">
+            <img src="neo.png" alt="GioNews Network">
+        </div>
+        <div class="footer-links">
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+        <p>&copy; 2026 GioNews Network. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function toggleMobileNav() {
+            const mobileNav = document.getElementById('mobileNav');
+            const toggle = document.querySelector('.nav-toggle');
+            mobileNav.classList.toggle('active');
+            toggle.textContent = mobileNav.classList.contains('active') ? '✕' : '☰';
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            updateThemeIcons();
+        }
+
+        function updateThemeIcons() {
+            const isLight = document.body.classList.contains('light-mode');
+            const desktopBtn = document.querySelector('.theme-toggle');
+            const mobileLink = document.getElementById('mobileThemeToggle');
+            if (desktopBtn) desktopBtn.textContent = isLight ? '☀️' : '🌙';
+            if (mobileLink) mobileLink.textContent = isLight ? '🌙 Dark Mode' : '☀️ Light Mode';
+        }
+
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+            updateThemeIcons();
+        }
+
+        let lastScroll = 0;
+        const header = document.getElementById('mainHeader');
+        
+        window.addEventListener('scroll', () => {
+            if (window.innerWidth > 768) return;
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                header.classList.add('hide-mobile');
+            } else {
+                header.classList.remove('hide-mobile');
+            }
+            lastScroll = currentScroll;
+        });
+    </script>
+
+</body>
+</html>

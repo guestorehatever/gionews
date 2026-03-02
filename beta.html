@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GioNews - Breaking news, live coverage, and 24/7 updates">
+    <title>GioNews - Breaking News & Live Coverage</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+    
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+<style>
+    :root {
+        --primary: #050810;
+        --primary-light: #0a1020;
+        --accent: #00d4ff;
+        --accent-warm: #ff006e;
+        --accent-gold: #ffd700;
+        --danger: #ff2a6d;
+        --text: #ffffff;
+        --text-muted: #a0b0c0;
+        --bg: #000000;
+        --card-bg: rgba(10, 20, 40, 0.4);
+        --glass: rgba(255, 255, 255, 0.03);
+        --border: rgba(255, 255, 255, 0.08);
+        --chrome: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #667eea 100%);
+        
+        --shadow-sm: 0 4px 20px rgba(0, 212, 255, 0.1);
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05) inset;
+        --shadow-glow: 0 0 60px rgba(0, 212, 255, 0.3), 0 0 120px rgba(0, 212, 255, 0.1);
+        --shadow-chrome: 0 0 40px rgba(255, 215, 0, 0.3);
+        
+        --radius: 24px;
+        --radius-sm: 16px;
+        --radius-xs: 12px;
+        
+        --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        --transition-slow: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.light-mode {
+        --primary: #ffffff;
+        --primary-light: #f0f4f8;
+        --text: #0a0e1a;
+        --text-muted: #5a6a7a;
+        --bg: #f8fafc;
+        --card-bg: rgba(255, 255, 255, 0.7);
+        --glass: rgba(255, 255, 255, 0.5);
+        --border: rgba(0, 0, 0, 0.08);
+        --shadow-glow: 0 0 60px rgba(0, 212, 255, 0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: var(--bg);
+        background-image: 
+            radial-gradient(ellipse at 20% 0%, rgba(0, 212, 255, 0.15) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 0%, rgba(255, 0, 110, 0.1) 0%, transparent 50%),
+            radial-gradient(ellipse at 50% 100%, rgba(255, 215, 0, 0.08) 0%, transparent 40%),
+            linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 100%);
+        background-attachment: fixed;
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+    }
+
+    /* Animated mesh gradient background */
+    body::before {
+        content: '';
+        position: fixed;
+        top: -50%; left: -50%;
+        width: 200%; height: 200%;
+        background: 
+            radial-gradient(circle at 30% 30%, rgba(0, 212, 255, 0.08) 0%, transparent 40%),
+            radial-gradient(circle at 70% 70%, rgba(255, 0, 110, 0.06) 0%, transparent 40%),
+            radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.04) 0%, transparent 50%);
+        animation: meshMove 20s ease infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    @keyframes meshMove {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        33% { transform: translate(2%, 2%) rotate(120deg); }
+        66% { transform: translate(-2%, 1%) rotate(240deg); }
+    }
+
+    /* Liquid chrome shine effect */
+    .chrome-shine {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .chrome-shine::before {
+        content: '';
+        position: absolute;
+        top: -50%; left: -50%;
+        width: 200%; height: 200%;
+        background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.3), transparent 30%);
+        animation: chromeRotate 4s linear infinite;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .chrome-shine:hover::before {
+        opacity: 1;
+    }
+
+    @keyframes chromeRotate {
+        to { transform: rotate(360deg); }
+    }
+
+    header {
+        background: rgba(5, 8, 16, 0.7);
+        backdrop-filter: blur(30px) saturate(200%);
+        -webkit-backdrop-filter: blur(30px) saturate(200%);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        transition: var(--transition);
+        box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+    }
+
+    header::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, var(--accent), var(--accent-warm), transparent);
+        opacity: 0.8;
+        animation: borderShine 3s ease infinite;
+    }
+
+    @keyframes borderShine {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+
+    body.light-mode header { 
+        background: rgba(255, 255, 255, 0.8);
+    }
+    
+    header.hide-mobile { transform: translateY(-100%); }
+
+    .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .brand { 
+        display: flex; 
+        align-items: center;
+        position: relative;
+        filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.3));
+    }
+    
+    .brand::after {
+        content: '';
+        position: absolute;
+        bottom: -8px; left: 0;
+        width: 100%; height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-warm), var(--accent-gold));
+        transform: scaleX(0);
+        transition: var(--transition);
+        box-shadow: 0 0 10px var(--accent);
+    }
+    
+    .brand:hover::after { transform: scaleX(1); }
+
+    .logo-img { height: 52px; width: auto; display: block; }
+
+    .nav-desktop { display: flex; gap: 16px; align-items: center; }
+
+    .nav-pill {
+        display: flex;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 8px;
+        border-radius: 100px;
+        border: 1px solid var(--border);
+        box-shadow: 
+            0 4px 20px rgba(0,0,0,0.2),
+            inset 0 1px 0 rgba(255,255,255,0.05),
+            inset 0 -1px 0 rgba(0,0,0,0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .nav-pill::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), transparent, rgba(255, 0, 110, 0.1));
+        opacity: 0;
+        transition: var(--transition);
+    }
+    
+    .nav-pill:hover::before { opacity: 1; }
+
+    .nav-pill a {
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 12px 24px;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 100px;
+        transition: var(--transition-fast);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        z-index: 1;
+        border: 1px solid transparent;
+    }
+
+    .nav-pill a:hover, .nav-pill a.active {
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(255, 0, 110, 0.2));
+        color: #ffffff;
+        border-color: rgba(0, 212, 255, 0.3);
+        box-shadow: 
+            0 0 20px rgba(0, 212, 255, 0.3),
+            inset 0 1px 0 rgba(255,255,255,0.2);
+        transform: translateY(-2px);
+    }
+
+    .theme-toggle {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border);
+        color: var(--text);
+        width: 48px; height: 48px;
+        border-radius: 16px;
+        cursor: pointer;
+        font-size: 22px;
+        transition: var(--transition);
+        display: flex; align-items: center; justify-content: center;
+        margin-left: 8px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 
+            0 4px 20px rgba(0,0,0,0.2),
+            inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    .theme-toggle::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(255, 0, 110, 0.3));
+        opacity: 0;
+        transition: var(--transition);
+    }
+    
+    .theme-toggle:hover { 
+        transform: scale(1.15) rotate(15deg);
+        border-color: var(--accent);
+        box-shadow: 0 0 40px rgba(0, 212, 255, 0.4);
+    }
+    
+    .theme-toggle:hover::before { opacity: 1; }
+
+    .nav-toggle {
+        display: none;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border);
+        color: var(--text);
+        width: 48px; height: 48px;
+        border-radius: 16px;
+        cursor: pointer;
+        font-size: 22px;
+        transition: var(--transition);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .nav-toggle:hover { 
+        border-color: var(--accent);
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        transform: scale(1.05);
+    }
+
+    .nav-mobile {
+        display: none;
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        background: rgba(5, 8, 16, 0.98);
+        backdrop-filter: blur(30px) saturate(200%);
+        border-bottom: 1px solid var(--border);
+        padding: 28px;
+        flex-direction: column;
+        gap: 12px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    }
+
+    body.light-mode .nav-mobile { background: rgba(255, 255, 255, 0.98); }
+    .nav-mobile.active { display: flex; animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .nav-mobile a {
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 20px 24px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: var(--radius-sm);
+        transition: var(--transition);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .nav-mobile a::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0; width: 4px;
+        background: linear-gradient(to bottom, var(--accent), var(--accent-warm));
+        box-shadow: 0 0 10px var(--accent);
+        transform: scaleY(0);
+        transition: var(--transition);
+    }
+
+    .nav-mobile a:hover {
+        background: rgba(0, 212, 255, 0.1);
+        color: var(--accent);
+        border-color: rgba(0, 212, 255, 0.3);
+        transform: translateX(12px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .nav-mobile a:hover::before { transform: scaleY(1); }
+
+    .container { max-width: 1400px; margin: 0 auto; padding: 40px 28px; position: relative; z-index: 2; }
+
+    .featured-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 32px;
+        margin-bottom: 80px;
+    }
+
+    .hero-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+    }
+
+    .hero-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), transparent, rgba(255, 0, 110, 0.1));
+        opacity: 0;
+        transition: var(--transition);
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .hero-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: var(--radius);
+        padding: 2px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-warm), var(--accent-gold), var(--accent));
+        background-size: 300% 300%;
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.3s;
+        animation: gradientShift 3s ease infinite;
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    .hero-card:hover { 
+        transform: translateY(-12px) scale(1.02); 
+        box-shadow: var(--shadow-glow), 0 25px 50px rgba(0,0,0,0.4);
+    }
+    
+    .hero-card:hover::before { opacity: 1; }
+    .hero-card:hover::after { opacity: 1; }
+
+    .hero-image { 
+        width: 100%; 
+        height: 480px; 
+        object-fit: cover; 
+        display: block;
+        transition: var(--transition-slow);
+    }
+    
+    .hero-card:hover .hero-image { transform: scale(1.08); }
+
+    .hero-content {
+        padding: 48px;
+        background: linear-gradient(to top, rgba(5, 8, 16, 0.98) 0%, rgba(5, 8, 16, 0.8) 50%, transparent 100%);
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    body.light-mode .hero-content { 
+        background: linear-gradient(to top, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.9) 50%, transparent 100%);
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: linear-gradient(135deg, var(--danger), #ff006e);
+        color: #ffffff;
+        padding: 10px 20px;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-radius: 100px;
+        margin-bottom: 24px;
+        box-shadow: 
+            0 4px 20px rgba(255, 42, 109, 0.4),
+            0 0 0 1px rgba(255,255,255,0.2) inset,
+            0 0 20px rgba(255, 42, 109, 0.2);
+        position: relative;
+        overflow: hidden;
+        animation: badgePulse 2s ease infinite;
+    }
+
+    @keyframes badgePulse {
+        0%, 100% { box-shadow: 0 4px 20px rgba(255, 42, 109, 0.4), 0 0 0 1px rgba(255,255,255,0.2) inset; }
+        50% { box-shadow: 0 4px 30px rgba(255, 42, 109, 0.6), 0 0 0 1px rgba(255,255,255,0.3) inset, 0 0 30px rgba(255, 42, 109, 0.3); }
+    }
+
+    .badge::before {
+        content: '';
+        width: 10px; height: 10px;
+        background: #ffffff;
+        border-radius: 50%;
+        animation: pulseDot 1.5s ease infinite;
+        box-shadow: 0 0 10px rgba(255,255,255,0.8);
+    }
+
+    @keyframes pulseDot { 
+        0%, 100% { opacity: 1; transform: scale(1); } 
+        50% { opacity: 0.5; transform: scale(0.7); } 
+    }
+
+    .hero-title { 
+        font-family: 'Playfair Display', serif;
+        font-size: 42px; 
+        font-weight: 900; 
+        line-height: 1.05; 
+        margin-bottom: 20px; 
+        letter-spacing: -1px;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-excerpt { 
+        color: var(--text-muted); 
+        font-size: 18px; 
+        line-height: 1.7; 
+        margin-bottom: 24px; 
+        display: -webkit-box; 
+        -webkit-line-clamp: 2; 
+        -webkit-box-orient: vertical; 
+        overflow: hidden;
+        font-weight: 400;
+    }
+
+    .hero-meta {
+        display: flex;
+        gap: 24px;
+        font-size: 13px;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .side-headlines { display: flex; flex-direction: column; gap: 24px; }
+
+    .side-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 28px;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .side-card::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0; width: 4px;
+        background: linear-gradient(to bottom, var(--accent), var(--accent-warm));
+        box-shadow: 0 0 15px var(--accent);
+        transform: scaleY(0);
+        transition: var(--transition);
+    }
+
+    .side-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), transparent);
+        opacity: 0;
+        transition: var(--transition);
+    }
+
+    .side-card:hover { 
+        border-color: rgba(0, 212, 255, 0.3); 
+        transform: translateX(16px) scale(1.03); 
+        background: rgba(0, 212, 255, 0.05);
+        box-shadow: var(--shadow-glow), 0 20px 40px rgba(0,0,0,0.3);
+    }
+    
+    .side-card:hover::before { transform: scaleY(1); }
+    .side-card:hover::after { opacity: 1; }
+
+    .side-thumb { 
+        width: 100px; 
+        height: 100px; 
+        object-fit: cover; 
+        border-radius: var(--radius-xs); 
+        flex-shrink: 0;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        transition: var(--transition);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .side-card:hover .side-thumb { transform: scale(1.1); border-color: var(--accent); }
+
+    .side-content h3 { 
+        font-size: 18px; 
+        font-weight: 700; 
+        line-height: 1.4; 
+        margin-bottom: 12px; 
+        color: var(--text);
+        transition: var(--transition);
+    }
+    
+    .side-card:hover .side-content h3 { 
+        color: var(--accent);
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+    
+    .side-content time { 
+        font-size: 12px; 
+        color: var(--text-muted); 
+        font-weight: 600; 
+        text-transform: uppercase; 
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .side-content time::before {
+        content: '';
+        width: 6px; height: 6px;
+        background: var(--accent);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--accent);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--border);
+        position: relative;
+    }
+
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: -1px; left: 0;
+        width: 200px; height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-warm), var(--accent-gold));
+        box-shadow: 0 0 20px var(--accent);
+        animation: sectionGlow 2s ease infinite;
+    }
+
+    @keyframes sectionGlow {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; box-shadow: 0 0 30px var(--accent); }
+    }
+
+    .section-title {
+        font-size: 32px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: -0.5px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    
+    .section-title::before {
+        content: '';
+        width: 12px; height: 12px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-warm));
+        border-radius: 50%;
+        box-shadow: 0 0 20px var(--accent);
+        animation: dotPulse 2s ease infinite;
+    }
+
+    @keyframes dotPulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.2); opacity: 0.8; }
+    }
+
+    .view-all { 
+        color: var(--accent); 
+        text-decoration: none; 
+        font-size: 15px; 
+        font-weight: 700; 
+        display: flex; 
+        align-items: center; 
+        gap: 10px; 
+        transition: var(--transition);
+        padding: 12px 24px;
+        border-radius: var(--radius-xs);
+        background: rgba(0, 212, 255, 0.1);
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .view-all::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, var(--accent), var(--accent-warm));
+        opacity: 0;
+        transition: var(--transition);
+    }
+    
+    .view-all span { position: relative; z-index: 1; }
+    
+    .view-all:hover { 
+        color: #ffffff;
+        border-color: var(--accent);
+        transform: translateX(8px);
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+    }
+    
+    .view-all:hover::before { opacity: 1; }
+
+    .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+
+    .news-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        box-shadow: var(--shadow);
+        position: relative;
+    }
+    
+    .news-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: var(--radius);
+        padding: 2px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-warm), var(--accent-gold), var(--accent));
+        background-size: 300% 300%;
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.3s;
+        animation: gradientShift 3s ease infinite;
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    .news-card:hover { 
+        transform: translateY(-16px) scale(1.03); 
+        box-shadow: var(--shadow-glow), 0 30px 60px rgba(0,0,0,0.4);
+    }
+    
+    .news-card:hover::before { opacity: 1; }
+
+    .news-image { 
+        width: 100%; 
+        height: 240px; 
+        object-fit: cover; 
+        transition: var(--transition-slow);
+    }
+    
+    .news-card:hover .news-image { transform: scale(1.1); }
+
+    .news-body { 
+        padding: 32px; 
+        flex: 1; 
+        display: flex; 
+        flex-direction: column;
+        background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3));
+        position: relative;
+        z-index: 2;
+    }
+
+    .news-category {
+        display: inline-block;
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(255, 0, 110, 0.1));
+        color: var(--accent);
+        padding: 8px 16px;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-radius: 100px;
+        margin-bottom: 16px;
+        width: fit-content;
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .news-card:hover .news-category {
+        background: linear-gradient(135deg, var(--accent), var(--accent-warm));
+        color: white;
+        box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
+        border-color: transparent;
+    }
+
+    .news-title { 
+        font-size: 20px; 
+        font-weight: 800; 
+        line-height: 1.3; 
+        margin-bottom: 16px; 
+        color: var(--text);
+        transition: var(--transition);
+    }
+    
+    .news-card:hover .news-title { 
+        color: var(--accent);
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+    }
+
+    .news-excerpt { 
+        color: var(--text-muted); 
+        font-size: 15px; 
+        line-height: 1.7; 
+        margin-bottom: 24px; 
+        flex: 1; 
+        display: -webkit-box; 
+        -webkit-line-clamp: 3; 
+        -webkit-box-orient: vertical; 
+        overflow: hidden;
+        font-weight: 400;
+    }
+
+    .news-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+        font-size: 12px;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .ad-slot {
+        grid-column: 1 / -1;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 48px;
+        text-align: center;
+        margin: 24px 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+    
+    .ad-slot::before {
+        content: 'Advertisement';
+        position: absolute;
+        top: 16px; left: 50%;
+        transform: translateX(-50%);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: var(--text-muted);
+        opacity: 0.4;
+    }
+
+    .ad-slot img { 
+        max-width: 468px; 
+        width: 100%; 
+        height: auto; 
+        border-radius: var(--radius-xs);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    footer {
+        background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.5) 100%);
+        border-top: 1px solid var(--border);
+        padding: 80px 28px;
+        text-align: center;
+        margin-top: 100px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    footer::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, var(--accent), var(--accent-warm), var(--accent-gold), transparent);
+        box-shadow: 0 0 20px var(--accent);
+    }
+
+    .footer-logo { margin-bottom: 40px; position: relative; z-index: 2; }
+    .footer-logo img { 
+        height: 64px; 
+        width: auto; 
+        opacity: 0.95; 
+        filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.3));
+    }
+
+    .footer-links { 
+        display: flex; 
+        justify-content: center; 
+        gap: 48px; 
+        margin-bottom: 40px; 
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .footer-links a { 
+        color: var(--text-muted); 
+        text-decoration: none; 
+        font-size: 15px; 
+        font-weight: 600; 
+        transition: var(--transition);
+        position: relative;
+        padding: 8px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .footer-links a::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0;
+        width: 100%; height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-warm));
+        box-shadow: 0 0 10px var(--accent);
+        transform: scaleX(0);
+        transition: var(--transition);
+    }
+    
+    .footer-links a:hover { 
+        color: var(--accent); 
+        transform: translateY(-4px);
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+    
+    .footer-links a:hover::after { transform: scaleX(1); }
+
+    footer p { 
+        color: var(--text-muted); 
+        font-size: 14px;
+        position: relative;
+        z-index: 2;
+        opacity: 0.7;
+        letter-spacing: 1px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0; top: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(20px) saturate(180%);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    body.light-mode .modal { background: rgba(248, 250, 252, 0.98); }
+    .modal.active { 
+        display: block; 
+        opacity: 1;
+    }
+
+    .modal-container { 
+        min-height: 100%; 
+        display: flex; 
+        align-items: flex-start; 
+        justify-content: center; 
+        padding: 80px 28px;
+    }
+
+    .modal-content {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        max-width: 800px;
+        width: 100%;
+        overflow: hidden;
+        box-shadow: 
+            var(--shadow-lg), 
+            0 0 80px rgba(0, 212, 255, 0.1),
+            0 0 0 1px rgba(255,255,255,0.05) inset;
+        transform: scale(0.9) translateY(40px);
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+    }
+    
+    .modal-content::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: var(--radius);
+        padding: 2px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-warm), var(--accent-gold));
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    
+    .modal.active .modal-content {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+
+    .modal-header { 
+        background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3)); 
+        padding: 48px; 
+        border-bottom: 1px solid var(--border); 
+        position: relative;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 28px; right: 28px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border);
+        color: var(--text);
+        width: 56px; height: 56px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 28px;
+        line-height: 1;
+        transition: var(--transition);
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .modal-close:hover { 
+        background: var(--danger); 
+        color: #ffffff; 
+        transform: rotate(90deg) scale(1.1);
+        box-shadow: 0 0 30px rgba(255, 42, 109, 0.4);
+        border-color: var(--danger);
+    }
+
+    .modal-category { 
+        display: inline-block; 
+        background: linear-gradient(135deg, var(--accent), var(--accent-warm)); 
+        color: #ffffff; 
+        padding: 10px 20px; 
+        font-size: 12px; 
+        font-weight: 800; 
+        text-transform: uppercase; 
+        letter-spacing: 2px; 
+        border-radius: 100px; 
+        margin-bottom: 24px;
+        box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+    }
+    
+    .modal-title { 
+        font-family: 'Playfair Display', serif;
+        font-size: 36px; 
+        font-weight: 900; 
+        line-height: 1.2; 
+        color: var(--text); 
+        padding-right: 80px;
+        letter-spacing: -1px;
+        background: linear-gradient(135deg, #ffffff 0%, #c0c0c0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .modal-body { padding: 48px; max-height: none; overflow: visible; }
+
+    .modal-meta { 
+        display: flex; 
+        gap: 32px; 
+        margin-bottom: 40px; 
+        padding-bottom: 32px; 
+        border-bottom: 1px solid var(--border); 
+        font-size: 14px; 
+        color: var(--text-muted); 
+        font-weight: 600; 
+        text-transform: uppercase; 
+        letter-spacing: 1px;
+    }
+
+    .modal-text { 
+        font-size: 19px; 
+        line-height: 2; 
+        color: var(--text);
+        font-weight: 400;
+    }
+    
+    .modal-text p { margin-bottom: 28px; }
+    
+    .modal-text p:first-child::first-letter { 
+        font-family: 'Playfair Display', serif;
+        font-size: 6rem; 
+        float: left; 
+        line-height: 0.8; 
+        margin-right: 20px; 
+        margin-top: 8px; 
+        font-weight: 900; 
+        background: linear-gradient(135deg, var(--accent), var(--accent-warm));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+    }
+
+    @media (max-width: 1024px) {
+        .featured-grid { grid-template-columns: 1fr; }
+        .hero-image { height: 400px; }
+        .side-headlines { flex-direction: row; overflow-x: auto; padding-bottom: 16px; gap: 20px; }
+        .side-card { min-width: 340px; }
+        .news-grid { grid-template-columns: repeat(2, 1fr); }
+        .hero-title { font-size: 32px; }
+    }
+
+    @media (max-width: 768px) {
+        .nav-desktop { display: none; }
+        .nav-toggle { display: flex; align-items: center; justify-content: center; }
+        .hero-title { font-size: 28px; }
+        .hero-content { padding: 32px; position: relative; background: var(--card-bg); }
+        body.light-mode .hero-content { background: var(--card-bg); }
+        .hero-image { height: 300px; }
+        .side-headlines { flex-direction: column; }
+        .side-card { min-width: auto; }
+        .news-grid { grid-template-columns: 1fr; }
+        .section-title { font-size: 26px; }
+        .modal-container { padding: 0; }
+        .modal-content { border-radius: 0; min-height: 100vh; }
+        .modal-header { padding: 32px; padding-top: 100px; }
+        .modal-title { font-size: 28px; }
+        .modal-body { padding: 32px; }
+        .modal-text { font-size: 17px; }
+        .container { padding: 24px; }
+    }
+
+    @media (max-width: 480px) {
+        .header-content { padding: 16px 20px; }
+        .logo-img { height: 44px; }
+        .container { padding: 20px; }
+        .hero-title { font-size: 26px; }
+        .news-body { padding: 28px; }
+        .section-title { font-size: 24px; }
+    }
+
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+    
+    /* Holographic shine effect */
+    .holo-shine {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .holo-shine::after {
+        content: '';
+        position: absolute;
+        top: -50%; left: -50%;
+        width: 200%; height: 200%;
+        background: linear-gradient(
+            to bottom right,
+            rgba(255,255,255,0) 0%,
+            rgba(255,255,255,0.1) 50%,
+            rgba(255,255,255,0) 100%
+        );
+        transform: rotate(30deg) translateX(-100%);
+        transition: transform 0.6s;
+    }
+    
+    .holo-shine:hover::after {
+        transform: rotate(30deg) translateX(100%);
+    }
+</style>
+
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="mainHeader">
+        <div class="header-content">
+            <a href="index.html" class="brand holo-shine">
+                <img src="Gio.png" alt="GioNews" class="logo-img">
+            </a>
+
+            <nav class="nav-desktop">
+                <div class="nav-pill chrome-shine">
+                    <a href="index.html" class="active">Home</a>
+                    <a href="stream.html">Live</a>
+                    <a href="breaking.html">Archive</a>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSevr5ncTSlYSwAR442zXlW818Zkp36C0Us_VY6b57HCztYq7g/viewform?usp=dialog" target="_blank">Alerts</a>
+                </div>
+                <button class="theme-toggle chrome-shine" onclick="toggleDarkMode()" aria-label="Toggle dark mode">🌙</button>
+            </nav>
+
+            <button class="nav-toggle chrome-shine" onclick="toggleMobileNav()" aria-label="Toggle menu">☰</button>
+        </div>
+
+        <nav class="nav-mobile" id="mobileNav">
+            <a href="index.html">Home</a>
+            <a href="stream.html">Live Stream</a>
+            <a href="breaking.html">Archive</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSevr5ncTSlYSwAR442zXlW818Zkp36C0Us_VY6b57HCztYq7g/viewform?usp=dialog" target="_blank">Live Alert Sign Up</a>
+            <a href="#" onclick="toggleDarkMode(); return false;" id="mobileThemeToggle">🌙 Dark Mode</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        
+        <!-- Featured Section -->
+        <section class="featured-grid">
+            <article class="hero-card holo-shine" onclick="openStory('pakistan-afghanistan')">
+                <img src="featured.jpg" alt="Pakistan Afghanistan open war" class="hero-image">
+                <div class="hero-content">
+                    <span class="badge">Breaking Now</span>
+                    <h1 class="hero-title">Pakistan Bombs Kabul, Declares "Open War" on Afghanistan's Taliban</h1>
+                    <p class="hero-excerpt">Pakistan launched airstrikes on Afghanistan's capital and two provinces overnight, escalating months of border clashes into what Islamabad now calls outright war. China urges ceasefire.</p>
+                    <div class="hero-meta">
+                        <span>World</span>
+                        <time>Feb 27, 2026</time>
+                    </div>
+                </div>
+            </article>
+
+            <aside class="side-headlines">
+                <article class="side-card holo-shine" onclick="openStory('iran-talks')">
+                    <img src="quick1.jpg" alt="Iran nuclear talks Geneva" class="side-thumb">
+                    <div class="side-content">
+                        <h3>US-Iran Nuclear Talks End Without Deal; More Talks Planned for Vienna</h3>
+                        <time>Feb 27, 2026</time>
+                    </div>
+                </article>
+
+                <article class="side-card holo-shine" onclick="openStory('paramount-warner')">
+                    <img src="quick2.jpg" alt="Paramount Warner Bros merger" class="side-thumb">
+                    <div class="side-content">
+                        <h3>Netflix Drops Warner Bid; Paramount Skydance Poised to Win $31-Per-Share Deal</h3>
+                        <time>Feb 27, 2026</time>
+                    </div>
+                </article>
+
+                <article class="side-card holo-shine" onclick="openStory('jesse-jackson')">
+                    <img src="quick3.jpg" alt="Jesse Jackson memorial Chicago" class="side-thumb">
+                    <div class="side-content">
+                        <h3>Nation Pays Final Respects to Rev. Jesse Jackson Sr. at Chicago Memorial</h3>
+                        <time>Feb 27, 2026</time>
+                    </div>
+                </article>
+            </aside>
+        </section>
+
+        <!-- Latest News -->
+        <section>
+            <div class="section-header">
+                <h2 class="section-title">Latest Headlines</h2>
+                <a href="archive.html" class="view-all"><span>View All →</span></a>
+            </div>
+
+            <div class="news-grid">
+                <article class="news-card holo-shine" onclick="openStory('markets-selloff')">
+                    <img src="story1.jpg" alt="Stock market selloff" class="news-image">
+                    <div class="news-body">
+                        <span class="news-category">Business</span>
+                        <h3 class="news-title">Dow Drops 521 Points as Hot Inflation Data Rattles Markets</h3>
+                        <p class="news-excerpt">Stocks fell sharply Friday after producer price index data came in hotter than expected. Dell surged 21% on AI server revenue outlook while Duolingo plunged 14% on weak guidance.</p>
+                        <div class="news-footer">
+                            <span>Business Desk</span>
+                            <time>Feb 27, 2026</time>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="news-card holo-shine" onclick="openStory('irs-ice-leak')">
+                    <img src="story2.jpg" alt="IRS ICE data sharing" class="news-image">
+                    <div class="news-body">
+                        <span class="news-category">Politics</span>
+                        <h3 class="news-title">Judge Rules IRS Illegally Disclosed Tax Info on 42,695 Taxpayers to ICE</h3>
+                        <p class="news-excerpt">A federal judge found the IRS violated taxpayer privacy laws by sharing confidential return information with immigration enforcement agents without proper legal authority.</p>
+                        <div class="news-footer">
+                            <span>Politics Desk</span>
+                            <time>Feb 27, 2026</time>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="news-card holo-shine" onclick="openStory('russia-ukraine-strike')">
+                    <img src="story3.jpg" alt="Russia Ukraine drone strikes" class="news-image">
+                    <div class="news-body">
+                        <span class="news-category">World</span>
+                        <h3 class="news-title">Russia Launches Massive Drone and Missile Barrage Across Ukraine Ahead of Geneva Talks</h3>
+                        <p class="news-excerpt">Ukrainian cities including Zaporizhzhia were struck overnight, wounding at least 23 people. The attacks came hours before U.S. and Ukrainian envoys met in Geneva to discuss postwar reconstruction.</p>
+                        <div class="news-footer">
+                            <span>World News Desk</span>
+                            <time>Feb 27, 2026</time>
+                        </div>
+                    </div>
+                </article>
+
+                <div class="ad-slot holo-shine">
+                    <img src="ad2.png" alt="Advertisement">
+                </div>
+
+                <article class="news-card holo-shine" onclick="openStory('military-laser-drone')">
+                    <img src="story4.jpg" alt="Military laser drone El Paso" class="news-image">
+                    <div class="news-body">
+                        <span class="news-category">National Security</span>
+                        <h3 class="news-title">U.S. Military Uses Laser to Shoot Down Border Patrol Drone Near El Paso</h3>
+                        <p class="news-excerpt">Members of Congress confirmed that a military laser weapon destroyed a CBP surveillance drone, prompting the FAA to close additional airspace over the Texas border region.</p>
+                        <div class="news-footer">
+                            <span>National Security Desk</span>
+                            <time>Feb 27, 2026</time>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="news-card holo-shine" onclick="openStory('hillary-epstein')">
+                    <img src="story5.jpg" alt="Hillary Clinton Epstein testimony" class="news-image">
+                    <div class="news-body">
+                        <span class="news-category">Politics</span>
+                        <h3 class="news-title">Hillary Clinton Testifies Before Congress in Epstein Investigation</h3>
+                        <p class="news-excerpt">The former Secretary of State told the House Oversight Committee she "never met Jeffrey Epstein," calling the questioning repetitive as lawmakers probe the late financier's network.</p>
+                        <div class="news-footer">
+                            <span>Politics Desk</span>
+                            <time>Feb 27, 2026</time>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="news-card holo-shine" onclick="openStory('columbia-student-ice')">
+                    <img src="story6.jpg" alt="Columbia University ICE arrest" class="news-image">
+                    <div class="news-body">
+                        <span class="news-category">Immigration</span>
+                        <h3 class="news-title">ICE Agents Used False Pretense to Detain Columbia University Student Without Warrant</h3>
+                        <p class="news-excerpt">Leqaa Kordia, detained nearly a year at an ICE facility in Texas, is the last remaining Columbia student in federal custody after agents allegedly misrepresented their authority at the time of arrest.</p>
+                        <div class="news-footer">
+                            <span>Immigration Desk</span>
+                            <time>Feb 27, 2026</time>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="news-card holo-shine" onclick="openStory('wef-ceo-epstein')">
+                    <img src="story7.jpg" alt="World Economic Forum CEO resigns" class="news-image">
+                    <div class="news-body">
+                        <span class="news-category">World</span>
+                        <h3 class="news-title">World Economic Forum CEO Borge Brende Resigns After Epstein Investigation</h3>
+                        <p class="news-excerpt">The head of the WEF announced his resignation following an independent investigation into his ties to the late convicted sex offender Jeffrey Epstein.</p>
+                        <div class="news-footer">
+                            <span>World News Desk</span>
+                            <time>Feb 26, 2026</time>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo holo-shine">
+            <img src="neo.png" alt="GioNews Network">
+        </div>
+        <div class="footer-links">
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="sitemap.html">Sitemap</a>
+        </div>
+        <p>&copy; 2026 GioNews Network. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Modal -->
+    <div class="modal" id="storyModal" onclick="closeModalOnBackground(event)">
+        <div class="modal-container">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <span class="modal-category" id="modalCategory"></span>
+                    <h2 class="modal-title" id="modalTitle"></h2>
+                    <button class="modal-close" onclick="closeModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-meta">
+                        <span id="modalAuthor"></span>
+                        <time id="modalDate"></time>
+                    </div>
+                    <div class="modal-text" id="modalContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stories = {
+            'pakistan-afghanistan': {
+                category: 'World',
+                title: 'Pakistan Bombs Kabul, Declares "Open War" on Afghanistan\'s Taliban',
+                author: 'World News Desk',
+                date: 'Feb 27, 2026',
+                content: `<p>Pakistan launched airstrikes on Afghanistan's capital Kabul and two other provinces overnight, dramatically escalating months of border tensions into what Islamabad's defense minister is now calling an "open war" with the Taliban government.</p>
+                <p>Pakistani Defense Minister Khawaja Muhammad Asif said Friday his country's "cup of patience has overflowed," declaring open conflict after Afghanistan launched retaliatory strikes on Pakistani border positions late Thursday. The Afghan offensive came in response to earlier Pakistani airstrikes on Afghan border areas on Sunday, February 22.</p>
+                <p>Pakistan's military claimed its operations killed at least 274 Taliban fighters and wounded more than 400, while sustaining 12 soldiers killed and 27 wounded. Taliban spokesman Zabihullah Mujahid disputed the figures, claiming 55 Pakistani soldiers were killed and that Afghan forces captured additional troops. Independent verification of casualties was not possible.</p>
+                <p>The conflict has drawn swift international concern. China urged both sides to exercise restraint and pursue a ceasefire through dialogue, while Iranian Foreign Minister Abbas Araghchi called for calm during Ramadan and offered Tehran's assistance as a mediator. The fighting has largely shut down land border crossings, worsening Afghanistan's already severe humanitarian crisis.</p>
+                <p>The escalation follows a deadly suicide bombing at a mosque in Islamabad last week that killed over 30 people, which Pakistani officials blamed on militants sheltered in Afghanistan — an accusation Kabul has consistently denied.</p>`
+            },
+            'iran-talks': {
+                category: 'World',
+                title: 'US–Iran Nuclear Talks End Without Deal; More Talks Planned for Vienna Next Week',
+                author: 'World News Desk',
+                date: 'Feb 27, 2026',
+                content: `<p>A third round of indirect negotiations between the United States and Iran over Tehran's nuclear program concluded in Geneva on Thursday without a breakthrough deal, though mediators cited what they described as meaningful progress.</p>
+                <p>The six-hour session — divided into morning and afternoon segments, with Omani diplomats shuttling between delegations — saw both sides make limited adjustments to their positions, a source familiar with the talks said. Iran's foreign minister indicated that further technical discussions are scheduled for next week in Vienna, the home of the International Atomic Energy Agency.</p>
+                <p>The core dispute remains unresolved: the U.S. is insisting on significant limits to Iran's uranium enrichment and long-term verification mechanisms, while Tehran insists that enrichment must continue inside the country under IAEA supervision.</p>
+                <p>The talks are unfolding against a tense military backdrop. President Trump has assembled what officials describe as the largest U.S. military presence in the Middle East in decades, including the USS Gerald R. Ford carrier strike group, as he weighs potential strikes on Iranian nuclear facilities. Vice President JD Vance told The Washington Post that there is "no chance" the U.S. would be drawn into a prolonged war, but did not rule out strikes.</p>
+                <p>Reports emerged that Trump's claim in his State of the Union address — that Iran was developing missiles that could soon reach the United States — is not supported by current U.S. intelligence assessments, according to three sources familiar with the matter. Secretary of State Marco Rubio is set to travel to Israel next week as deliberations continue.</p>`
+            },
+            'paramount-warner': {
+                category: 'Business',
+                title: 'Netflix Drops Warner Bid; Paramount Skydance Poised to Win $31-Per-Share Deal',
+                author: 'Business Desk',
+                date: 'Feb 27, 2026',
+                content: `<p>Netflix has withdrawn from the bidding war for Warner Bros. Discovery, clearing the path for Paramount Skydance to acquire the entertainment giant in a deal that would unite two of Hollywood's most storied studios.</p>
+                <p>Warner's board of directors determined that Paramount Skydance's latest offer of $31 per share for the entire company was superior to Netflix's bid for Warner's movie studios and HBO Max streaming service. Netflix co-CEOs Ted Sarandos and Greg Peters confirmed the decision to stand down, saying the deal was "no longer financially attractive" at the price required to match Paramount's offer.</p>
+                <p>The transaction, if completed, would bring together an extraordinary portfolio of intellectual property under one roof — including HBO, CNN, Warner Bros. films, Superman, Harry Potter, CBS News, and Paramount's legacy studio assets. David Ellison's Paramount Skydance is expected to formally finalize the acquisition in the coming weeks.</p>
+                <p>The media landscape implications are significant. Warner already owns CNN; Paramount owns CBS News. A combined entity would control two of America's major broadcast and cable news networks alongside some of the most valuable entertainment franchises in the world.</p>
+                <p>The deal comes amid a turbulent moment for the streaming industry, with Netflix shares rising more than 7% on Friday after it stepped back from the bidding contest, signaling investor relief that the company avoided what some analysts had called an overpriced acquisition.</p>`
+            },
+            'jesse-jackson': {
+                category: 'National',
+                title: 'Nation Pays Final Respects to Rev. Jesse Jackson Sr. at Chicago Memorial',
+                author: 'National Desk',
+                date: 'Feb 27, 2026',
+                content: `<p>Memorial services for the Reverend Jesse Jackson Sr. began Friday in Chicago as mourners gathered to honor one of America's most consequential civil rights leaders and political figures.</p>
+                <p>Jackson will lie in repose for two days at the Rainbow PUSH Coalition headquarters on Chicago's South Side — the organization he founded and that became synonymous with his decades of activism, advocacy, and political engagement. The services will then continue in Washington, D.C., and conclude in South Carolina, where he was born and first began his work in the civil rights movement.</p>
+                <p>Jackson rose to national prominence as a close aide to Dr. Martin Luther King Jr. and went on to become one of the most recognizable political voices in American life, running for the Democratic presidential nomination in 1984 and 1988. His 1988 campaign — during which he won several state primaries — was groundbreaking in its breadth of support across racial lines.</p>
+                <p>Tributes have poured in from across the political spectrum, with President Biden, former President Obama, and Congressional leaders among those honoring his legacy. Jackson's advocacy spanned decades and touched on voting rights, economic justice, international diplomacy, and the political empowerment of Black Americans.</p>`
+            },
+            'markets-selloff': {
+                category: 'Business',
+                title: 'Dow Drops 521 Points as Hot Inflation Data Rattles Markets',
+                author: 'Business Desk',
+                date: 'Feb 27, 2026',
+                content: `<p>U.S. stocks closed sharply lower Friday after producer price index data came in significantly hotter than expected, adding renewed inflation concerns to a market that has faced turbulence throughout February.</p>
+                <p>The Dow Jones Industrial Average fell 521 points, or 1.05%, to close at 48,977. The S&P 500 dropped 0.43% to 6,878, while the Nasdaq Composite lost 0.92% to settle at 22,668. Both the S&P 500 and Nasdaq finished February in negative territory.</p>
+                <p>The session featured sharp divergences at the individual stock level. Dell Technologies surged more than 21% after reporting better-than-expected fourth-quarter results and projecting that its artificial intelligence server revenue would more than double in fiscal 2027, reaching $50 billion. Duolingo, by contrast, tumbled 14% after issuing guidance below analyst expectations for both the first quarter and full year.</p>
+                <p>Broader market sentiment was also weighed down by Block, the fintech company founded by Jack Dorsey, which announced it would lay off more than 4,000 employees — nearly half of its workforce. Financial and economically sensitive sectors were among the hardest hit.</p>
+                <p>Despite the domestic turbulence, foreign markets have broadly outperformed U.S. equities in 2026, with the MSCI World ex-U.S. index up roughly 8% year-to-date compared with the S&P 500's flat performance.</p>`
+            },
+            'irs-ice-leak': {
+                category: 'Politics',
+                title: 'Judge Rules IRS Illegally Disclosed Tax Info on 42,695 Taxpayers to ICE',
+                author: 'Politics Desk',
+                date: 'Feb 27, 2026',
+                content: `<p>A federal judge has ruled that the Internal Revenue Service illegally disclosed confidential tax return information on tens of thousands of taxpayers to Immigration and Customs Enforcement agents, in a significant legal rebuke of the data-sharing arrangement between the two agencies.</p>
+                <p>The ruling found that the IRS shared private tax records on 42,695 individuals with ICE without the proper legal authority to do so, violating federal privacy protections that strictly limit the disclosure of taxpayer information.</p>
+                <p>Civil liberties organizations and immigrant advocates have argued for months that the IRS-ICE data arrangement raised serious constitutional and statutory concerns. The ruling validates those concerns, though it remains unclear what remedies the court will order or how many of the affected individuals may face immigration consequences from the improperly shared data.</p>
+                <p>The disclosure arrangement was part of the Trump administration's broader push to use all available federal agencies and data systems in support of its immigration enforcement agenda. Democrats in Congress have called for hearings on the matter and demanded that the practice be halted immediately.</p>
+                <p>The decision is expected to be appealed. It follows a separate ruling requiring ICE to halt certain warrantless surveillance practices, as federal courts continue to scrutinize the legal boundaries of the administration's enforcement operations.</p>`
+            },
+            'russia-ukraine-strike': {
+                category: 'World',
+                title: 'Russia Launches Massive Drone and Missile Barrage Across Ukraine Ahead of Geneva Talks',
+                author: 'World News Desk',
+                date: 'Feb 27, 2026',
+                content: `<p>Russia launched a massive drone and missile attack against multiple Ukrainian cities overnight Thursday, wounding at least 23 people including a child, in a strike that preceded diplomatic talks between U.S. and Ukrainian officials in Geneva.</p>
+                <p>The attack targeted cities across Ukraine, including Zaporizhzhia, where residential buildings were struck and civilians were injured. Ukrainian President Volodymyr Zelensky condemned the timing of the assault, which came as his country's envoys were preparing to meet with U.S. counterparts to discuss postwar reconstruction and an economic framework for Ukraine.</p>
+                <p>Zelensky said a further round of negotiations with Russia is likely to take place in Abu Dhabi in early March, as the Trump administration continues to push for a negotiated end to the four-year conflict. The U.S.-Ukrainian Geneva talks focused on long-term economic arrangements and reconstruction funding rather than immediate ceasefire terms.</p>
+                <p>The war has entered its fifth year following Russia's full-scale invasion in February 2022. Ukrainian women's sports teams, cultural organizations, and civil society groups have sought to maintain normalcy amid the ongoing conflict, even as Russian strikes continue to target civilian infrastructure.</p>`
+            },
+            'military-laser-drone': {
+                category: 'National Security',
+                title: 'U.S. Military Uses Laser to Shoot Down Border Patrol Drone Near El Paso',
+                author: 'National Security Desk',
+                date: 'Feb 27, 2026',
+                content: `<p>The U.S. military used a directed-energy laser weapon to shoot down a Customs and Border Protection surveillance drone near El Paso, Texas, members of Congress confirmed Thursday, an incident that prompted the FAA to expand restricted airspace over the region.</p>
+                <p>The incident marks an unusual instance of one U.S. government agency's asset being destroyed by another's weapons system. Congressional sources who were briefed on the incident said the military laser engaged the CBP drone, though the circumstances that led to the shoot-down have not been fully explained publicly.</p>
+                <p>The Federal Aviation Administration responded to the incident by closing additional airspace in the El Paso area, a move that affects both commercial and general aviation operations in the region. El Paso International Airport had already faced airspace restrictions in recent weeks related to border enforcement operations.</p>
+                <p>The incident raises significant questions about coordination and deconfliction protocols between federal agencies operating in the same airspace along the U.S.-Mexico border, where multiple agencies including CBP, the military, and state law enforcement have ramped up operations in recent months.</p>`
+            },
+            'hillary-epstein': {
+                category: 'Politics',
+                title: 'Hillary Clinton Testifies Before Congress in Epstein Investigation',
+                author: 'Politics Desk',
+                date: 'Feb 27, 2026',
+                content: `<p>Former Secretary of State Hillary Clinton testified in a closed-door deposition before the House Oversight Committee as part of its ongoing investigation into Jeffrey Epstein and his network of associates, telling lawmakers she "never met" the late convicted sex offender.</p>
+                <p>Clinton described the questioning as repetitive and emerged from the Capitol to speak briefly with reporters, pushing back on the premise of the investigation. The House Oversight Committee has been conducting a broad inquiry into Epstein's associations with prominent political and business figures following the release of previously sealed court documents.</p>
+                <p>The committee's investigation has drawn controversy, with Democrats arguing it is politically motivated and Republicans contending that the public deserves a full accounting of Epstein's network and how he was able to operate for so long without facing serious consequences.</p>
+                <p>World Economic Forum CEO Borge Brende separately announced his resignation this week following an independent WEF investigation into his connections to Epstein, a sign of how the renewed scrutiny of the late financier continues to reverberate across institutions and industries.</p>`
+            },
+            'columbia-student-ice': {
+                category: 'Immigration',
+                title: 'ICE Agents Used False Pretense to Detain Columbia University Student Without Warrant',
+                author: 'Immigration Desk',
+                date: 'Feb 27, 2026',
+                content: `<p>Federal immigration agents used deceptive tactics to detain a Columbia University graduate student without a warrant, according to accounts from the student's legal team and civil liberties advocates who have followed the case.</p>
+                <p>Leqaa Kordia has been held at an ICE detention facility in Texas for nearly a year, making her the last Columbia student remaining in federal immigration custody following a series of high-profile arrests on the university's campus. Her attorneys allege agents misrepresented their authority and the basis for her detention at the time of her arrest.</p>
+                <p>The case has become a focal point in the broader debate over the Trump administration's targeting of international students and pro-Palestinian activists on university campuses. New York City Mayor Zohran Mamdani, who met with President Trump at the White House this week on housing issues, separately called on the administration to dismiss immigration cases against pro-Palestinian activists.</p>
+                <p>The American Civil Liberties Union and other organizations have filed legal challenges on behalf of detained students, arguing that the arrests raise serious First Amendment and due process concerns. Several previously detained students have been released following court intervention.</p>`
+            },
+            'wef-ceo-epstein': {
+                category: 'World',
+                title: 'World Economic Forum CEO Borge Brende Resigns After Epstein Investigation',
+                author: 'World News Desk',
+                date: 'Feb 26, 2026',
+                content: `<p>Borge Brende, the chief executive of the World Economic Forum, announced his resignation Thursday following an independent investigation by the WEF into his ties to Jeffrey Epstein, the financier who died in federal custody in 2019 after being charged with sex trafficking.</p>
+                <p>The WEF commissioned the review after questions arose about the nature and extent of Brende's interactions with Epstein. The organization did not release the full findings of the investigation, but confirmed that Brende had informed the board of his decision to step down.</p>
+                <p>Brende, a former Norwegian foreign minister, had served as WEF president since 2013 and was instrumental in shaping the organization's agenda at its annual Davos gatherings, where global business and political leaders convene each January.</p>
+                <p>His departure is part of a broader reckoning following the unsealing of court documents related to Epstein's network, which has renewed public and governmental scrutiny of institutions and individuals who had contact with Epstein over the course of his decades-long career as a financier and convicted sex offender. Congressional investigations in both chambers are currently examining the Epstein network.</p>`
+            }
+        };
+
+        function openStory(storyId) {
+            const story = stories[storyId];
+            if (story) {
+                document.getElementById('modalCategory').textContent = story.category;
+                document.getElementById('modalTitle').textContent = story.title;
+                document.getElementById('modalAuthor').textContent = 'By ' + story.author;
+                document.getElementById('modalDate').textContent = story.date;
+                document.getElementById('modalContent').innerHTML = story.content;
+                
+                const modal = document.getElementById('storyModal');
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('storyModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function closeModalOnBackground(event) {
+            if (event.target === event.currentTarget) closeModal();
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') closeModal();
+        });
+
+        function toggleMobileNav() {
+            const mobileNav = document.getElementById('mobileNav');
+            const toggle = document.querySelector('.nav-toggle');
+            mobileNav.classList.toggle('active');
+            toggle.textContent = mobileNav.classList.contains('active') ? '✕' : '☰';
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            updateThemeIcons();
+        }
+
+        function updateThemeIcons() {
+            const isLight = document.body.classList.contains('light-mode');
+            const desktopBtn = document.querySelector('.theme-toggle');
+            const mobileLink = document.getElementById('mobileThemeToggle');
+            if (desktopBtn) desktopBtn.textContent = isLight ? '☀️' : '🌙';
+            if (mobileLink) mobileLink.textContent = isLight ? '🌙 Dark Mode' : '☀️ Light Mode';
+        }
+
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+            updateThemeIcons();
+        }
+
+        let lastScroll = 0;
+        const header = document.getElementById('mainHeader');
+        
+        window.addEventListener('scroll', () => {
+            if (window.innerWidth > 768) return;
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                header.classList.add('hide-mobile');
+            } else {
+                header.classList.remove('hide-mobile');
+            }
+            lastScroll = currentScroll;
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GioNews</title>
+    <style>
+        :root {
+            --brand-blue: #0052CC;
+            --electric-blue: #0066FF;
+            --dark-blue: #00112B;
+            --accent-cyan: #00D4FF;
+            --white: #FFFFFF;
+            --light-gray: #F5F7FA;
+        }
+
+```
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        background: var(--light-gray);
+        background-image: 
+            linear-gradient(0deg, rgba(0, 82, 204, 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 82, 204, 0.02) 1px, transparent 1px);
+        background-size: 20px 20px;
+        color: #14171A;
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    header {
+        background: linear-gradient(135deg, var(--dark-blue) 0%, var(--brand-blue) 100%);
+        color: var(--white);
+        padding: 0;
+        border-bottom: 5px solid var(--electric-blue);
+        box-shadow: 0 4px 20px rgba(0, 82, 204, 0.3);
+    }
+
+    .header-top {
+        padding: 25px 20px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo-section {
+        text-align: center;
+    }
+
+    .logo img {
+        width: 400px; max-width: 100%;
+        height: auto;
+    }
+
+    .tagline {
+        font-size: 13px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-top: 8px;
+        opacity: 0.9;
+        font-weight: 600;
+    }
+
+    nav {
+        background: var(--brand-blue);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    nav ul {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 0;
+        margin: 0;
+    }
+
+    nav li {
+        margin: 0;
+    }
+
+    nav a {
+        display: block;
+        color: var(--white);
+        text-decoration: none;
+        padding: 18px 28px;
+        font-weight: 700;
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s;
+    }
+
+    nav a:hover {
+        background: var(--electric-blue);
+    }
+
+    .content {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .content img {
+        max-width: 90%;
+        max-height: 70vh;
+        image-rendering: pixelated;
+    }
+
+    footer {
+        background: var(--dark-blue);
+        color: var(--white);
+        padding: 30px 20px;
+        text-align: center;
+        margin-top: auto;
+        border-top: 5px solid var(--electric-blue);
+    }
+
+    footer p {
+        font-size: 13px;
+        opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+        .logo img {
+            max-width: 280px;
+        }
+
+        nav ul {
+            flex-direction: column;
+        }
+
+        nav a {
+            border-right: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .logo img {
+            max-width: 220px;
+        }
+
+        .tagline {
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+    }
+
+    /* Dark Mode */
+    body.dark-mode {
+        background: #1a1a1a;
+        color: #e0e0e0;
+    }
+
+    body.dark-mode {
+        background-image: 
+            linear-gradient(0deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    }
+
+    body.dark-mode header,
+    body.dark-mode .update-container,
+    body.dark-mode .content-wrapper,
+    body.dark-mode .weather-widget {
+        color: #ffffff;
+    }
+
+    body.dark-mode .weather-widget,
+    body.dark-mode .content-wrapper {
+        background: #2a2a2a;
+        border-color: #444;
+    }
+
+    /* Dark Mode Toggle Button */
+    .dark-mode-toggle {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        transition: all 0.3s;
+        z-index: 100;
+    }
+
+    .dark-mode-toggle:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .dark-mode-toggle {
+            top: 10px;
+            right: 10px;
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+    }
+
+</style>
+```
+
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="logo-section">
+                <div class="logo">
+                    <img src="Gio.png" alt="GioNews">
+                </div>
+                <p class="tagline">Breaking News • Live Coverage • 24/7</p>
+                <div style="margin-top: 15px;">
+                    <img src="ad.png" alt="Advertisement" style="max-width: 600px; width: 100%; height: auto;">
+                </div>
+            </div>
+        </div>
+
+```
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="stream.html">Live Stream</a></li>
+            <li><a href="breaking.html">Archive</a></li>
+            <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSevr5ncTSlYSwAR442zXlW818Zkp36C0Us_VY6b57HCztYq7g/viewform?usp=dialog" target="_blank">Live Alert Sign Up</a></li>
+                        <li><a href="#" onclick="toggleDarkMode(); return false;" id="darkModeTab">🌙 Dark Mode</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="content">
+    <img src="fwog.gif" alt="fwog">
+</div>
+
+<footer>
+    <div style="margin-bottom: 15px;">
+        <img src="neo.png" alt="" style="max-width: 88px; height: auto; image-rendering: pixelated;">
+    </div>
+    <p>&copy; 2026 GioNews Network. All Rights Reserved. | 24/7 Breaking News Coverage</p>
+</footer>
+
+<!-- Dark Mode Script -->
+<script>
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+        updateToggleButton();
+    }
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        
+        // Save preference
+        if (document.body.classList.contains('dark-mode')) {
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            localStorage.setItem('darkMode', 'disabled');
+        }
+        
+        updateToggleButton();
+    }
+
+    function updateToggleButton() {
+        const button = document.querySelector('#darkModeTab');
+        if (button) {
+            if (document.body.classList.contains('dark-mode')) {
+                button.textContent = '☀️ Light Mode';
+            } else {
+                button.textContent = '🌙 Dark Mode';
+            }
+        }
+    }
+</script>
+```
+
+</body>
+</html>

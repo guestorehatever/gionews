@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>GioNews VR</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:#020617;color:#f8fafc;font-family:'DM Sans',sans-serif}
+
+/* ── BOOT ── */
+#boot{
+position:fixed;inset:0;display:flex;flex-direction:column;
+align-items:center;justify-content:center;
+background:linear-gradient(160deg,#020617 0%,#0f172a 60%,#1a0a0a 100%);
+z-index:50;
+}
+#boot::before{
+content:’’;position:absolute;inset:0;pointer-events:none;
+background:
+radial-gradient(ellipse 60% 50% at 80% 20%,rgba(239,68,68,0.12) 0%,transparent 60%),
+radial-gradient(ellipse 50% 40% at 20% 80%,rgba(59,130,246,0.1) 0%,transparent 60%);
+}
+#boot::after{
+content:’’;position:absolute;inset:0;pointer-events:none;
+background-image:
+linear-gradient(rgba(239,68,68,0.04) 1px,transparent 1px),
+linear-gradient(90deg,rgba(239,68,68,0.04) 1px,transparent 1px);
+background-size:52px 52px;
+}
+.boot-wrap{
+position:relative;z-index:1;display:flex;flex-direction:column;
+align-items:center;text-align:center;gap:2rem;max-width:560px;padding:2rem;
+}
+.boot-logo{
+display:flex;align-items:center;gap:14px;
+}
+.boot-logo-img{
+height:52px;width:auto;
+filter:brightness(1.2);
+}
+.boot-logo-fallback{
+font-family:‘Playfair Display’,serif;font-size:2.4rem;font-weight:900;
+background:linear-gradient(135deg,#f8fafc,#ef4444);
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+letter-spacing:-.03em;
+}
+.boot-vr-badge{
+background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);
+color:#ef4444;font-size:.7rem;font-weight:700;letter-spacing:.15em;
+text-transform:uppercase;padding:.3rem .8rem;border-radius:999px;
+display:flex;align-items:center;gap:.4rem;
+}
+.boot-vr-badge::before{
+content:’’;width:6px;height:6px;border-radius:50%;background:#ef4444;
+animation:blink 1.4s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.boot-title{
+font-family:‘Playfair Display’,serif;font-size:clamp(2rem,6vw,3.2rem);
+font-weight:900;line-height:1.1;letter-spacing:-.03em;
+color:#f8fafc;
+}
+.boot-title span{color:#ef4444;}
+.boot-sub{font-size:.95rem;line-height:1.7;color:#64748b;max-width:400px;}
+.boot-chips{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
+.bchip{
+font-size:.7rem;color:#94a3b8;background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,255,255,0.09);border-radius:999px;padding:.28rem .8rem;
+font-weight:500;
+}
+#boot-btn{
+padding:.9rem 2.6rem;font-family:‘DM Sans’,sans-serif;font-size:.95rem;font-weight:700;
+letter-spacing:.05em;text-transform:uppercase;color:#fff;
+background:linear-gradient(135deg,#ef4444,#b91c1c);
+border:none;border-radius:10px;cursor:pointer;
+box-shadow:0 0 40px rgba(239,68,68,0.4);
+transition:transform .2s,box-shadow .2s;
+}
+#boot-btn:hover{transform:translateY(-2px);box-shadow:0 0 60px rgba(239,68,68,0.6);}
+#boot-status{font-size:.75rem;color:#475569;min-height:1.1em;}
+
+/* ── LOADING ── */
+#vr-load{
+display:none;position:fixed;inset:0;z-index:900;background:#000;
+flex-direction:column;align-items:center;justify-content:center;gap:1.4rem;
+}
+.load-word{
+font-family:‘Playfair Display’,serif;font-size:3.5rem;font-weight:900;
+color:#ef4444;animation:loadpulse 1.1s ease-in-out infinite;letter-spacing:-.03em;
+}
+@keyframes loadpulse{0%,100%{opacity:1}50%{opacity:.3}}
+.load-sub{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:#334155;}
+.load-bar-w{width:180px;height:2px;background:rgba(239,68,68,0.15);border-radius:999px;overflow:hidden;}
+.load-bar-f{height:100%;width:0%;background:linear-gradient(90deg,#ef4444,#3b82f6);transition:width .15s linear;}
+
+/* ── CANVAS + HUD EXIT ── */
+#xr-canvas{display:none;position:fixed;inset:0;width:100%;height:100%;z-index:500;}
+#vr-exit{
+display:none;position:fixed;top:1rem;right:1.4rem;z-index:600;
+padding:.4rem .9rem;font-size:.68rem;font-family:‘DM Sans’,sans-serif;font-weight:600;
+letter-spacing:.06em;text-transform:uppercase;color:#475569;
+background:rgba(2,6,23,0.9);backdrop-filter:blur(14px);
+border:1px solid rgba(239,68,68,0.2);border-radius:7px;cursor:pointer;
+}
+#vr-exit:hover{color:#f8fafc;}
+</style>
+
+</head>
+<body>
+
+<!-- ══ BOOT ══ -->
+
+<div id="boot">
+  <div class="boot-wrap">
+    <div class="boot-logo">
+      <img src="Gio.png" alt="GioNews" class="boot-logo-img" onerror="this.style.display='none';document.querySelector('.boot-logo-fallback').style.display='block'"/>
+      <span class="boot-logo-fallback" style="display:none">GioNews</span>
+    </div>
+    <div class="boot-vr-badge">WebXR Edition — Live</div>
+    <h1 class="boot-title">Breaking News<br/><span>In Virtual Reality</span></h1>
+    <p class="boot-sub">Step inside GioNews. Read today's top stories in an immersive 3D newsroom — all from your headset.</p>
+    <div class="boot-chips">
+      <span class="bchip">🥽 Meta Quest Ready</span>
+      <span class="bchip">🎮 Controller + Hand Tracking</span>
+      <span class="bchip">📰 Full Story Reader</span>
+      <span class="bchip">🔴 Breaking News Alerts</span>
+    </div>
+    <button id="boot-btn" onclick="launchGioVR()">▶ Enter Newsroom</button>
+    <p id="boot-status"></p>
+  </div>
+</div>
+
+<!-- ══ LOADING ══ -->
+
+<div id="vr-load">
+  <div class="load-word">GioNews</div>
+  <div class="load-sub" id="ll">Initializing…</div>
+  <div class="load-bar-w"><div class="load-bar-f" id="lb"></div></div>
+</div>
+
+<canvas id="xr-canvas"></canvas>
+<button id="vr-exit" onclick="exitVR()">✕ Exit</button>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  DATA — all stories from the original site
+// ═══════════════════════════════════════════════════════════════
+const STORIES = [
+  {
+    id:'trump-tariffs', cat:'BREAKING', catColor:'#ef4444',
+    headline:'Trump Raises Global Tariffs to 15% After Supreme Court Ruling',
+    excerpt:'President doubles down on trade levies despite Supreme Court striking down sweeping import taxes. Move comes as businesses seek $133 billion in refunds.',
+    author:'Business Desk', date:'Feb 22, 2026', isHero:true,
+    body:[
+      'President Trump announced Friday that he is raising global tariffs to 15 percent, doubling down on his trade policy despite the Supreme Court striking down his sweeping import tax program just days earlier.',
+      'The decision comes as American businesses seek approximately $133 billion in refunds following the Court\'s 6-3 ruling. The new 15 percent rate represents a significant increase from the 7.5 percent baseline.',
+      '"The Supreme Court justices who ruled against protecting American workers are a disgrace to our nation," Trump said. "We will use every legal tool available to ensure fair trade."',
+      'Stock markets reacted negatively, with the Dow Jones falling 340 points. Retail industry groups warned that increased tariffs will lead to higher consumer prices.',
+      'The White House legal team is reportedly preparing emergency appeals while simultaneously drafting new tariff orders that would comply with the Court\'s ruling while maintaining the President\'s trade agenda.',
+      'International trading partners expressed confusion and concern. The European Union announced it would impose retaliatory measures if the tariffs take effect, while China called for renewed negotiations.'
+    ]
+  },
+  {
+    id:'trump-iran', cat:'WORLD', catColor:'#3b82f6',
+    headline:'Trump Weighs Military Strike on Iranian Nuclear Facilities',
+    excerpt:'White House weighs options as tensions escalate with Iran over nuclear program development and regional activities.',
+    author:'World News Desk', date:'Feb 22, 2026',
+    body:[
+      'The White House is weighing military options against Iranian nuclear facilities as tensions between Washington and Tehran reach their highest point in years, according to senior administration officials.',
+      'President Trump has directed Pentagon officials to present him with a range of military strike options targeting Iran\'s nuclear infrastructure, sources told GioNews.',
+      '"All options remain on the table," National Security Advisor Jake Sullivan told reporters. "The President has made clear that Iran will not be allowed to develop nuclear weapons."',
+      'Iranian Foreign Minister Hossein Amir-Abdollahian condemned the reports as "warmongering" and warned that any military action would be met with "severe retaliation."',
+      'Defense Secretary Pete Hegseth confirmed that military planners are "preparing options" but emphasized that no decisions have been made. The President is expected to convene a National Security Council meeting next week.'
+    ]
+  },
+  {
+    id:'meta-lawsuit', cat:'TECH', catColor:'#8b5cf6',
+    headline:'Zuckerberg Testifies in Social Media Addiction Lawsuit',
+    excerpt:'Meta CEO appears in court as families allege tech companies designed platforms to be addictive to children.',
+    author:'Tech Desk', date:'Feb 21, 2026',
+    body:[
+      'Meta CEO Mark Zuckerberg appeared in federal court today to testify in a landmark lawsuit alleging that social media companies deliberately designed their platforms to be addictive to children and teenagers.',
+      'The case, brought by dozens of families and several state attorneys general, claims that Meta, Google, and other tech companies knowingly implemented features like infinite scroll and push notifications to maximize engagement among young people.',
+      'During five hours of testimony, Zuckerberg defended Meta\'s practices, stating that the company has invested billions in safety features and parental controls.',
+      'However, plaintiffs\' attorneys presented internal company documents suggesting Meta researchers warned leadership about potential mental health impacts on teens years before implementing protective measures.',
+      'The trial is expected to last several weeks and could have far-reaching implications for how social media companies operate and their liability for user harm.'
+    ]
+  },
+  {
+    id:'nyc-blizzard', cat:'WEATHER', catColor:'#06b6d4',
+    headline:'Historic Blizzard Slams NYC — Up to 18 Inches Expected',
+    excerpt:'Major winter storm shuts down Broadway, cancels flights as Tri-State Area braces for heaviest snowfall in years.',
+    author:'Weather Desk', date:'Feb 22, 2026',
+    body:[
+      'A powerful nor\'easter is battering the New York City area with heavy snow and strong winds, prompting emergency declarations and the cancellation of hundreds of flights and Broadway shows.',
+      'The National Weather Service has issued blizzard warnings for the five boroughs and surrounding counties, with snowfall rates reaching 2-3 inches per hour during the storm\'s peak.',
+      '"This is a significant winter storm that will create dangerous travel conditions," said New York Governor Kathy Hochul. "We\'re urging all New Yorkers to stay home and off the roads."',
+      'All Broadway theaters announced they would cancel Saturday evening and Sunday matinee performances — only the fourth time in history that all shows have been simultaneously cancelled due to weather.',
+      'LaGuardia and JFK airports have suspended operations, stranding thousands of travelers. The storm is expected to move out to sea by Sunday afternoon.'
+    ]
+  },
+  {
+    id:'dhs-detention', cat:'POLITICS', catColor:'#f59e0b',
+    headline:'DHS Orders Indefinite Detention for Migrants Without Green Cards',
+    excerpt:'New policy allows immigration authorities to hold non-citizens indefinitely while awaiting deportation proceedings.',
+    author:'Immigration Desk', date:'Feb 22, 2026',
+    body:[
+      'The Department of Homeland Security has issued a controversial new directive allowing immigration authorities to detain non-citizens indefinitely while they await deportation proceedings.',
+      'The policy, announced Friday, reverses longstanding practice that allowed many migrants to be released on bond or with monitoring devices while their cases proceeded through immigration courts.',
+      'DHS Secretary Alejandro Mayorkas defended the directive, saying it addresses concerns about migrants failing to appear for court dates.',
+      'Immigration rights organizations immediately condemned the policy as inhumane and unconstitutional. The ACLU announced it would challenge the directive in court.',
+      'The policy is expected to significantly increase the detained population in ICE facilities, which are already operating near capacity.'
+    ]
+  },
+  {
+    id:'potomac-spill', cat:'ENVIRONMENT', catColor:'#10b981',
+    headline:'Potomac River Sewage Spill Prompts Federal Emergency',
+    excerpt:'EPA mobilizes cleanup teams after major sewage overflow contaminates drinking water source for millions.',
+    author:'Environment Desk', date:'Feb 21, 2026',
+    body:[
+      'The Environmental Protection Agency has mobilized emergency response teams following a massive sewage overflow into the Potomac River that threatens drinking water supplies for millions of residents in the Washington, D.C. metropolitan area.',
+      'An estimated 2.3 million gallons of untreated sewage spilled into the river after a major pumping station failure during Thursday\'s heavy rainstorm.',
+      '"This is a serious public health incident," EPA Administrator Michael Regan said. "We\'re working around the clock to assess the contamination and ensure drinking water remains safe."',
+      'D.C. Water has issued advisories warning residents in affected areas to boil tap water before consumption.',
+      'The incident has renewed calls for infrastructure investment. The failing pumping station was built in 1959 and had been scheduled for replacement before funding was cut in 2024.'
+    ]
+  },
+  {
+    id:'venezuela-amnesty', cat:'WORLD', catColor:'#3b82f6',
+    headline:'Venezuela Amnesty Law Could Free Thousands of Political Prisoners',
+    excerpt:'National Assembly passes controversial legislation offering pardons for political crimes committed between 2014-2026.',
+    author:'World News Desk', date:'Feb 20, 2026',
+    body:[
+      'Venezuela\'s National Assembly has passed a controversial amnesty law that could lead to the release of thousands of political prisoners and opposition figures currently detained.',
+      'The legislation, approved in a 92-23 vote, offers pardons for individuals charged with or convicted of political crimes between 2014 and 2026.',
+      'President Nicolás Maduro\'s government framed the measure as a gesture of national reconciliation ahead of scheduled elections later this year.',
+      'Human Rights Watch noted that previous amnesty promises have not been fully honored, and warned that the government could use exceptions in the law to continue holding prominent opposition figures.',
+      'Opposition leader Maria Corina Machado cautiously welcomed the development but said: "We will judge this government by its actions, not its words."'
+    ]
+  },
+  {
+    id:'pentagon-reactor', cat:'SCIENCE', catColor:'#8b5cf6',
+    headline:'Pentagon Airlifts Small Nuclear Reactor to Utah Test Site',
+    excerpt:'Military transports portable nuclear power unit as part of remote base energy independence initiative.',
+    author:'Science Desk', date:'Feb 21, 2026',
+    body:[
+      'The U.S. military successfully transported a small modular nuclear reactor to a Utah testing site, marking a significant step in developing portable nuclear power for remote military bases.',
+      'The microreactor can generate up to 5 megawatts of electricity and operate for 3-5 years without refueling. It will undergo testing at Dugway Proving Ground over the next 18 months.',
+      '"This technology could be a game-changer for military operations," said Dr. Jeffrey Waksman. "It eliminates vulnerable fuel convoys."',
+      'The reactor was transported via C-17 aircraft from Lawrence Livermore National Laboratory in California.',
+      'If testing proves successful, the Pentagon plans to deploy similar reactors to remote bases in the Arctic and Pacific regions by 2028.'
+    ]
+  },
+];
+
+// Nav items
+const NAV = [
+  {label:'Home',    active:true},
+  {label:'Live',    active:false},
+  {label:'Archive', active:false},
+  {label:'Alerts',  active:false},
+];
+
+// ═══════════════════════════════════════════════════════════════
+//  GLOBAL STATE
+// ═══════════════════════════════════════════════════════════════
+let renderer, scene, camera, xrSession=null, animId=null;
+let clock=0;
+
+// Panel meshes
+let navMesh=null,  navTex=null,  navCv=null,  navCx=null;
+let herMesh=null,  herTex=null,  herCv=null,  herCx=null;
+let gridMesh=null, gridTex=null, gridCv=null, gridCx=null;
+let readMesh=null, readTex=null, readCv=null, readCx=null;
+
+// All raycaster hitboxes
+let hitboxes=[];
+let hoveredHit=null;
+
+// Hovered card index for grid
+let hovCardIdx=-1;
+let openStoryId=null; // currently open story in reader
+
+let ctrl0,ctrl1,grip0,grip1,ray0,ray1;
+let readScrollY=0;        // pixels scrolled in reader canvas
+let readTotalH=0;         // total rendered height of reader content
+const READ_VISIBLE_H=()=>READ_TH; // visible window height in canvas px
+const SCROLL_STEP=80;     // px per thumbstick tick
+const _m4=new THREE.Matrix4();
+const RC=new THREE.Raycaster();
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+// ─── Dimensions ────────────────────────────────────────────────
+// World-space Y and Z for all panels. Panels are direct scene children.
+const PANEL_Z=-2.5;  // fixed Z in front of origin
+const NAV_W=2.8, NAV_H=0.18, NAV_Y=2.42;
+const HER_W=2.8, HER_H=1.0,  HER_Y=1.65;
+const HER_TW=1024, HER_TH=Math.round(1024*(HER_H/HER_W));
+const GRID_W=2.8, GRID_H=0.78, GRID_Y=0.73;
+const GRID_TW=1024, GRID_TH=Math.round(1024*(GRID_H/GRID_W));
+const READ_W=2.8, READ_H=1.9,  READ_Y=1.57;
+const READ_TW=1024, READ_TH=Math.round(1024*(READ_H/READ_W));
+const NAV_TW=1024, NAV_TH=64;
+
+// ═══════════════════════════════════════════════════════════════
+//  LOADING
+// ═══════════════════════════════════════════════════════════════
+function setLoad(t,p){
+  document.getElementById('vr-load').style.display='flex';
+  document.getElementById('ll').textContent=t;
+  document.getElementById('lb').style.width=p+'%';
+}
+function hideLoad(){document.getElementById('vr-load').style.display='none';}
+
+// ═══════════════════════════════════════════════════════════════
+//  ENTRY
+// ═══════════════════════════════════════════════════════════════
+async function launchGioVR(){
+  document.getElementById('boot-status').textContent='Checking WebXR…';
+  const xrOk=navigator.xr?await navigator.xr.isSessionSupported('immersive-vr').catch(()=>false):false;
+  if(xrOk) await startNative();
+  else{ document.getElementById('boot-status').textContent='No headset — 3D preview mode.'; await startSim(); }
+}
+
+async function startNative(){
+  setLoad('Requesting immersive-vr session…',15);
+  try{
+    xrSession=await navigator.xr.requestSession('immersive-vr',{
+      optionalFeatures:['hand-tracking','bounded-floor','local-floor']});
+  }catch(e){console.warn(e);await startSim();return;}
+  setLoad('Building renderer…',40);   initRenderer(true);
+  setLoad('Building newsroom…',65);   buildScene(); buildAllPanels(); setupControllers();
+  renderer.xr.setSession(xrSession);
+  xrSession.addEventListener('end',exitVR);
+  setLoad('Entering GioNews VR…',100); await wait(200);
+  showCanvas(); renderer.setAnimationLoop(xrLoop);
+}
+
+async function startSim(){
+  setLoad('Initializing newsroom…',20); await wait(200);
+  initRenderer(false);
+  setLoad('Building scene…',55); await wait(200);
+  buildScene(); buildAllPanels(); setupControllers();
+  setLoad('Welcome to GioNews VR!',100); await wait(200);
+  showCanvas();
+  (function loop(ts){
+    animId=requestAnimationFrame(loop); clock=ts*.001;
+    camera.position.y=1.6+Math.sin(clock*.28)*.008;
+    camera.rotation.y=Math.sin(clock*.12)*.025;
+    updateRays();
+    renderer.render(scene,camera);
+  })(0);
+}
+
+function showCanvas(){
+  hideLoad();
+  document.getElementById('boot').style.display='none';
+  document.getElementById('xr-canvas').style.display='block';
+  document.getElementById('vr-exit').style.display='block';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RENDERER
+// ═══════════════════════════════════════════════════════════════
+function initRenderer(xr){
+  const cv=document.getElementById('xr-canvas');
+  renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  renderer.shadowMap.enabled=true;
+  renderer.xr.enabled=xr;
+  window.addEventListener('resize',()=>{
+    if(!renderer)return;
+    camera.aspect=window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SCENE
+// ═══════════════════════════════════════════════════════════════
+function buildScene(){
+  scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x010410);
+  scene.fog=new THREE.FogExp2(0x010410,.025);
+
+  camera=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,.01,300);
+  camera.position.set(0,1.6,0);
+
+  // Studio lighting — warm news desk feel
+  scene.add(new THREE.AmbientLight(0x111a33,2.5));
+  const key=new THREE.DirectionalLight(0xffeedd,1.0); key.position.set(2,6,3); scene.add(key);
+  // Red accent from above (breaking news look)
+  const red=new THREE.PointLight(0xff2233,2.8,12); red.position.set(0,5,-3); scene.add(red);
+  // Blue fill from sides
+  const bl=new THREE.PointLight(0x1155ff,1.4,14); bl.position.set(-5,2,-4); scene.add(bl);
+  const br=new THREE.PointLight(0x3366ff,1.0,14); br.position.set(5,2,-4); scene.add(br);
+  // Floor uplighting
+  const fl=new THREE.PointLight(0x0022aa,0.8,8); fl.position.set(0,.1,-2); scene.add(fl);
+
+  buildNewsroomEnv();
+
+
+}
+
+function buildNewsroomEnv(){
+  // Floor — polished dark surface
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(30,30),
+    new THREE.MeshStandardMaterial({color:0x05080f,roughness:.15,metalness:.6}));
+  floor.rotation.x=-Math.PI/2; floor.position.y=0; floor.receiveShadow=true; scene.add(floor);
+
+  // Floor grid glow lines
+  const grid=new THREE.GridHelper(20,20,0x1a2040,0x0c1228);
+  grid.position.y=.002; scene.add(grid);
+
+  // Glowing floor strip under panel
+  const strip=new THREE.Mesh(new THREE.PlaneGeometry(3.0,.04),
+    new THREE.MeshBasicMaterial({color:0xff2233,transparent:true,opacity:.7}));
+  strip.rotation.x=-Math.PI/2; strip.position.set(0,.001,-1.9); scene.add(strip);
+
+  // Back wall — dark curved feel
+  const wall=new THREE.Mesh(new THREE.PlaneGeometry(24,8),
+    new THREE.MeshStandardMaterial({color:0x030510,roughness:1}));
+  wall.position.set(0,4,-14); scene.add(wall);
+
+  // Desk surface in front of panels
+  const desk=new THREE.Mesh(new THREE.BoxGeometry(3.4,.06,0.8),
+    new THREE.MeshStandardMaterial({color:0x0a0f20,roughness:.2,metalness:.7}));
+  desk.position.set(0,.55,-1.7); scene.add(desk);
+  // Desk edge glow
+  const deskGlow=new THREE.Mesh(new THREE.BoxGeometry(3.4,.008,.008),
+    new THREE.MeshBasicMaterial({color:0xff2233,transparent:true,opacity:.9}));
+  deskGlow.position.set(0,.584,-1.31); scene.add(deskGlow);
+
+  // Side pillars with light strips
+  [[-1.9,0],[1.9,0]].forEach(([x])=>{
+    const pillar=new THREE.Mesh(new THREE.BoxGeometry(.08,4,.08),
+      new THREE.MeshStandardMaterial({color:0x0d1225,roughness:.3,metalness:.8}));
+    pillar.position.set(x,2,-4.5); scene.add(pillar);
+    const strip=new THREE.Mesh(new THREE.BoxGeometry(.01,3.5,.01),
+      new THREE.MeshBasicMaterial({color:0x2244ff,transparent:true,opacity:.9}));
+    strip.position.set(x+.04*Math.sign(x),2.2,-4.5); scene.add(strip);
+  });
+
+  // Stars / ambient city lights far bg
+  const sg=new THREE.BufferGeometry();
+  const sp=new Float32Array(1800*3);
+  for(let i=0;i<1800;i++){sp[i*3]=(Math.random()-.5)*200;sp[i*3+1]=(Math.random()-.5)*150;sp[i*3+2]=(Math.random()-.5)*200;}
+  sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
+  scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0x8899cc,size:.18,transparent:true,opacity:.5})));
+
+  // Floor position ring
+  const ring=new THREE.Mesh(new THREE.RingGeometry(.6,.64,64),
+    new THREE.MeshBasicMaterial({color:0xff2233,side:THREE.DoubleSide,transparent:true,opacity:.6}));
+  ring.rotation.x=-Math.PI/2; ring.position.y=.003; scene.add(ring);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PANEL BUILDER — generic
+// ═══════════════════════════════════════════════════════════════
+function makePanelMesh(w,h,worldY,tw,th){
+  const cv=document.createElement('canvas'); cv.width=tw; cv.height=th;
+  const cx=cv.getContext('2d');
+  const tex=new THREE.CanvasTexture(cv);
+
+  const mesh=new THREE.Mesh(
+    new THREE.PlaneGeometry(w,h),
+    new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide,depthWrite:false})
+  );
+  mesh.position.set(0,worldY,PANEL_Z);
+  mesh.renderOrder=999;
+  // Disable culling on mesh AND its geometry bounding sphere
+  mesh.frustumCulled=false;
+  mesh.geometry.boundingSphere=new THREE.Sphere(new THREE.Vector3(0,0,0),1000);
+  scene.add(mesh);
+
+  // Glass back
+  const back=new THREE.Mesh(new THREE.PlaneGeometry(w+.05,h+.05),
+    new THREE.MeshBasicMaterial({color:0x010510,transparent:true,opacity:.88,side:THREE.BackSide,depthWrite:false}));
+  back.frustumCulled=false;
+  back.renderOrder=998;
+  mesh.add(back);
+
+  // Border glow
+  const border=new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.BoxGeometry(w+.012,h+.012,.001)),
+    new THREE.LineBasicMaterial({color:0xff2233,transparent:true,opacity:.55}));
+  border.frustumCulled=false;
+  border.renderOrder=997;
+  mesh.add(border);
+
+  return {mesh,tex,cv,cx};
+}
+
+// ─── hit registration ────────────────────────────────────────────
+// px/py = canvas pixel centre, pw/ph = canvas pixel size
+// parent = mesh the hitbox is attached to
+function addHit(parent,tw,th,pw_m,ph_m,pxCX,pyCY,meta){
+  // Convert canvas pixel centre to panel-local metres
+  const lx=((pxCX/tw)-.5)*pw_m;
+  const ly=(.5-(pyCY/th))*ph_m;
+  const mesh=new THREE.Mesh(
+    new THREE.PlaneGeometry(
+      (meta.hitW||meta.cw||pw_m)/tw*pw_m,
+      (meta.hitH||meta.ch||ph_m)/th*ph_m
+    ),
+    new THREE.MeshBasicMaterial({transparent:true,opacity:0,side:THREE.DoubleSide})
+  );
+  mesh.position.set(lx,ly,.004);
+  mesh.frustumCulled=false;
+  mesh.geometry.boundingSphere=new THREE.Sphere(new THREE.Vector3(0,0,0),1000);
+  parent.add(mesh);
+  hitboxes.push({mesh,...meta});
+  return mesh;
+}
+
+// ─── cleanly drop a panel + its hitboxes ────────────────────────
+function dropPanel(meshRef){
+  if(!meshRef) return null;
+  hitboxes=hitboxes.filter(h=>{
+    let node=h.mesh.parent;
+    while(node){if(node===meshRef){h.mesh.geometry.dispose();h.mesh.material.dispose();return false;}node=node.parent;}
+    return true;
+  });
+  scene.remove(meshRef);
+  meshRef.traverse(c=>{if(c.geometry)c.geometry.dispose();if(c.material&&c.material.dispose)c.material.dispose();});
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BUILD ALL PANELS
+// ═══════════════════════════════════════════════════════════════
+function buildAllPanels(){
+  buildNav();
+  buildHero();
+  buildGrid();
+}
+
+// ─── NAV BAR ────────────────────────────────────────────────────
+function buildNav(){
+  navMesh=dropPanel(navMesh);
+  const p=makePanelMesh(NAV_W,NAV_H,NAV_Y,NAV_TW,NAV_TH);
+  navMesh=p.mesh; navTex=p.tex; navCv=p.cv; navCx=p.cx;
+
+  drawNav();
+
+  // Hitboxes — nav buttons
+  const BW=NAV_TW/NAV.length, BH=NAV_TH;
+  NAV.forEach((n,i)=>{
+    const cx=(i+.5)*BW;
+    addHit(navMesh,NAV_TW,NAV_TH,NAV_W,NAV_H,cx,BH/2,{
+      type:'nav',idx:i,label:n.label,
+      hitW:BW*.8,hitH:BH*.8,
+      onSelect:()=>{ /* nav no-op for now */ }
+    });
+  });
+}
+
+function drawNav(){
+  const c=navCx, W=NAV_TW, H=NAV_TH;
+  c.clearRect(0,0,W,H);
+  rr(c,0,0,W,H,14);
+  c.fillStyle='rgba(5,8,22,0.97)'; c.fill();
+  rr(c,1,1,W-2,H-2,13);
+  c.strokeStyle='rgba(239,68,68,0.5)'; c.lineWidth=2; c.stroke();
+
+  // GioNews brand left
+  c.font='700 18px "Playfair Display",serif'; c.fillStyle='#ef4444'; c.textAlign='left';
+  c.fillText('GioNews', 18, H/2+6);
+
+  // Breaking dot
+  c.beginPath(); c.arc(110,H/2,5,0,Math.PI*2);
+  c.fillStyle='#ef4444'; c.fill();
+  c.font='600 11px "DM Sans",sans-serif'; c.fillStyle='#ef4444';
+  c.fillText('LIVE', 120, H/2+4);
+
+  // Nav tabs
+  const tabW=120, tabX0=W-NAV.length*tabW-16;
+  NAV.forEach((n,i)=>{
+    const tx=tabX0+i*tabW, ty=8;
+    if(n.active){
+      rr(c,tx,ty,tabW-8,H-16,8);
+      c.fillStyle='rgba(239,68,68,0.2)'; c.fill();
+      rr(c,tx,ty,tabW-8,H-16,8);
+      c.strokeStyle='rgba(239,68,68,0.6)'; c.lineWidth=1.5; c.stroke();
+    }
+    c.font=`${n.active?'700':'500'} 13px "DM Sans",sans-serif`;
+    c.fillStyle=n.active?'#f8fafc':'rgba(148,163,184,0.8)';
+    c.textAlign='center';
+    c.fillText(n.label, tx+(tabW-8)/2, H/2+5);
+  });
+
+  // Clock right
+  const now=new Date();
+  c.font='500 12px "DM Sans",sans-serif'; c.fillStyle='rgba(148,163,184,0.6)'; c.textAlign='right';
+  c.fillText(now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}), W-14, H/2+4);
+
+  navTex.needsUpdate=true;
+}
+
+// ─── HERO PANEL ─────────────────────────────────────────────────
+function buildHero(){
+  herMesh=dropPanel(herMesh);
+  const p=makePanelMesh(HER_W,HER_H,HER_Y,HER_TW,HER_TH);
+  herMesh=p.mesh; herTex=p.tex; herCv=p.cv; herCx=p.cx;
+  drawHero();
+
+  // Clickable area = bottom 40% (headline + excerpt)
+  addHit(herMesh,HER_TW,HER_TH,HER_W,HER_H,
+    HER_TW/2, HER_TH*.75,
+    {type:'hero', storyId:'trump-tariffs', hitW:HER_TW*.85, hitH:HER_TH*.45,
+     onSelect:()=>openReader('trump-tariffs')}
+  );
+}
+
+function drawHero(hov=false){
+  const c=herCx, W=HER_TW, H=HER_TH;
+  c.clearRect(0,0,W,H);
+  const story=STORIES[0];
+
+  // Full card bg
+  rr(c,0,0,W,H,22);
+  c.fillStyle='#0a0f1e'; c.fill();
+
+  // Top 65% — simulated image fill (gradient newsroom feel)
+  rr(c,0,0,W,H*.65,22);
+  const imgGrad=c.createLinearGradient(0,0,W,H*.65);
+  imgGrad.addColorStop(0,'#0d1530');
+  imgGrad.addColorStop(.4,'#1a0510');
+  imgGrad.addColorStop(1,'#060816');
+  c.fillStyle=imgGrad; c.fill();
+
+  // Scanline overlay texture effect
+  for(let y=0;y<H*.65;y+=4){
+    c.fillStyle='rgba(0,0,0,0.08)'; c.fillRect(0,y,W,1);
+  }
+
+  // Red gradient overlay bottom of image
+  const overlay=c.createLinearGradient(0,H*.25,0,H*.65);
+  overlay.addColorStop(0,'transparent');
+  overlay.addColorStop(1,'rgba(10,15,30,0.98)');
+  c.fillStyle=overlay; c.fill();
+
+  // BREAKING badge
+  c.font='800 13px "DM Sans",sans-serif';
+  const badgeTxt='🔴  BREAKING NOW'; const bw=c.measureText(badgeTxt).width+28;
+  rr(c,30,30,bw,30,15);
+  c.fillStyle='#ef4444'; c.fill();
+  c.fillStyle='#fff'; c.textAlign='left';
+  c.fillText(badgeTxt,30+14,30+21);
+
+  // Decorative "GIONEWS" watermark top right
+  c.font='600 11px "DM Sans",sans-serif'; c.fillStyle='rgba(239,68,68,0.4)'; c.textAlign='right';
+  c.fillText('GIONEWS NETWORK', W-24, 46);
+
+  // Headline
+  c.font='900 '+Math.round(H*.075)+'px "Playfair Display",serif';
+  c.fillStyle='#f8fafc'; c.textAlign='left';
+  wrapText(c, story.headline, 30, H*.67, W-60, Math.round(H*.082));
+
+  // Excerpt
+  c.font='400 '+Math.round(H*.048)+'px "DM Sans",sans-serif';
+  c.fillStyle='#94a3b8';
+  wrapText(c, story.excerpt, 30, H*.82, W-60, Math.round(H*.054));
+
+  // Meta row
+  c.font='700 12px "DM Sans",sans-serif'; c.fillStyle='rgba(148,163,184,0.7)';
+  c.fillText(story.author.toUpperCase()+'  ·  '+story.date, 30, H*.93);
+
+  // Hover: "Read Full Story" CTA
+  if(hov){
+    const ctaW=220, ctaH=36;
+    rr(c,W-ctaW-24,H-ctaH-12,ctaW,ctaH,10);
+    c.fillStyle='#ef4444'; c.fill();
+    c.font='700 14px "DM Sans",sans-serif'; c.fillStyle='#fff'; c.textAlign='center';
+    c.fillText('Read Full Story →', W-24-ctaW/2, H-12-ctaH/2+5);
+  }
+
+  // Border
+  rr(c,1,1,W-2,H-2,21);
+  c.strokeStyle=hov?'rgba(239,68,68,0.8)':'rgba(239,68,68,0.3)';
+  c.lineWidth=hov?2.5:1.5; c.stroke();
+
+  herTex.needsUpdate=true;
+}
+
+// ─── CARD GRID ───────────────────────────────────────────────────
+const GRID_STORIES=STORIES.slice(1,8); // 7 stories in grid (show 4 at a time)
+let gridPage=0; // future pagination
+
+function buildGrid(){
+  gridMesh=dropPanel(gridMesh);
+  const p=makePanelMesh(GRID_W,GRID_H,GRID_Y,GRID_TW,GRID_TH);
+  gridMesh=p.mesh; gridTex=p.tex; gridCv=p.cv; gridCx=p.cx;
+  drawGrid(-1);
+  buildGridHits();
+}
+
+function buildGridHits(){
+  const COLS=4, CW=GRID_TW/COLS, CH=GRID_TH;
+  GRID_STORIES.slice(0,COLS).forEach((story,i)=>{
+    addHit(gridMesh,GRID_TW,GRID_TH,GRID_W,GRID_H,
+      (i+.5)*CW, CH/2,
+      {type:'card', idx:i, storyId:story.id, hitW:CW*.88, hitH:CH*.88,
+       onSelect:()=>openReader(story.id)}
+    );
+  });
+}
+
+function drawGrid(hovIdx){
+  const c=gridCx, W=GRID_TW, H=GRID_TH;
+  c.clearRect(0,0,W,H);
+
+  // Card bg
+  rr(c,0,0,W,H,18);
+  c.fillStyle='rgba(8,12,28,0.97)'; c.fill();
+  rr(c,1,1,W-2,H-2,17);
+  c.strokeStyle='rgba(239,68,68,0.25)'; c.lineWidth=1.5; c.stroke();
+
+  const COLS=4, CW=W/COLS;
+  GRID_STORIES.slice(0,COLS).forEach((story,i)=>{
+    const x=i*CW, hov=(i===hovIdx);
+    drawCard(c,x,0,CW,H,story,hov);
+    // Divider
+    if(i<COLS-1){
+      c.fillStyle='rgba(255,255,255,0.06)'; c.fillRect(x+CW-1,12,1,H-24);
+    }
+  });
+
+  gridTex.needsUpdate=true;
+}
+
+function drawCard(c,x,y,w,h,story,hov){
+  if(hov){
+    rr(c,x+4,y+4,w-8,h-8,12);
+    c.fillStyle='rgba(239,68,68,0.1)'; c.fill();
+    rr(c,x+4,y+4,w-8,h-8,12);
+    c.strokeStyle='rgba(239,68,68,0.55)'; c.lineWidth=1.5; c.stroke();
+  }
+
+  const P=18;
+  // Category pill
+  rr(c,x+P,y+P,80,22,11);
+  c.fillStyle=hov?story.catColor+'55':story.catColor+'28'; c.fill();
+  c.font='800 10px "DM Sans",sans-serif'; c.fillStyle=story.catColor; c.textAlign='center';
+  c.fillText(story.cat, x+P+40, y+P+15);
+
+  // Headline
+  c.font=`${hov?'700':'600'} ${Math.round(h*.1)}px "DM Sans",sans-serif`;
+  c.fillStyle=hov?'#f8fafc':'#e2e8f0'; c.textAlign='left';
+  wrapText(c, story.headline, x+P, y+P+40, w-P*2, Math.round(h*.115), 3);
+
+  // Date
+  c.font='500 10px "DM Sans",sans-serif'; c.fillStyle='rgba(148,163,184,0.65)';
+  c.fillText(story.date, x+P, y+h-P);
+
+  // Hover CTA bar
+  if(hov){
+    rr(c,x+P,y+h-36,w-P*2,22,8);
+    c.fillStyle='#ef4444'; c.fill();
+    c.font='700 11px "DM Sans",sans-serif'; c.fillStyle='#fff'; c.textAlign='center';
+    c.fillText('READ STORY', x+w/2, y+h-36+15);
+  }
+}
+
+// ─── STORY READER ────────────────────────────────────────────────
+function openReader(storyId){
+  openStoryId=storyId;
+  readScrollY=0;           // reset scroll on open
+  // Hide hero + grid
+  if(herMesh) herMesh.visible=false;
+  if(gridMesh) gridMesh.visible=false;
+
+  // Build reader
+  readMesh=dropPanel(readMesh);
+  const p=makePanelMesh(READ_W,READ_H,READ_Y,READ_TW,READ_TH);
+  readMesh=p.mesh; readTex=p.tex; readCv=p.cv; readCx=p.cx;
+  readTotalH=drawReader(storyId,0);
+
+  // Back button hitbox — top right
+  addHit(readMesh,READ_TW,READ_TH,READ_W,READ_H,
+    READ_TW-110, 46,
+    {type:'back', hitW:160, hitH:52,
+     onSelect:()=>closeReader()}
+  );
+
+  // Scroll DOWN button — bottom right corner
+  addHit(readMesh,READ_TW,READ_TH,READ_W,READ_H,
+    READ_TW-52, READ_TH-52,
+    {type:'scrollDown', hitW:80, hitH:80,
+     onSelect:()=>doScroll(+SCROLL_STEP*3)}
+  );
+
+  // Scroll UP button — bottom right above down
+  addHit(readMesh,READ_TW,READ_TH,READ_W,READ_H,
+    READ_TW-52, READ_TH-140,
+    {type:'scrollUp', hitW:80, hitH:80,
+     onSelect:()=>doScroll(-SCROLL_STEP*3)}
+  );
+}
+
+function doScroll(delta){
+  if(!openStoryId) return;
+  const maxScroll=Math.max(0, readTotalH-READ_TH+40);
+  readScrollY=Math.max(0, Math.min(readScrollY+delta, maxScroll));
+  readTotalH=drawReader(openStoryId, readScrollY);
+}
+
+function closeReader(){
+  openStoryId=null;
+  readMesh=dropPanel(readMesh);
+  if(herMesh) herMesh.visible=true;
+  if(gridMesh) gridMesh.visible=true;
+  // Reset hover
+  hovCardIdx=-1; hoveredHit=null;
+  drawGrid(-1); drawHero(false);
+}
+
+function drawReader(storyId, scrollY=0){
+  const c=readCx, W=READ_TW, H=READ_TH;
+  c.clearRect(0,0,W,H);
+  const story=STORIES.find(s=>s.id===storyId)||STORIES[0];
+
+  // Background
+  rr(c,0,0,W,H,22);
+  c.fillStyle='#070c1c'; c.fill();
+  rr(c,1,1,W-2,H-2,21);
+  c.strokeStyle='rgba(239,68,68,0.45)'; c.lineWidth=2; c.stroke();
+
+  // ── HEADER (fixed, not scrolled) ──
+  const HDR=90;
+  rr(c,0,0,W,HDR,22);
+  c.fillStyle='rgba(10,15,32,0.99)'; c.fill();
+  c.fillStyle='rgba(239,68,68,0.5)'; c.fillRect(0,HDR-2,W,2);
+
+  // GioNews logo
+  c.font='700 18px "Playfair Display",serif'; c.fillStyle='#ef4444'; c.textAlign='left';
+  c.fillText('GioNews', 28, 55);
+  c.font='600 11px "DM Sans",sans-serif'; c.fillStyle='rgba(239,68,68,0.65)';
+  c.fillText('NETWORK', 28, 70);
+
+  // Back button
+  rr(c,W-205,16,178,54,12);
+  c.fillStyle='rgba(239,68,68,0.15)'; c.fill();
+  rr(c,W-205,16,178,54,12);
+  c.strokeStyle='rgba(239,68,68,0.55)'; c.lineWidth=1.5; c.stroke();
+  c.font='700 14px "DM Sans",sans-serif'; c.fillStyle='#f8fafc'; c.textAlign='center';
+  c.fillText('← Back to News', W-205+89, 48);
+
+  // ── SCROLLABLE CONTENT (clip to below header) ──
+  c.save();
+  c.beginPath(); c.rect(0,HDR,W,H-HDR); c.clip();
+
+  // Translate upward by scrollY so content scrolls
+  c.translate(0,-scrollY+HDR);
+
+  let y=8; // y tracks total content position (relative to scroll origin)
+
+  // Category badge
+  rr(c,28,y,90,28,14);
+  c.fillStyle=story.catColor+'33'; c.fill();
+  c.font='800 11px "DM Sans",sans-serif'; c.fillStyle=story.catColor; c.textAlign='center';
+  c.fillText(story.cat, 28+45, y+19);
+  y+=44;
+
+  // Headline
+  const FS=Math.round(H*.046);
+  c.font=`900 ${FS}px "Playfair Display",serif`;
+  c.fillStyle='#f8fafc'; c.textAlign='left';
+  const hLines=wrapTextReturn(c, story.headline, 28, y, W-56, FS*1.18);
+  y+=hLines*FS*1.18+16;
+
+  // Meta
+  c.font='600 13px "DM Sans",sans-serif'; c.fillStyle='rgba(148,163,184,0.75)';
+  c.fillText('By '+story.author+'  ·  '+story.date, 28, y); y+=28;
+
+  // Separator
+  c.fillStyle='rgba(239,68,68,0.3)'; c.fillRect(28,y,W-56,1); y+=18;
+
+  // Body paragraphs — no max-Y clipping, let scroll handle it
+  const BFS=Math.round(H*.036);
+  const lineH=BFS*1.72;
+
+  story.body.forEach((para,pi)=>{
+    if(pi===0){
+      // Drop cap
+      c.font=`900 ${BFS*3.2}px "Playfair Display",serif`;
+      c.fillStyle='#ef4444'; c.textAlign='left';
+      c.fillText(para[0], 28, y+BFS*2.4);
+      c.font=`400 ${BFS}px "DM Sans",sans-serif`;
+      c.fillStyle='#cbd5e1';
+      y=wrapParaNoClip(c, para.slice(1), 28+BFS*2.1, y, W-56-BFS*2.1, lineH);
+      y+=lineH*.5;
+    } else {
+      c.font=`400 ${BFS}px "DM Sans",sans-serif`;
+      c.fillStyle='#cbd5e1'; c.textAlign='left';
+      y=wrapParaNoClip(c, para, 28, y, W-56, lineH);
+      y+=lineH*.5;
+    }
+  });
+
+  const totalH=y+40+scrollY; // total canvas height of all content
+  c.restore();
+
+  // ── SCROLL BUTTONS (fixed at bottom-right, over clip) ──
+  const canScrollDown=(scrollY<Math.max(0,totalH-READ_TH-40));
+  const canScrollUp=(scrollY>0);
+
+  // Scroll down button
+  const sbx=W-76, sdY=H-68;
+  rr(c,sbx,sdY,56,52,12);
+  c.fillStyle=canScrollDown?'rgba(239,68,68,0.25)':'rgba(30,30,60,0.4)'; c.fill();
+  rr(c,sbx,sdY,56,52,12);
+  c.strokeStyle=canScrollDown?'rgba(239,68,68,0.6)':'rgba(80,80,120,0.3)'; c.lineWidth=1.5; c.stroke();
+  c.font='bold 22px sans-serif'; c.fillStyle=canScrollDown?'#f8fafc':'#334155'; c.textAlign='center';
+  c.fillText('▼', sbx+28, sdY+34);
+
+  // Scroll up button
+  const suY=H-128;
+  rr(c,sbx,suY,56,52,12);
+  c.fillStyle=canScrollUp?'rgba(239,68,68,0.25)':'rgba(30,30,60,0.4)'; c.fill();
+  rr(c,sbx,suY,56,52,12);
+  c.strokeStyle=canScrollUp?'rgba(239,68,68,0.6)':'rgba(80,80,120,0.3)'; c.lineWidth=1.5; c.stroke();
+  c.font='bold 22px sans-serif'; c.fillStyle=canScrollUp?'#f8fafc':'#334155'; c.textAlign='center';
+  c.fillText('▲', sbx+28, suY+34);
+
+  // Scroll progress bar
+  const barH=H-HDR-20, barX=W-14;
+  c.fillStyle='rgba(255,255,255,0.07)'; c.fillRect(barX,HDR+10,4,barH);
+  const maxScroll=Math.max(1,totalH-READ_TH);
+  const thumbH=Math.max(40,barH*(READ_TH/Math.max(totalH,READ_TH)));
+  const thumbY=HDR+10+(barH-thumbH)*(scrollY/maxScroll);
+  rr(c,barX,thumbY,4,thumbH,2);
+  c.fillStyle='rgba(239,68,68,0.7)'; c.fill();
+
+  readTex.needsUpdate=true;
+  return totalH;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CONTROLLERS
+// ═══════════════════════════════════════════════════════════════
+function setupControllers(){
+  if(!renderer) return;
+  ctrl0=renderer.xr.getController(0);
+  ctrl0.addEventListener('selectstart',()=>fireSelect(0)); scene.add(ctrl0);
+  ctrl1=renderer.xr.getController(1);
+  ctrl1.addEventListener('selectstart',()=>fireSelect(1)); scene.add(ctrl1);
+
+  grip0=renderer.xr.getControllerGrip(0); grip0.add(makeCtrl()); scene.add(grip0);
+  grip1=renderer.xr.getControllerGrip(1); grip1.add(makeCtrl()); scene.add(grip1);
+
+  ray0=makeRay(0); ctrl0.add(ray0);
+  ray1=makeRay(1); ctrl1.add(ray1);
+
+  if(renderer.xr.getHand){
+    const h0=renderer.xr.getHand(0); h0.add(makeHand(0)); scene.add(h0);
+    const h1=renderer.xr.getHand(1); h1.add(makeHand(1)); scene.add(h1);
+  }
+}
+
+function makeCtrl(){
+  const g=new THREE.Group();
+
+  // Main body — slim rectangle remote
+  const body=new THREE.Mesh(
+    new THREE.BoxGeometry(.038,.012,.115),
+    new THREE.MeshStandardMaterial({color:0x0d1020,roughness:.25,metalness:.85})
+  );
+  body.frustumCulled=false;
+  g.add(body);
+
+  // Top face subtle inset panel
+  const face=new THREE.Mesh(
+    new THREE.BoxGeometry(.032,.002,.08),
+    new THREE.MeshStandardMaterial({color:0x141a30,roughness:.4,metalness:.6})
+  );
+  face.position.set(0,.007,.01);
+  face.frustumCulled=false;
+  g.add(face);
+
+  // Red trigger button (front center)
+  const trigger=new THREE.Mesh(
+    new THREE.BoxGeometry(.016,.008,.016),
+    new THREE.MeshStandardMaterial({color:0xef4444,emissive:0xef4444,emissiveIntensity:.8,roughness:.2})
+  );
+  trigger.position.set(0,.01,-.025);
+  trigger.frustumCulled=false;
+  g.add(trigger);
+
+  // Small white circle button (center)
+  const dot=new THREE.Mesh(
+    new THREE.CylinderGeometry(.005,.005,.003,16),
+    new THREE.MeshStandardMaterial({color:0xffffff,roughness:.3})
+  );
+  dot.position.set(0,.01,.025);
+  dot.frustumCulled=false;
+  g.add(dot);
+
+  // Rounded bottom edge — just a slightly smaller box so it looks chamfered
+  const bottom=new THREE.Mesh(
+    new THREE.BoxGeometry(.034,.01,.11),
+    new THREE.MeshStandardMaterial({color:0x090d1a,roughness:.3,metalness:.9})
+  );
+  bottom.position.set(0,-.005,0);
+  bottom.frustumCulled=false;
+  g.add(bottom);
+
+  return g;
+}
+
+function makeRay(idx){
+  const geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0),new THREE.Vector3(0,0,-6)]);
+  const mat=new THREE.LineBasicMaterial({color:idx===0?0xef4444:0x3b82f6,transparent:true,opacity:.7});
+  return new THREE.Line(geo,mat);
+}
+
+function makeHand(idx){
+  const g=new THREE.Group();
+  const mat=new THREE.MeshStandardMaterial({color:idx===0?0xef4444:0x3b82f6,roughness:.5,transparent:true,opacity:.8});
+  for(let i=0;i<15;i++){
+    const j=new THREE.Mesh(new THREE.SphereGeometry(.007,8,8),mat);
+    j.position.set((i%5-2)*.022,Math.floor(i/5)*.024,0); g.add(j);
+  }
+  return g;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RAYCASTING
+// ═══════════════════════════════════════════════════════════════
+function castRay(ctrl){
+  if(!ctrl) return null;
+  _m4.identity().extractRotation(ctrl.matrixWorld);
+  RC.ray.origin.setFromMatrixPosition(ctrl.matrixWorld);
+  RC.ray.direction.set(0,0,-1).applyMatrix4(_m4);
+  const meshes=hitboxes.map(h=>h.mesh);
+  const hits=RC.intersectObjects(meshes,false);
+  if(!hits.length) return null;
+  return hitboxes.find(h=>h.mesh===hits[0].object)||null;
+}
+
+function updateRays(){
+  let newHit=null;
+  [ctrl0,ctrl1].forEach((ctrl,i)=>{
+    const h=castRay(ctrl);
+    if(h&&!newHit) newHit=h;
+    const ray=i===0?ray0:ray1;
+    if(!ray) return;
+    ray.material.color.setHex(h?0xff2233:( i===0?0xef4444:0x3b82f6));
+    ray.material.opacity=h?.95:.55;
+  });
+
+  if(newHit!==hoveredHit){
+    const prev=hoveredHit;
+    hoveredHit=newHit;
+    // Handle hover transitions
+    if(prev?.type==='hero'||newHit?.type==='hero'){
+      drawHero(newHit?.type==='hero');
+    }
+    if(prev?.type==='card'||newHit?.type==='card'){
+      const idx=newHit?.type==='card'?newHit.idx:-1;
+      if(idx!==hovCardIdx){ hovCardIdx=idx; drawGrid(hovCardIdx); }
+    }
+    if(newHit?.type==='card'&&hovCardIdx!==newHit.idx){
+      hovCardIdx=newHit.idx; drawGrid(hovCardIdx);
+    }
+    if(!newHit&&hovCardIdx!==-1){ hovCardIdx=-1; drawGrid(-1); }
+    if(!newHit&&prev?.type==='hero'){ drawHero(false); }
+  }
+}
+
+function fireSelect(ctrlIdx){
+  const ctrl=ctrlIdx===0?ctrl0:ctrl1;
+  const hit=castRay(ctrl);
+  if(hit) hit.onSelect();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  XR LOOP
+// ═══════════════════════════════════════════════════════════════
+let _lastScrollTick=0;
+
+function xrLoop(){
+  updateRays();
+
+  // Thumbstick scroll in reader mode
+  if(openStoryId){
+    const now=performance.now();
+    if(now-_lastScrollTick>120){
+      [ctrl0,ctrl1].forEach(ctrl=>{
+        if(!ctrl) return;
+        const src=ctrl.inputSource;
+        if(!src) return;
+        const gp=src.gamepad;
+        if(!gp) return;
+        const axes=gp.axes;
+        const yAxis=(axes[3]!==undefined?axes[3]:0)||(axes[1]!==undefined?axes[1]:0);
+        if(Math.abs(yAxis)>0.35){
+          doScroll(yAxis*SCROLL_STEP*2);
+          _lastScrollTick=now;
+        }
+      });
+    }
+  }
+
+  renderer.render(scene,camera);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  EXIT
+// ═══════════════════════════════════════════════════════════════
+function exitVR(){
+  if(xrSession){try{xrSession.end();}catch(e){} xrSession=null;}
+  if(animId){cancelAnimationFrame(animId);animId=null;}
+  if(renderer){renderer.setAnimationLoop(null);renderer.dispose();renderer=null;}
+  if(scene){scene.clear();scene=null;}
+  hitboxes=[]; hoveredHit=null;
+  navMesh=herMesh=gridMesh=readMesh=null;
+  document.getElementById('xr-canvas').style.display='none';
+  document.getElementById('vr-exit').style.display='none';
+  document.getElementById('boot').style.display='flex';
+  document.getElementById('boot-status').textContent='Session ended — click to re-enter.';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CANVAS HELPERS
+// ═══════════════════════════════════════════════════════════════
+function rr(c,x,y,w,h,r){
+  c.beginPath();
+  c.moveTo(x+r,y); c.lineTo(x+w-r,y); c.quadraticCurveTo(x+w,y,x+w,y+r);
+  c.lineTo(x+w,y+h-r); c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  c.lineTo(x+r,y+h); c.quadraticCurveTo(x,y+h,x,y+h-r);
+  c.lineTo(x,y+r); c.quadraticCurveTo(x,y,x+r,y);
+  c.closePath();
+}
+
+// Wrap text, return final y pos
+function wrapText(c,text,x,y,maxW,lineH,maxLines=99){
+  const words=text.split(' '); let line=''; let lines=0;
+  for(let w of words){
+    const test=line+(line?' ':'')+w;
+    if(c.measureText(test).width>maxW&&line){
+      if(++lines>=maxLines){ c.fillText(line+'…',x,y); return; }
+      c.fillText(line,x,y); y+=lineH; line=w;
+    } else line=test;
+  }
+  if(line) c.fillText(line,x,y);
+}
+
+// Returns number of lines used
+function wrapTextReturn(c,text,x,y,maxW,lineH){
+  const words=text.split(' '); let line=''; let lc=0;
+  for(let w of words){
+    const test=line+(line?' ':'')+w;
+    if(c.measureText(test).width>maxW&&line){
+      c.fillText(line,x,y+lc*lineH); lc++; line=w;
+    } else line=test;
+  }
+  if(line){c.fillText(line,x,y+lc*lineH); lc++;}
+  return lc;
+}
+
+// Wrap paragraph with x-indent, returns new y
+function wrapParaY(c,text,x,y,maxW,lineH,maxY){
+  const words=text.split(' '); let line='';
+  for(let w of words){
+    const test=line+(line?' ':'')+w;
+    if(c.measureText(test).width>maxW&&line){
+      if(y<maxY) c.fillText(line,x,y);
+      y+=lineH; line=w;
+    } else line=test;
+  }
+  if(line&&y<maxY) c.fillText(line,x,y);
+  return y+lineH;
+}
+
+// Wrap paragraph, no clip — returns new y
+function wrapParaNoClip(c,text,x,y,maxW,lineH){
+  const words=text.split(' '); let line='';
+  for(let w of words){
+    const test=line+(line?' ':'')+w;
+    if(c.measureText(test).width>maxW&&line){
+      c.fillText(line,x,y); y+=lineH; line=w;
+    } else line=test;
+  }
+  if(line) c.fillText(line,x,y);
+  return y+lineH;
+}
+// ═══════════════════════════════════════════════════════════════
+window.addEventListener('load',async()=>{
+  const msg=document.getElementById('boot-status');
+  if(!navigator.xr){
+    msg.textContent='ℹ️ No WebXR detected — will run in 3D preview mode.';
+  } else {
+    const ok=await navigator.xr.isSessionSupported('immersive-vr').catch(()=>false);
+    if(ok){msg.style.color='#22c55e';msg.textContent='✓ immersive-vr supported — headset ready!';}
+    else  {msg.textContent='ℹ️ immersive-vr unavailable — 3D preview mode.';}
+  }
+});
+if(navigator.xr) navigator.xr.addEventListener('sessiongranted',launchGioVR);
+</script>
+
+</body>
+</html>
