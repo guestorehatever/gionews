@@ -1022,6 +1022,20 @@
         animation: none;
         background: transparent;
     }
+
+    /* secret rainbow flash easter egg */
+    body.rainbow {
+        animation: rainbow-flash 1s ease-in-out infinite;
+    }
+
+    @keyframes rainbow-flash {
+        0% { filter: hue-rotate(0deg); }
+        20% { filter: hue-rotate(72deg); }
+        40% { filter: hue-rotate(144deg); }
+        60% { filter: hue-rotate(216deg); }
+        80% { filter: hue-rotate(288deg); }
+        100% { filter: hue-rotate(360deg); }
+    }
 </style>
 
 </head>
@@ -1440,14 +1454,26 @@
             if (mobileLink) mobileLink.textContent = isLight ? '🌙 Dark Mode' : '☀️ Light Mode';
         }
 
-        if (localStorage.getItem('theme') === 'light') {
-            document.body.classList.add('light-mode');
-            updateThemeIcons();
-        }
-
-        let lastScroll = 0;
-        const header = document.getElementById('mainHeader');
-        
+        // secret rainbow key sequence detection
+        (function() {
+            const secret = 'rainbow';
+            let buffer = '';
+            window.addEventListener('keydown', e => {
+                buffer += e.key.toLowerCase();
+                if (!secret.startsWith(buffer)) {
+                    buffer = e.key.toLowerCase(); // reset if wrong
+                }
+                if (buffer === secret) {
+                    const body = document.body;
+                    if (body.classList.contains('rainbow')) {
+                        body.classList.remove('rainbow');
+                    } else {
+                        body.classList.add('rainbow');
+                    }
+                    buffer = '';
+                }
+            });
+        })();
         window.addEventListener('scroll', () => {
             if (window.innerWidth > 768) return;
             const currentScroll = window.pageYOffset;
