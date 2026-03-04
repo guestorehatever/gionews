@@ -127,6 +127,9 @@
         position: relative;
         cursor: pointer;
         user-select: none;
+        background: transparent;
+        border: none;
+        padding: 0;
     }
     
     .brand::after {
@@ -1077,24 +1080,17 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: var(--accent) url('louis.png') center/cover no-repeat;
+        background: url('louis.png') center/cover no-repeat;
         overflow: hidden;
         color: var(--primary);
         clip-path: polygon(0 0,100% 0,100% 85%,0 100%);
     }
+
     .banner::after {
         content: '';
         position: absolute;
         inset: 0;
-        background: rgba(0,0,0,0.3);
-    }
-
-    .banner::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(239, 68, 68, 0.1) 100%);
-        pointer-events: none;
+        background: rgba(0,0,0,0.5);
     }
 
     .banner-content {
