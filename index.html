@@ -125,6 +125,8 @@
         display: flex; 
         align-items: center;
         position: relative;
+        cursor: pointer;
+        user-select: none;
     }
     
     .brand::after {
@@ -1182,9 +1184,9 @@
 <!-- Header -->
 <header id="mainHeader">
     <div class="header-content">
-        <a href="index.html" class="brand">
+        <button class="brand" id="logoBrand" title="Click 10 times for a surprise!">
             <img src="Gio.png" alt="GioNews" class="logo-img">
-        </a>
+        </button>
 
         <nav class="nav-desktop">
             <div class="nav-pill">
@@ -1620,6 +1622,25 @@
             const mobileLink = document.getElementById('mobileThemeToggle');
             if (desktopBtn) desktopBtn.textContent = isLight ? '☀️' : '🌙';
             if (mobileLink) mobileLink.textContent = isLight ? '🌙 Dark Mode' : '☀️ Light Mode';
+        }
+
+        // logo click counter for rainbow easter egg (mobile friendly)
+        let logoClickCount = 0;
+        const logoBrand = document.getElementById('logoBrand');
+        if (logoBrand) {
+            logoBrand.addEventListener('click', (e) => {
+                e.preventDefault();
+                logoClickCount++;
+                if (logoClickCount === 10) {
+                    const body = document.body;
+                    if (body.classList.contains('rainbow')) {
+                        body.classList.remove('rainbow');
+                    } else {
+                        body.classList.add('rainbow');
+                    }
+                    logoClickCount = 0; // reset counter
+                }
+            });
         }
 
         // header scroll behavior
