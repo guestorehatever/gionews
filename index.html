@@ -162,6 +162,7 @@
         background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent);
         opacity: 0;
         transition: var(--transition);
+        pointer-events: none;
     }
     
     .nav-pill:hover::before { opacity: 1; }
@@ -210,6 +211,7 @@
         background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), transparent);
         opacity: 0;
         transition: var(--transition);
+        pointer-events: none;
     }
     
     .theme-toggle:hover { 
@@ -282,6 +284,7 @@
         background: linear-gradient(to bottom, var(--accent), var(--accent-hover));
         transform: scaleY(0);
         transition: var(--transition);
+        pointer-events: none;
     }
 
     .nav-mobile a:hover {
@@ -382,6 +385,7 @@
         border-radius: 50%;
         animation: pulse 2s infinite;
         box-shadow: 0 0 10px rgba(255,255,255,0.8);
+        pointer-events: none;
     }
 
     @keyframes pulse { 
@@ -449,6 +453,7 @@
         box-shadow: 0 0 10px var(--accent);
         transform: scaleY(0);
         transition: var(--transition);
+        pointer-events: none;
     }
 
     .side-card::after {
@@ -458,6 +463,7 @@
         background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), transparent);
         opacity: 0;
         transition: var(--transition);
+        pointer-events: none;
     }
 
     .side-card:hover { 
@@ -640,6 +646,7 @@
         -webkit-mask-composite: xor;
         mask-composite: exclude;
         opacity: 0;
+        pointer-events: none;
         transition: var(--transition);
     }
 
