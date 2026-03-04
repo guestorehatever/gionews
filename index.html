@@ -312,6 +312,7 @@
         cursor: pointer;
         transition: var(--transition);
         box-shadow: var(--shadow);
+        pointer-events: auto;
     }
 
     .hero-card::before {
@@ -437,6 +438,7 @@
         box-shadow: var(--shadow-sm);
         position: relative;
         overflow: hidden;
+        pointer-events: auto;
     }
 
     .side-card::before {
@@ -608,6 +610,10 @@
 
     .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
 
+    article {
+        pointer-events: auto;
+    }
+
     .news-card {
         background: var(--card-bg);
         border: 1px solid var(--border);
@@ -619,6 +625,7 @@
         flex-direction: column;
         box-shadow: var(--shadow-sm);
         position: relative;
+        pointer-events: auto;
     }
     
     .news-card::after {
@@ -1119,12 +1126,12 @@
     </div>
 
     <nav class="nav-mobile" id="mobileNav">
-        <a href="index.html">Home</a>
-        <a href="stream.html">Live Stream</a>
-        <a href="breaking.html">Archive</a>
-        <a href="weather.html">Weather</a>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSevr5ncTSlYSwAR442zXlW818Zkp36C0Us_VY6b57HCztYq7g/viewform?usp=dialog" target="_blank">Live Alert Sign Up</a>
-        <a href="#" onclick="toggleDarkMode(); return false;" id="mobileThemeToggle">🌙 Dark Mode</a>
+        <a href="index.html" onclick="closeMobileNav()">Home</a>
+        <a href="stream.html" onclick="closeMobileNav()">Live Stream</a>
+        <a href="breaking.html" onclick="closeMobileNav()">Archive</a>
+        <a href="weather.html" onclick="closeMobileNav()">Weather</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSevr5ncTSlYSwAR442zXlW818Zkp36C0Us_VY6b57HCztYq7g/viewform?usp=dialog" target="_blank" onclick="closeMobileNav()">Live Alert Sign Up</a>
+        <a href="#" onclick="toggleDarkMode(); closeMobileNav(); return false;" id="mobileThemeToggle">🌙 Dark Mode</a>
     </nav>
 </header>
 
@@ -1461,6 +1468,17 @@
                 document.body.classList.add('light-mode');
             }
             updateThemeIcons();
+
+            // Close mobile nav when clicking outside of it
+            document.addEventListener('click', function(event) {
+                const mobileNav = document.getElementById('mobileNav');
+                const navToggle = document.querySelector('.nav-toggle');
+                if (mobileNav.classList.contains('active') && 
+                    !mobileNav.contains(event.target) && 
+                    !navToggle.contains(event.target)) {
+                    closeMobileNav();
+                }
+            });
         });
 
         // Initialize variables for scroll handling
@@ -1475,6 +1493,7 @@
         };
 
         function openStory(storyId) {
+            closeMobileNav();
             const story = stories[storyId];
             if (story) {
                 document.getElementById('modalCategory').textContent = story.category;
@@ -1486,6 +1505,8 @@
                 const modal = document.getElementById('storyModal');
                 modal.classList.add('active');
                 document.body.style.overflow = 'hidden';
+            } else {
+                console.error('Story not found:', storyId);
             }
         }
 
@@ -1508,6 +1529,13 @@
             const toggle = document.querySelector('.nav-toggle');
             mobileNav.classList.toggle('active');
             toggle.textContent = mobileNav.classList.contains('active') ? '✕' : '☰';
+        }
+
+        function closeMobileNav() {
+            const mobileNav = document.getElementById('mobileNav');
+            const toggle = document.querySelector('.nav-toggle');
+            mobileNav.classList.remove('active');
+            toggle.textContent = '☰';
         }
 
         function toggleDarkMode() {
