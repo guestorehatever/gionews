@@ -70,19 +70,26 @@
                 radial-gradient(circle at 0% 100%, rgba(239, 68, 68, 0.05) 0%, transparent 50%);
         }
 
-        /* Header - Hide on scroll down for mobile */
-        header {
+        /* Header styling (fixed + blur) */
+        header, .top-nav {
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
-            position: sticky;
+            position: fixed;
             top: 0;
-            z-index: 100;
-            transition: transform 0.3s ease, background 0.3s ease;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: background 0.3s, box-shadow 0.3s, transform 0.3s ease;
         }
 
-        body.light-mode header {
+        body.light-mode header, body.light-mode .top-nav {
             background: rgba(255, 255, 255, 0.95);
+        }
+
+        .top-nav.scrolled, header.scrolled {
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         header.hide-mobile {
@@ -142,6 +149,20 @@
             background: var(--accent);
             color: #ffffff;
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        .nav-pill a {
+            position: relative;
+        }
+        .nav-pill a::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0; height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        .nav-pill a:hover::after, .nav-pill a.active::after {
+            width: 100%;
         }
 
         /* Dark mode toggle button */
@@ -235,10 +256,9 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 24px 20px;
+            padding: 90px 20px 24px;
         }
 
-        /* Pre-recorded Badge */
         .prerecorded-badge {
             display: inline-flex;
             align-items: center;
@@ -253,11 +273,44 @@
             letter-spacing: 1px;
             border-radius: 100px;
             margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            animation: badgeGlow 2s ease-in-out infinite;
         }
 
         .prerecorded-badge::before {
             content: '▶';
             font-size: 12px;
+        }
+        
+        .prerecorded-badge::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes badgeGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.6); }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Stream Container */
@@ -274,7 +327,29 @@
             border-radius: var(--radius);
             overflow: hidden;
             box-shadow: var(--shadow-lg);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            animation: cardFadeIn 0.6s ease-out;
         }
+
+        .stream-main:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3), 0 0 60px rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .stream-main::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .stream-main:hover::before { opacity: 1; }
 
         .stream-header {
             background: var(--primary-light);
@@ -318,7 +393,33 @@
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: cardFadeIn 0.6s ease-out;
+            animation-fill-mode: both;
+            position: relative;
+            overflow: hidden;
         }
+
+        .info-card:nth-child(1) { animation-delay: 0.1s; }
+        .info-card:nth-child(2) { animation-delay: 0.2s; }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .info-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.25), 0 0 50px rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        
+        .info-card:hover::before { opacity: 1; }
 
         .info-card h3 {
             font-size: 16px;
@@ -476,7 +577,7 @@
 <!-- Replace the nav-desktop and nav-mobile sections in your index.html with these -->
 
 <!-- Header -->
-<header id="mainHeader">
+<header id="mainHeader" class="top-nav">
     <div class="header-content">
         <a href="index.html" class="brand">
             <img src="Gio.png" alt="GioNews" class="logo-img">
@@ -484,8 +585,8 @@
 
         <nav class="nav-desktop">
             <div class="nav-pill">
-                <a href="index.html" class="active">Home</a>
-                <a href="stream.html">Live</a>
+                <a href="index.html">Home</a>
+                <a href="stream.html" class="active">Live</a>
                 <a href="breaking.html">Archive</a>
                 <a href="weather.html">Weather</a>
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSevr5ncTSlYSwAR442zXlW818Zkp36C0Us_VY6b57HCztYq7g/viewform?usp=dialog" target="_blank">Alerts</a>
@@ -618,11 +719,15 @@
             updateThemeIcons();
         }
 
-        // Hide header on scroll down (mobile only)
+        // Hide header on scroll down (mobile only) + scrolled background
         let lastScroll = 0;
         const header = document.getElementById('mainHeader');
         
         window.addEventListener('scroll', () => {
+            // add scrolled shadow regardless of width
+            if (window.scrollY > 50) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+
             if (window.innerWidth > 768) return;
             
             const currentScroll = window.pageYOffset;

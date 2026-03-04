@@ -181,11 +181,24 @@
         z-index: 1;
     }
 
+    .nav-pill a {
+        position: relative;
+        padding: 10px 18px;
+        transition: var(--transition);
+    }
+    .nav-pill a::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0;
+        width: 0%; height: 2px;
+        background: var(--accent);
+        transition: width 0.3s ease;
+    }
+    .nav-pill a:hover::after, .nav-pill a.active::after {
+        width: 100%;
+    }
     .nav-pill a:hover, .nav-pill a.active {
-        background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-        color: #ffffff;
-        box-shadow: 0 4px 20px var(--accent-glow), 0 0 0 1px rgba(255,255,255,0.1) inset;
-        transform: translateY(-1px);
+        color: var(--accent);
     }
 
     .theme-toggle {
@@ -297,13 +310,27 @@
     
     .nav-mobile a:hover::before { transform: scaleY(1); }
 
-    .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; position: relative; z-index: 2; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 90px 24px 32px; position: relative; z-index: 2; }
 
     .featured-grid {
         display: grid;
-        grid-template-columns: 1.2fr 1fr;
-        gap: 28px;
-        margin-bottom: 32px;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 32px;
+        margin-bottom: 48px;
+        align-items: start;
+        margin-top: 32px;
+        position: relative;
+    }
+    .featured-grid::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: rgba(0, 123, 255, 0.1);
+        border-radius: 50%;
+        z-index: -1;
     }
 
     .hero-card {
@@ -313,9 +340,10 @@
         overflow: hidden;
         position: relative;
         cursor: pointer;
-        transition: var(--transition);
+        transition: var(--transition), transform 0.5s;
         box-shadow: var(--shadow);
         pointer-events: auto;
+        transform-style: preserve-3d;
     }
 
     .hero-card::before {
@@ -330,8 +358,7 @@
     }
 
     .hero-card:hover { 
-        transform: translateY(-6px); 
-        border-color: var(--border-glow); 
+        transform: perspective(800px) rotateY(3deg) translateY(-12px); 
         box-shadow: var(--shadow-lg), var(--shadow-glow);
     }
     
@@ -1030,15 +1057,23 @@
 
     .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
 
-    /* Banner Styles */
+    /* Banner Styles (hero) */
     .banner {
-        background: linear-gradient(135deg, rgba(10, 15, 28, 0.85) 0%, rgba(10, 15, 28, 0.75) 100%), 
-                    url('louis.png') center/cover no-repeat;
-        padding: 50px 24px;
-        text-align: center;
         position: relative;
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--accent) url('louis.png') center/cover no-repeat;
         overflow: hidden;
-        border-bottom: 3px solid linear-gradient(90deg, var(--accent), var(--danger));
+        color: var(--primary);
+        clip-path: polygon(0 0,100% 0,100% 85%,0 100%);
+    }
+    .banner::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.3);
     }
 
     .banner::before {
@@ -1055,6 +1090,18 @@
         max-width: 1000px;
         margin: 0 auto;
     }
+    .banner-cta {
+        margin-top: 24px;
+        display: inline-block;
+        background: var(--primary);
+        color: var(--accent);
+        padding: 14px 32px;
+        border-radius: var(--radius);
+        font-weight: 700;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+    .banner-cta:hover { transform: scale(1.05); }
 
     .banner-title {
         font-family: 'Playfair Display', serif;
@@ -1168,6 +1215,7 @@
         <h1 class="banner-title">GioNews!</h1>
         <p class="banner-slogan">Serving the Missouri Community</p>
         <p class="banner-subtext">St. Louis Metro News, Live Coverage & Breaking Updates</p>
+        <a href="#featured" class="banner-cta">See Latest Stories</a>
     </div>
 </section>
 <script async src="https://app3.weatherwidget.org/js/?id=ww_74342c2323fc4"></script>
@@ -1562,6 +1610,14 @@
             if (desktopBtn) desktopBtn.textContent = isLight ? '☀️' : '🌙';
             if (mobileLink) mobileLink.textContent = isLight ? '🌙 Dark Mode' : '☀️ Light Mode';
         }
+
+        // header scroll behavior
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.top-nav');
+            if (!nav) return;
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
 
         // secret rainbow key sequence detection
         (function() {

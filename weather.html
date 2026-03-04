@@ -83,15 +83,17 @@
 
     body.light-mode::before { opacity: 0.02; }
 
-    header {
+    header, .top-nav {
         background: var(--glass);
         backdrop-filter: blur(20px) saturate(180%);
         -webkit-backdrop-filter: blur(20px) saturate(180%);
         border-bottom: 1px solid var(--border);
-        position: sticky;
+        position: fixed;
         top: 0;
-        z-index: 100;
-        transition: var(--transition);
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        transition: var(--transition), background 0.3s, box-shadow 0.3s;
     }
 
     header::before {
@@ -101,8 +103,13 @@
         background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
     }
 
-    body.light-mode header { 
+    body.light-mode header, body.light-mode .top-nav { 
         background: rgba(255, 255, 255, 0.8);
+    }
+    
+    .top-nav.scrolled, header.scrolled {
+        background: rgba(255,255,255,0.9);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     
     header.hide-mobile { transform: translateY(-100%); }
@@ -169,6 +176,20 @@
         color: #ffffff;
         box-shadow: 0 4px 20px var(--accent-glow), 0 0 0 1px rgba(255,255,255,0.1) inset;
         transform: translateY(-1px);
+    }
+    .nav-pill a {
+        position: relative;
+    }
+    .nav-pill a::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0;
+        width: 0; height: 2px;
+        background: var(--accent);
+        transition: width 0.3s ease;
+    }
+    .nav-pill a:hover::after, .nav-pill a.active::after {
+        width: 100%;
     }
 
     .theme-toggle {
@@ -247,7 +268,7 @@
     .container { 
         max-width: 1400px; 
         margin: 0 auto; 
-        padding: 32px 24px; 
+        padding: 90px 24px 32px; 
         position: relative; 
         z-index: 2; 
     }
@@ -323,7 +344,6 @@
         letter-spacing: 0.5px;
     }
 
-    /* Current Weather */
     .current-weather {
         background: var(--card-bg);
         border: 1px solid var(--border);
@@ -333,13 +353,38 @@
         position: relative;
         overflow: hidden;
         box-shadow: var(--shadow);
-        transition: var(--transition);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: cardFadeIn 0.6s ease-out;
     }
 
     .current-weather:hover {
-        transform: translateY(-4px);
-        box-shadow: var(--shadow-lg), var(--shadow-glow);
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg), 0 0 60px rgba(59, 130, 246, 0.2);
         border-color: var(--border-glow);
+    }
+
+    .current-weather::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), transparent);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    .current-weather:hover::before { opacity: 1; }
+
+    @keyframes cardFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .weather-header {
@@ -455,14 +500,29 @@
         background: rgba(255,255,255,0.03);
         border-radius: var(--radius-sm);
         border: 1px solid var(--border);
-        transition: var(--transition);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .weather-stat::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), transparent);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
     }
 
     .weather-stat:hover {
-        background: rgba(59, 130, 246, 0.1);
+        background: rgba(59, 130, 246, 0.12);
         border-color: var(--border-glow);
-        transform: translateY(-4px);
+        transform: translateY(-6px);
+        box-shadow: 0 15px 30px rgba(59, 130, 246, 0.15);
     }
+    
+    .weather-stat:hover::before { opacity: 1; }
 
     .stat-label {
         font-size: 12px;
@@ -519,15 +579,37 @@
         border-radius: var(--radius);
         padding: 24px 16px;
         text-align: center;
-        transition: var(--transition);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        animation: cardFadeIn 0.6s ease-out;
+        animation-fill-mode: both;
+    }
+
+    .forecast-day:nth-child(1) { animation-delay: 0.1s; }
+    .forecast-day:nth-child(2) { animation-delay: 0.15s; }
+    .forecast-day:nth-child(3) { animation-delay: 0.2s; }
+    .forecast-day:nth-child(4) { animation-delay: 0.25s; }
+    .forecast-day:nth-child(5) { animation-delay: 0.3s; }
+
+    .forecast-day::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), transparent);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
     }
 
     .forecast-day:hover {
-        transform: translateY(-8px);
+        transform: translateY(-10px);
         border-color: var(--border-glow);
-        box-shadow: var(--shadow), var(--shadow-glow);
+        box-shadow: 0 20px 40px rgba(59, 130, 246, 0.25), 0 0 50px rgba(59, 130, 246, 0.15);
     }
+    
+    .forecast-day:hover::before { opacity: 1; }
 
     .day-name {
         font-size: 14px;
@@ -567,7 +649,6 @@
         font-weight: 600;
     }
 
-    /* Hourly Scroll */
     .hourly-container {
         background: var(--card-bg);
         border: 1px solid var(--border);
@@ -575,6 +656,13 @@
         padding: 24px;
         margin-bottom: 32px;
         box-shadow: var(--shadow);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: cardFadeIn 0.6s ease-out 0.2s backwards;
+    }
+
+    .hourly-container:hover {
+        box-shadow: 0 15px 35px rgba(59, 130, 246, 0.2), 0 0 50px rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.3);
     }
 
     .hourly-scroll {
@@ -608,14 +696,29 @@
         background: rgba(255,255,255,0.03);
         border-radius: var(--radius-sm);
         border: 1px solid var(--border);
-        transition: var(--transition);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hour-item::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
     }
 
     .hour-item:hover {
-        background: rgba(59, 130, 246, 0.1);
+        background: rgba(59, 130, 246, 0.15);
         border-color: var(--border-glow);
-        transform: translateY(-4px);
+        transform: translateY(-6px);
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
     }
+    
+    .hour-item:hover::before { opacity: 1; }
 
     .hour-time {
         font-size: 13px;
@@ -715,7 +818,7 @@
 <body>
 
     <!-- Header -->
-    <header id="mainHeader">
+    <header id="mainHeader" class="top-nav">
         <div class="header-content">
             <a href="index.html" class="brand">
                 <img src="Gio.png" alt="GioNews" class="logo-img">
@@ -794,6 +897,9 @@
         const header = document.getElementById('mainHeader');
         
         window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+
             if (window.innerWidth > 768) return;
             const currentScroll = window.pageYOffset;
             if (currentScroll > lastScroll && currentScroll > 100) {
