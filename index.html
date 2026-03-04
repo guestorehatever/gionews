@@ -331,6 +331,11 @@
         background: rgba(0, 123, 255, 0.1);
         border-radius: 50%;
         z-index: -1;
+        display: none;
+    }
+    
+    @media (min-width: 1024px) {
+        .featured-grid::before { display: block; }
     }
 
     .hero-card {
@@ -1023,36 +1028,42 @@
         .hero-title { font-size: 28px; }
         .ad-slot-top { padding: 24px; }
         .ad-slot-top img { max-width: 100%; }
+        .container { padding: 110px 20px 32px; }
     }
 
     @media (max-width: 768px) {
         .nav-desktop { display: none; }
         .nav-toggle { display: flex; align-items: center; justify-content: center; }
-        .hero-title { font-size: 26px; }
-        .hero-content { padding: 28px; position: relative; background: var(--card-bg); }
+        .hero-title { font-size: 22px; }
+        .hero-content { padding: 24px; position: relative; background: var(--card-bg); }
         body.light-mode .hero-content { background: var(--card-bg); }
-        .hero-image { height: 260px; }
+        .hero-image { height: 200px; }
         .side-headlines { flex-direction: column; }
         .side-card { min-width: auto; }
         .news-grid { grid-template-columns: 1fr; }
-        .section-title { font-size: 24px; }
+        .section-title { font-size: 20px; }
         .modal-container { padding: 0; }
         .modal-content { border-radius: 0; min-height: 100vh; }
-        .modal-header { padding: 28px; padding-top: 80px; }
-        .modal-title { font-size: 26px; }
-        .modal-body { padding: 28px; }
-        .modal-text { font-size: 17px; }
-        .container { padding: 20px; }
+        .modal-header { padding: 24px; padding-top: 100px; }
+        .modal-title { font-size: 22px; }
+        .modal-body { padding: 24px; }
+        .modal-text { font-size: 16px; }
+        .container { padding: 110px 16px 32px; }
         .ad-slot-top { margin-bottom: 48px; padding: 20px; }
+        .banner { min-height: 50vh; }
+        .banner-title { font-size: 32px; }
     }
 
     @media (max-width: 480px) {
         .header-content { padding: 12px 16px; }
-        .logo-img { height: 40px; }
-        .container { padding: 16px; }
-        .hero-title { font-size: 24px; }
-        .news-body { padding: 24px; }
-        .section-title { font-size: 22px; }
+        .logo-img { height: 38px; }
+        .container { padding: 90px 12px 24px; }
+        .hero-title { font-size: 18px; }
+        .banner-title { font-size: 24px; }
+        .banner-slogan { font-size: 16px; }
+        .news-body { padding: 20px; }
+        .section-title { font-size: 18px; }
+        .modal-header { padding-top: 80px; }
     }
 
     .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
@@ -1640,7 +1651,7 @@
             });
         })();
         window.addEventListener('scroll', () => {
-            if (window.innerWidth > 768) return;
+            if (window.innerWidth > 480) return;
             const currentScroll = window.pageYOffset;
             if (currentScroll > lastScroll && currentScroll > 100) {
                 header.classList.add('hide-mobile');
