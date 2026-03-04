@@ -412,6 +412,7 @@
         margin-bottom: 20px; 
         display: -webkit-box; 
         -webkit-line-clamp: 2; 
+        line-clamp: 2;
         -webkit-box-orient: vertical; 
         overflow: hidden;
         font-weight: 400;
@@ -720,6 +721,7 @@
         flex: 1; 
         display: -webkit-box; 
         -webkit-line-clamp: 3; 
+        line-clamp: 3;
         -webkit-box-orient: vertical; 
         overflow: hidden;
         font-weight: 400;
@@ -850,12 +852,20 @@
         -webkit-overflow-scrolling: touch;
         opacity: 0;
         transition: opacity 0.3s ease;
+        /* ensure hidden modal doesn't capture pointer events */
+        pointer-events: none;
     }
 
     body.light-mode .modal { background: rgba(248, 250, 252, 0.95); }
     .modal.active { 
         display: block; 
         opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* Defensive: make sure main structural elements receive pointer events */
+    html, body, main, header, footer, .container {
+        pointer-events: auto !important;
     }
 
     .modal-container { 
@@ -1491,13 +1501,6 @@
         // Initialize variables for scroll handling
         const header = document.getElementById('mainHeader');
         let lastScroll = 0;
-                date: 'Feb 26, 2026',
-                content: `<p>Borge Brende, the chief executive of the World Economic Forum, announced his resignation Thursday following an independent investigation by the WEF into his ties to Jeffrey Epstein, the financier who died in federal custody in 2019 after being charged with sex trafficking.</p>
-                <p>The WEF commissioned the review after questions arose about the nature and extent of Brende's interactions with Epstein. The organization did not release the full findings of the investigation, but confirmed that Brende had informed the board of his decision to step down.</p>
-                <p>Brende, a former Norwegian foreign minister, had served as WEF president since 2013 and was instrumental in shaping the organization's agenda at its annual Davos gatherings, where global business and political leaders convene each January.</p>
-                <p>His departure is part of a broader reckoning following the unsealing of court documents related to Epstein's network, which has renewed public and governmental scrutiny of institutions and individuals who had contact with Epstein over the course of his decades-long career as a financier and convicted sex offender. Congressional investigations in both chambers are currently examining the Epstein network.</p>`
-            }
-        };
 
         function openStory(storyId) {
             closeMobileNav();
