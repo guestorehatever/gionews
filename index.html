@@ -1,302 +1,80 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GioNews — Be Right Back</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<title>GioNews - Currently Down</title>
 
-```
-:root {
-  --bg: #000000;
-  --bg2: #060b14;
-  --blue: #1a6fd4;
-  --blue-bright: #3b8ef0;
-  --blue-glow: rgba(26, 111, 212, 0.25);
-  --text: #e8edf5;
-  --muted: #4a5568;
-  --border: rgba(26, 111, 212, 0.3);
+<!-- Facebook Icon Library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
 }
 
-html, body {
-  height: 100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  overflow: hidden;
-}
-
-/* Animated background */
-.bg-layer {
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 70% 60% at 50% -10%, rgba(26,111,212,0.18) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 40% at 10% 90%, rgba(26,111,212,0.07) 0%, transparent 55%),
-    linear-gradient(180deg, #060b14 0%, #000000 100%);
-  pointer-events: none;
-}
-
-/* Scrolling news ticker lines (decorative) */
-.ticker-lines {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  opacity: 0.04;
-}
-
-.ticker-line {
-  position: absolute;
-  white-space: nowrap;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 13px;
-  letter-spacing: 0.15em;
-  color: var(--blue-bright);
-  animation: scrollLeft linear infinite;
-}
-
-.ticker-line:nth-child(1)  { top: 10%;  animation-duration: 28s; }
-.ticker-line:nth-child(2)  { top: 25%;  animation-duration: 22s; animation-delay: -8s; }
-.ticker-line:nth-child(3)  { top: 40%;  animation-duration: 32s; animation-delay: -14s; }
-.ticker-line:nth-child(4)  { top: 55%;  animation-duration: 20s; animation-delay: -4s; }
-.ticker-line:nth-child(5)  { top: 70%;  animation-duration: 26s; animation-delay: -10s; }
-.ticker-line:nth-child(6)  { top: 85%;  animation-duration: 30s; animation-delay: -18s; }
-
-@keyframes scrollLeft {
-  from { transform: translateX(100vw); }
-  to   { transform: translateX(-100%); }
-}
-
-/* Corner brackets */
-.corner {
-  position: fixed;
-  width: 48px;
-  height: 48px;
-  opacity: 0.4;
-}
-.corner--tl { top: 28px; left: 28px; border-top: 2px solid var(--blue); border-left: 2px solid var(--blue); }
-.corner--tr { top: 28px; right: 28px; border-top: 2px solid var(--blue); border-right: 2px solid var(--blue); }
-.corner--bl { bottom: 28px; left: 28px; border-bottom: 2px solid var(--blue); border-left: 2px solid var(--blue); }
-.corner--br { bottom: 28px; right: 28px; border-bottom: 2px solid var(--blue); border-right: 2px solid var(--blue); }
-
-/* Main */
 .container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  z-index: 10;
-  animation: fadeUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Logo */
 .logo {
-  margin-bottom: 36px;
+    width: 180px;
+    margin-bottom: 25px;
 }
 
-.logo img {
-  height: 80px;
-  width: auto;
+.title {
+    font-size: 40px;
+    color: #1e90ff;
+    margin-bottom: 10px;
 }
 
-/* Breaking bar */
-.breaking-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 40px;
+.message {
+    font-size: 18px;
+    max-width: 500px;
+    margin-bottom: 25px;
 }
 
-.breaking-label {
-  background: var(--blue);
-  color: #fff;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  padding: 4px 10px;
-  clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+.button {
+    background-color: #1e90ff;
+    color: white;
+    padding: 12px 22px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.breaking-text {
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.button:hover {
+    background-color: #0d6efd;
 }
-
-.live-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--blue-bright);
-  animation: pulse 1.8s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(59,142,240,0.5); }
-  50%       { opacity: 0.6; box-shadow: 0 0 0 6px rgba(59,142,240,0); }
-}
-
-/* Headline */
-h1 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(3.5rem, 10vw, 8rem);
-  line-height: 0.95;
-  text-align: center;
-  letter-spacing: 0.02em;
-  color: var(--text);
-  margin-bottom: 8px;
-}
-
-h1 span {
-  color: var(--blue-bright);
-}
-
-/* Blue underline accent */
-.headline-rule {
-  width: 100%;
-  max-width: 520px;
-  height: 3px;
-  background: linear-gradient(to right, var(--blue), transparent);
-  margin: 16px auto 28px;
-}
-
-.subtext {
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  text-align: center;
-  line-height: 2.2;
-  margin-bottom: 48px;
-}
-
-/* Facebook button */
-.fb-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 13px 28px;
-  background: var(--blue);
-  color: #fff;
-  text-decoration: none;
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  border: none;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  clip-path: polygon(0 0, 100% 0, 97% 100%, 0% 100%);
-}
-
-.fb-btn::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255,255,255,0.1);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.fb-btn:hover::after { opacity: 1; }
-.fb-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(26,111,212,0.4);
-}
-
-.fb-icon {
-  width: 15px;
-  height: 15px;
-  fill: currentColor;
-  flex-shrink: 0;
-}
-
-/* Footer */
-.footer-note {
-  position: fixed;
-  bottom: 36px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-  opacity: 0.45;
-  white-space: nowrap;
-}
-```
-
-  </style>
+</style>
 </head>
+
 <body>
 
-  <div class="bg-layer"></div>
+<div class="container">
+    <img src="Gio.png" class="logo" alt="GioNews Logo">
 
-  <!-- Decorative scrolling text -->
+    <div class="title">GioNews is Currently Down</div>
 
-  <div class="ticker-lines">
-    <div class="ticker-line">SITE MAINTENANCE &nbsp;&nbsp;&bull;&nbsp;&nbsp; BACK SOON &nbsp;&nbsp;&bull;&nbsp;&nbsp; GIONEWS &nbsp;&nbsp;&bull;&nbsp;&nbsp; STAY TUNED &nbsp;&nbsp;&bull;&nbsp;&nbsp; SITE MAINTENANCE &nbsp;&nbsp;&bull;&nbsp;&nbsp; BACK SOON &nbsp;&nbsp;&bull;&nbsp;&nbsp; GIONEWS &nbsp;&nbsp;&bull;&nbsp;&nbsp; STAY TUNED</div>
-    <div class="ticker-line">BREAKING &nbsp;&nbsp;&bull;&nbsp;&nbsp; WE ARE UPGRADING &nbsp;&nbsp;&bull;&nbsp;&nbsp; FOLLOW OUR FACEBOOK &nbsp;&nbsp;&bull;&nbsp;&nbsp; BREAKING &nbsp;&nbsp;&bull;&nbsp;&nbsp; WE ARE UPGRADING &nbsp;&nbsp;&bull;&nbsp;&nbsp; FOLLOW OUR FACEBOOK</div>
-    <div class="ticker-line">GIONEWS &nbsp;&nbsp;&bull;&nbsp;&nbsp; YOUR SOURCE &nbsp;&nbsp;&bull;&nbsp;&nbsp; MAINTENANCE MODE &nbsp;&nbsp;&bull;&nbsp;&nbsp; GIONEWS &nbsp;&nbsp;&bull;&nbsp;&nbsp; YOUR SOURCE &nbsp;&nbsp;&bull;&nbsp;&nbsp; MAINTENANCE MODE</div>
-    <div class="ticker-line">STAY CONNECTED &nbsp;&nbsp;&bull;&nbsp;&nbsp; BACK VERY SOON &nbsp;&nbsp;&bull;&nbsp;&nbsp; GIONEWS &nbsp;&nbsp;&bull;&nbsp;&nbsp; STAY CONNECTED &nbsp;&nbsp;&bull;&nbsp;&nbsp; BACK VERY SOON &nbsp;&nbsp;&bull;&nbsp;&nbsp; GIONEWS</div>
-    <div class="ticker-line">SITE MAINTENANCE &nbsp;&nbsp;&bull;&nbsp;&nbsp; BACK SOON &nbsp;&nbsp;&bull;&nbsp;&nbsp; GIONEWS &nbsp;&nbsp;&bull;&nbsp;&nbsp; STAY TUNED &nbsp;&nbsp;&bull;&nbsp;&nbsp; SITE MAINTENANCE &nbsp;&nbsp;&bull;&nbsp;&nbsp; BACK SOON</div>
-    <div class="ticker-line">BREAKING &nbsp;&nbsp;&bull;&nbsp;&nbsp; WE ARE UPGRADING &nbsp;&nbsp;&bull;&nbsp;&nbsp; FOLLOW OUR FACEBOOK &nbsp;&nbsp;&bull;&nbsp;&nbsp; BREAKING &nbsp;&nbsp;&bull;&nbsp;&nbsp; WE ARE UPGRADING</div>
-  </div>
+    <div class="message">
+        We're doing maintenance or fixing an issue.  
+        Check our Facebook community for updates and alerts.
+    </div>
 
-  <div class="corner corner--tl"></div>
-  <div class="corner corner--tr"></div>
-  <div class="corner corner--bl"></div>
-  <div class="corner corner--br"></div>
-
-  <div class="container">
-
-```
-<div class="logo">
-  <img src="Gio.png" alt="GioNews" />
+    <a class="button" href="https://www.facebook.com/share/g/18RPBaLmoY/?mibextid=wwXIfr">
+        <i class="fab fa-facebook"></i> Visit the GioNews Facebook Group
+    </a>
 </div>
-
-<div class="breaking-bar">
-  <span class="breaking-label">Breaking</span>
-  <span class="breaking-text"><span class="live-dot"></span> Site Currently Offline</span>
-</div>
-
-<h1>We'll Be<br/><span>Back Soon</span></h1>
-
-<div class="headline-rule"></div>
-
-<p class="subtext">
-  GioNews is currently undergoing maintenance.<br>
-  Join our Facebook group to stay up to date.
-</p>
-
-<a href="https://www.facebook.com/share/g/18RPBaLmoY/?mibextid=wwXIfr" target="_blank" rel="noopener" class="fb-btn">
-  <svg class="fb-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M24 12.073C24 5.404 18.627 0 12 0S0 5.404 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.514c-1.491 0-1.956.93-1.956 1.887v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
-  </svg>
-  Join Our Facebook Group
-</a>
-```
-
-  </div>
-
-  <p class="footer-note">© GioNews — Maintenance in Progress</p>
 
 </body>
 </html>
