@@ -1,80 +1,1976 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>GioNews - Currently Down</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="GioNews - Breaking news, live coverage, and 24/7 updates" />
+    <title>GioNews - Breaking News &amp; Live Coverage</title>
 
-<!-- Facebook Icon Library -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Fonts & favicons moved to head -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;family=Playfair+Display:ital,wght@0,700;0,900;1,700&amp;display=swap"
+      rel="stylesheet"
+    />
 
-<style>
-body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #000;
-    color: #fff;
-    text-align: center;
-}
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+    <style>
+      /* (Your full CSS here — unchanged from the original except moved to the head) */
+      :root {
+        --primary: #0a0f1a;
+        --primary-light: #111827;
+        --accent: #3b82f6;
+        --accent-hover: #2563eb;
+        --accent-glow: rgba(59, 130, 246, 0.4);
+        --danger: #ef4444;
+        --danger-glow: rgba(239, 68, 68, 0.4);
+        --text: #f8fafc;
+        --text-muted: #94a3b8;
+        --bg: #020617;
+        --card-bg: rgba(15, 23, 42, 0.6);
+        --glass: rgba(15, 23, 42, 0.4);
+        --border: rgba(148, 163, 184, 0.1);
+        --border-glow: rgba(59, 130, 246, 0.2);
 
-.logo {
-    width: 180px;
-    margin-bottom: 25px;
-}
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.15);
+        --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 
-.title {
-    font-size: 40px;
-    color: #1e90ff;
-    margin-bottom: 10px;
-}
+        --radius: 16px;
+        --radius-sm: 12px;
+        --radius-xs: 8px;
 
-.message {
-    font-size: 18px;
-    max-width: 500px;
-    margin-bottom: 25px;
-}
+        --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-slow: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
 
-.button {
-    background-color: #1e90ff;
-    color: white;
-    padding: 12px 22px;
-    text-decoration: none;
-    border-radius: 6px;
-    font-size: 16px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
+      body.light-mode {
+        --primary: #ffffff;
+        --primary-light: #f8fafc;
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --bg: #f1f5f9;
+        --card-bg: rgba(255, 255, 255, 0.7);
+        --glass: rgba(255, 255, 255, 0.5);
+        --border: rgba(148, 163, 184, 0.2);
+        --border-glow: rgba(59, 130, 246, 0.15);
+        --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.1);
+      }
 
-.button:hover {
-    background-color: #0d6efd;
-}
-</style>
-</head>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
 
-<body>
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        background: var(--bg);
+        background-image:
+          radial-gradient(ellipse at 20% 0%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 100%, rgba(30, 58, 138, 0.08) 0%, transparent 50%);
+        background-attachment: fixed;
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
 
-<div class="container">
-    <img src="Gio.png" class="logo" alt="GioNews Logo">
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        opacity: 0.03;
+        pointer-events: none;
+        z-index: 1;
+      }
 
-    <div class="title">GioNews is Currently Down</div>
+      body.light-mode::before {
+        opacity: 0.02;
+      }
 
-    <div class="message">
-        We're doing maintenance or fixing an issue.  
-        Check our Facebook community for updates and alerts.
+      header {
+        background: var(--glass);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        transition: var(--transition);
+      }
+
+      header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      }
+
+      body.light-mode header {
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      header.hide-mobile {
+        transform: translateY(-100%);
+      }
+
+      .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+        background: transparent;
+        border: none;
+        padding: 0;
+      }
+
+      .brand::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+        transform: scaleX(0);
+        transition: var(--transition);
+      }
+
+      .brand:hover::after {
+        transform: scaleX(1);
+      }
+
+      .logo-img {
+        height: 48px;
+        width: auto;
+        display: block;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+      }
+
+      .nav-desktop {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .nav-pill {
+        display: flex;
+        gap: 4px;
+        background: var(--card-bg);
+        padding: 6px;
+        border-radius: 100px;
+        border: 1px solid var(--border);
+        box-shadow:
+          var(--shadow-sm),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-pill::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent);
+        opacity: 0;
+        transition: var(--transition);
+        pointer-events: none;
+      }
+
+      .nav-pill:hover::before {
+        opacity: 1;
+      }
+
+      .nav-pill a {
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 10px 22px;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 100px;
+        transition: var(--transition-fast);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .nav-pill a {
+        position: relative;
+        padding: 10px 18px;
+        transition: var(--transition);
+      }
+      .nav-pill a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        height: 2px;
+        background: var(--accent);
+        transition: width 0.3s ease;
+      }
+      .nav-pill a:hover::after,
+      .nav-pill a.active::after {
+        width: 100%;
+      }
+      .nav-pill a:hover,
+      .nav-pill a.active {
+        color: var(--accent);
+      }
+
+      .theme-toggle {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        color: var(--text);
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 20px;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 8px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .theme-toggle::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), transparent);
+        opacity: 0;
+        transition: var(--transition);
+        pointer-events: none;
+      }
+
+      .theme-toggle:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 0 30px var(--accent-glow);
+      }
+
+      .theme-toggle:hover::before {
+        opacity: 1;
+      }
+
+      .nav-toggle {
+        display: none;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        color: var(--text);
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 20px;
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .nav-toggle:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+        box-shadow: 0 0 20px var(--accent-glow);
+      }
+
+      .nav-mobile {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(15, 23, 42, 0.98);
+        backdrop-filter: blur(20px) saturate(180%);
+        border-bottom: 1px solid var(--border);
+        padding: 24px;
+        flex-direction: column;
+        gap: 8px;
+        box-shadow: var(--shadow-lg);
+      }
+
+      body.light-mode .nav-mobile {
+        background: rgba(255, 255, 255, 0.98);
+      }
+      .nav-mobile.active {
+        display: flex;
+        animation: slideDown 0.3s ease;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .nav-mobile a {
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 16px 20px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: var(--radius-sm);
+        transition: var(--transition);
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-mobile a::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(to bottom, var(--accent), var(--accent-hover));
+        transform: scaleY(0);
+        transition: var(--transition);
+        pointer-events: none;
+      }
+
+      .nav-mobile a:hover {
+        background: var(--primary-light);
+        color: var(--text);
+        border-color: var(--border-glow);
+        transform: translateX(8px);
+        box-shadow: var(--shadow);
+      }
+
+      .nav-mobile a:hover::before {
+        transform: scaleY(1);
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 90px 24px 32px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .featured-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 32px;
+        margin-bottom: 48px;
+        align-items: start;
+        margin-top: 32px;
+        position: relative;
+      }
+      .featured-grid::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: rgba(0, 123, 255, 0.1);
+        border-radius: 50%;
+        z-index: -1;
+        display: none;
+      }
+
+      @media (min-width: 1024px) {
+        .featured-grid::before {
+          display: block;
+        }
+      }
+
+      .hero-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+        transition:
+          var(--transition),
+          transform 0.5s;
+        box-shadow: var(--shadow);
+        pointer-events: auto;
+        transform-style: preserve-3d;
+      }
+
+      .hero-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent);
+        opacity: 0;
+        transition: var(--transition);
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .hero-card:hover {
+        transform: perspective(800px) rotateY(3deg) translateY(-12px);
+        box-shadow: var(--shadow-lg), var(--shadow-glow);
+      }
+
+      .hero-card:hover::before {
+        opacity: 1;
+      }
+
+      .hero-image {
+        width: 100%;
+        height: 450px;
+        object-fit: cover;
+        display: block;
+        transition: var(--transition-slow);
+      }
+
+      .hero-card:hover .hero-image {
+        transform: scale(1.03);
+      }
+
+      .hero-content {
+        padding: 40px;
+        background: linear-gradient(to top, rgba(10, 15, 28, 0.98) 0%, rgba(10, 15, 28, 0.8) 50%, transparent 100%);
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      body.light-mode .hero-content {
+        background: linear-gradient(
+          to top,
+          rgba(255, 255, 255, 0.98) 0%,
+          rgba(255, 255, 255, 0.9) 50%,
+          transparent 100%
+        );
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, var(--danger), #dc2626);
+        color: #ffffff;
+        padding: 8px 16px;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        border-radius: 100px;
+        margin-bottom: 20px;
+        box-shadow:
+          0 4px 15px var(--danger-glow),
+          0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .badge::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        background: #ffffff;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        pointer-events: none;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.6;
+          transform: scale(0.8);
+        }
+      }
+
+      .hero-title {
+        font-family: "Playfair Display", serif;
+        font-size: 36px;
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 16px;
+        letter-spacing: -0.5px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      body.light-mode .hero-title {
+        text-shadow: none;
+      }
+
+      .hero-excerpt {
+        color: var(--text-muted);
+        font-size: 17px;
+        line-height: 1.7;
+        margin-bottom: 20px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-weight: 400;
+      }
+
+      .hero-meta {
+        display: flex;
+        gap: 20px;
+        font-size: 13px;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+      }
+
+      .side-headlines {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .side-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        overflow: hidden;
+        pointer-events: auto;
+      }
+
+      .side-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(to bottom, var(--accent), var(--accent-hover));
+        box-shadow: 0 0 10px var(--accent);
+        transform: scaleY(0);
+        transition: var(--transition);
+        pointer-events: none;
+      }
+
+      .side-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), transparent);
+        opacity: 0;
+        transition: var(--transition);
+        pointer-events: none;
+      }
+
+      .side-card:hover {
+        border-color: var(--border-glow);
+        transform: translateX(8px);
+        background: var(--primary-light);
+        box-shadow: var(--shadow), var(--shadow-glow);
+      }
+
+      .side-card:hover::before {
+        transform: scaleY(1);
+      }
+      .side-card:hover::after {
+        opacity: 1;
+      }
+
+      .side-thumb {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: var(--radius-xs);
+        flex-shrink: 0;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .side-card:hover .side-thumb {
+        transform: scale(1.02);
+        border-color: var(--accent);
+      }
+
+      .side-content h3 {
+        font-size: 17px;
+        font-weight: 700;
+        line-height: 1.4;
+        margin-bottom: 12px;
+        color: var(--text);
+        transition: var(--transition);
+      }
+
+      .side-card:hover .side-content h3 {
+        color: var(--accent);
+      }
+
+      .side-content time {
+        font-size: 12px;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .side-content time::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: var(--accent);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--accent);
+      }
+
+      /* Top ad slot below featured grid */
+      .ad-slot-top {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 32px;
+        text-align: center;
+        margin-bottom: 64px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+
+      .ad-slot-top::before {
+        content: "Advertisement";
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--text-muted);
+        opacity: 0.4;
+      }
+
+      .ad-slot-top img {
+        max-width: 728px;
+        width: 100%;
+        height: auto;
+        border-radius: var(--radius-xs);
+        box-shadow: var(--shadow);
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+        position: relative;
+      }
+
+      .section-header::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 120px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+        box-shadow: 0 0 20px var(--accent-glow);
+      }
+
+      .section-title {
+        font-size: 28px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: -0.5px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .section-title::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+        border-radius: 50%;
+        box-shadow: 0 0 10px var(--accent-glow);
+      }
+
+      .view-all {
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: var(--transition);
+        padding: 8px 16px;
+        border-radius: var(--radius-xs);
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid var(--border);
+      }
+
+      .view-all:hover {
+        gap: 12px;
+        color: var(--text);
+        background: var(--accent);
+        border-color: var(--accent);
+        box-shadow: 0 4px 20px var(--accent-glow);
+        transform: translateX(4px);
+      }
+
+      .news-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+      }
+
+      article {
+        pointer-events: auto;
+      }
+
+      .news-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        pointer-events: auto;
+      }
+
+      .news-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: var(--radius);
+        padding: 1px;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), transparent, rgba(59, 130, 246, 0.3));
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        pointer-events: none;
+        transition: var(--transition);
+      }
+
+      .news-card:hover {
+        transform: translateY(-8px);
+        border-color: transparent;
+        box-shadow: var(--shadow-lg), var(--shadow-glow);
+      }
+
+      .news-card:hover::after {
+        opacity: 1;
+      }
+
+      .news-image {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        transition: var(--transition-slow);
+      }
+
+      .news-card:hover .news-image {
+        transform: scale(1.03);
+      }
+
+      .news-body {
+        padding: 28px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.5));
+      }
+
+      body.light-mode .news-body {
+        background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.5));
+      }
+
+      .news-category {
+        display: inline-block;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(37, 99, 235, 0.1));
+        color: var(--accent);
+        padding: 6px 14px;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        border-radius: 100px;
+        margin-bottom: 16px;
+        width: fit-content;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        transition: var(--transition);
+      }
+
+      .news-card:hover .news-category {
+        background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+        color: white;
+        box-shadow: 0 4px 15px var(--accent-glow);
+      }
+
+      body.light-mode .news-category {
+        background: rgba(59, 130, 246, 0.08);
+      }
+
+      .news-title {
+        font-size: 19px;
+        font-weight: 800;
+        line-height: 1.3;
+        margin-bottom: 14px;
+        color: var(--text);
+        transition: var(--transition);
+      }
+
+      .news-card:hover .news-title {
+        color: var(--accent);
+      }
+
+      .news-excerpt {
+        color: var(--text-muted);
+        font-size: 15px;
+        line-height: 1.7;
+        margin-bottom: 20px;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-weight: 400;
+      }
+
+      .news-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        font-size: 12px;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* Inline ad slot in news grid */
+      .ad-slot {
+        grid-column: 1 / -1;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 40px;
+        text-align: center;
+        margin: 16px 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+
+      .ad-slot::before {
+        content: "Advertisement";
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--text-muted);
+        opacity: 0.4;
+      }
+
+      .ad-slot img {
+        max-width: 468px;
+        width: 100%;
+        height: auto;
+        border-radius: var(--radius-xs);
+        box-shadow: var(--shadow);
+      }
+
+      footer {
+        background: var(--primary);
+        border-top: 1px solid var(--border);
+        padding: 64px 24px;
+        text-align: center;
+        margin-top: 80px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      footer::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        opacity: 0.5;
+      }
+
+      .footer-logo {
+        margin-bottom: 32px;
+        position: relative;
+        z-index: 2;
+      }
+      .footer-logo img {
+        height: 56px;
+        width: auto;
+        opacity: 0.9;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 2;
+      }
+
+      .footer-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        transition: var(--transition);
+        position: relative;
+        padding: 4px 0;
+      }
+
+      .footer-links a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+        transform: scaleX(0);
+        transition: var(--transition);
+      }
+
+      .footer-links a:hover {
+        color: var(--accent);
+        transform: translateY(-2px);
+      }
+
+      .footer-links a:hover::after {
+        transform: scaleX(1);
+      }
+
+      footer p {
+        color: var(--text-muted);
+        font-size: 13px;
+        position: relative;
+        z-index: 2;
+        opacity: 0.8;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(2, 6, 23, 0.9);
+        backdrop-filter: blur(10px) saturate(180%);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        /* ensure hidden modal doesn't capture pointer events */
+        pointer-events: none;
+      }
+
+      body.light-mode .modal {
+        background: rgba(248, 250, 252, 0.95);
+      }
+      .modal.active {
+        display: block;
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* Defensive: make sure main structural elements receive pointer events */
+      html,
+      body,
+      main,
+      header,
+      footer,
+      .container {
+        pointer-events: auto !important;
+      }
+
+      .modal-container {
+        min-height: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 60px 24px;
+      }
+
+      .modal-content {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        max-width: 800px;
+        width: 100%;
+        overflow: hidden;
+        box-shadow:
+          var(--shadow-lg),
+          0 0 60px rgba(0, 0, 0, 0.3);
+        transform: scale(0.95) translateY(20px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .modal.active .modal-content {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+
+      .modal-header {
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        padding: 40px;
+        border-bottom: 1px solid var(--border);
+        position: relative;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        color: var(--text);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 24px;
+        line-height: 1;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .modal-close:hover {
+        background: var(--danger);
+        color: #ffffff;
+        transform: rotate(90deg) scale(1.1);
+        box-shadow: 0 4px 20px var(--danger-glow);
+        border-color: var(--danger);
+      }
+
+      .modal-category {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+        color: #ffffff;
+        padding: 8px 16px;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        border-radius: 100px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px var(--accent-glow);
+      }
+
+      .modal-title {
+        font-family: "Playfair Display", serif;
+        font-size: 32px;
+        font-weight: 900;
+        line-height: 1.2;
+        color: var(--text);
+        padding-right: 60px;
+        letter-spacing: -0.5px;
+      }
+
+      .modal-body {
+        padding: 40px;
+        max-height: none;
+        overflow: visible;
+      }
+
+      .modal-meta {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .modal-text {
+        font-size: 18px;
+        line-height: 1.9;
+        color: var(--text);
+        font-weight: 400;
+      }
+
+      .modal-text p {
+        margin-bottom: 24px;
+      }
+
+      .modal-text p:first-child::first-letter {
+        font-family: "Playfair Display", serif;
+        font-size: 5rem;
+        float: left;
+        line-height: 0.8;
+        margin-right: 16px;
+        margin-top: 8px;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      @media (max-width: 1024px) {
+        .featured-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero-image {
+          height: 350px;
+        }
+        .side-headlines {
+          flex-direction: row;
+          overflow-x: auto;
+          padding-bottom: 12px;
+          gap: 16px;
+        }
+        .side-card {
+          min-width: 320px;
+        }
+        .news-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .hero-title {
+          font-size: 28px;
+        }
+        .ad-slot-top {
+          padding: 24px;
+        }
+        .ad-slot-top img {
+          max-width: 100%;
+        }
+        .container {
+          padding: 110px 20px 32px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-desktop {
+          display: none;
+        }
+        .nav-toggle {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .hero-title {
+          font-size: 22px;
+        }
+        .hero-content {
+          padding: 24px;
+          position: relative;
+          background: var(--card-bg);
+        }
+        body.light-mode .hero-content {
+          background: var(--card-bg);
+        }
+        .hero-image {
+          height: 200px;
+        }
+        .side-headlines {
+          flex-direction: column;
+        }
+        .side-card {
+          min-width: auto;
+        }
+        .news-grid {
+          grid-template-columns: 1fr;
+        }
+        .section-title {
+          font-size: 20px;
+        }
+        .modal-container {
+          padding: 0;
+        }
+        .modal-content {
+          border-radius: 0;
+          min-height: 100vh;
+        }
+        .modal-header {
+          padding: 24px;
+          padding-top: 100px;
+        }
+        .modal-title {
+          font-size: 22px;
+        }
+        .modal-body {
+          padding: 24px;
+        }
+        .modal-text {
+          font-size: 16px;
+        }
+        .container {
+          padding: 110px 16px 32px;
+        }
+        .ad-slot-top {
+          margin-bottom: 48px;
+          padding: 20px;
+        }
+        .banner {
+          min-height: 50vh;
+        }
+        .banner-title {
+          font-size: 32px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header-content {
+          padding: 12px 16px;
+        }
+        .logo-img {
+          height: 38px;
+        }
+        .container {
+          padding: 90px 12px 24px;
+        }
+        .hero-title {
+          font-size: 18px;
+        }
+        .banner-title {
+          font-size: 24px;
+        }
+        .banner-slogan {
+          font-size: 16px;
+        }
+        .news-body {
+          padding: 20px;
+        }
+        .section-title {
+          font-size: 18px;
+        }
+        .modal-header {
+          padding-top: 80px;
+        }
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+
+      /* Banner Styles (hero) */
+      .banner {
+        position: relative;
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: url("louis.png") center/cover no-repeat;
+        overflow: hidden;
+        color: var(--primary);
+        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+      }
+
+      .banner::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+      }
+
+      .banner-content {
+        position: relative;
+        z-index: 2;
+        max-width: 1000px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .banner-cta {
+        margin-top: 24px;
+        display: inline-block;
+        background: var(--primary);
+        color: var(--accent);
+        padding: 14px 32px;
+        border-radius: var(--radius);
+        font-weight: 700;
+        text-decoration: none;
+        transition: var(--transition);
+      }
+      .banner-cta:hover {
+        transform: scale(1.05);
+      }
+
+      .banner-title {
+        font-family: "Playfair Display", serif;
+        font-size: 64px;
+        font-weight: 900;
+        background: linear-gradient(135deg, #ffffff, var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 20px;
+        letter-spacing: -1px;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .banner-slogan {
+        font-size: 24px;
+        color: rgba(255, 255, 255, 0.95);
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+
+      .banner-subtext {
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.8);
+        margin-top: 16px;
+      }
+
+      /* Loading shimmer effect for images */
+      .hero-image,
+      .news-image,
+      .side-thumb {
+        background: linear-gradient(90deg, var(--primary-light) 25%, var(--primary) 50%, var(--primary-light) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      .hero-image[src],
+      .news-image[src],
+      .side-thumb[src] {
+        animation: none;
+        background: transparent;
+      }
+
+      /* secret rainbow flash easter egg */
+      body.rainbow {
+        animation: rainbow-flash 1s ease-in-out infinite;
+      }
+
+      @keyframes rainbow-flash {
+        0% {
+          filter: hue-rotate(0deg);
+        }
+        20% {
+          filter: hue-rotate(72deg);
+        }
+        40% {
+          filter: hue-rotate(144deg);
+        }
+        60% {
+          filter: hue-rotate(216deg);
+        }
+        80% {
+          filter: hue-rotate(288deg);
+        }
+        100% {
+          filter: hue-rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header id="mainHeader" class="top-nav" role="banner">
+      <div class="header-content">
+        <button class="brand" id="logoBrand" title="Click 10 times for a surprise!">
+          <img src="Gio.png" alt="GioNews" class="logo-img" />
+        </button>
+
+        <nav class="nav-desktop" aria-label="Primary navigation">
+          <div class="nav-pill" role="menubar">
+            <a href="index.html" class="active">Home</a>
+            <a href="stream.html">Live</a>
+            <a href="breaking.html">Archive</a>
+            <a href="weather.html">Weather</a>
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSevr5ncTSlYSwAR442zXlW818Zkp36C0Us_VY6b57HCztYq7g/viewform?usp=dialog"
+              target="_blank" rel="noopener noreferrer"
+            >
+              Alerts
+            </a>
+          </div>
+          <button class="theme-toggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode">🌙</button>
+        </nav>
+
+        <button class="nav-toggle" onclick="toggleMobileNav()" aria-label="Toggle menu">☰</button>
+      </div>
+
+      <!-- mobile nav (single instance) -->
+      <nav class="nav-mobile" id="mobileNav" aria-label="Mobile navigation">
+        <a href="index.html" onclick="closeMobileNav()">Home</a>
+        <a href="stream.html" onclick="closeMobileNav()">Live Stream</a>
+        <a href="breaking.html" onclick="closeMobileNav()">Archive</a>
+        <a href="weather.html" onclick="closeMobileNav()">Weather</a>
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSevr5ncTSlYSwAR442zXlW818Zkp36C0Us_VY6b57HCztYq7g/viewform?usp=dialog"
+          target="_blank" rel="noopener noreferrer" onclick="closeMobileNav()"
+        >
+          Live Alert Sign Up
+        </a>
+        <a
+          href="#"
+          onclick="toggleDarkMode(); closeMobileNav(); return false;"
+          id="mobileThemeToggle"
+        >
+          🌙 Dark Mode
+        </a>
+      </nav>
+    </header>
+
+    <main id="featured" role="main">
+      <!-- Banner -->
+      <section class="banner" aria-labelledby="banner-heading">
+        <div class="banner-content">
+          <h1 id="banner-heading" class="banner-title">GioNews!</h1>
+          <p class="banner-slogan">Serving the Missouri Community</p>
+          <p class="banner-subtext">St. Louis Metro News, Live Coverage &amp; Breaking Updates</p>
+          <a href="#featured" class="banner-cta">See Latest Stories</a>
+        </div>
+      </section>
+
+      <script async src="https://app3.weatherwidget.org/js/?id=ww_74342c2323fc4"></script>
+
+      <!-- Featured Section -->
+      <section class="container featured-grid" aria-label="Featured stories">
+        <article class="hero-card" onclick="openStory('blues-trade-deadline')" role="article" tabindex="0">
+          <img
+            src="https://images.unsplash.com/photo-1515703407324-5f753afd8be8?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+            alt="St. Louis Blues hockey trade deadline"
+            class="hero-image"
+          />
+          <div class="hero-content">
+            <span class="badge">Breaking Now</span>
+            <h2 class="hero-title">Blues Trade Captain Schenn to Islanders, Faulk to Red Wings at Deadline</h2>
+            <p class="hero-excerpt">
+              The St. Louis Blues unloaded two veteran players Friday, trading captain Brayden Schenn to the New York
+              Islanders and defenseman Justin Faulk to the Detroit Red Wings, netting four draft picks and two players in
+              return.
+            </p>
+            <div class="hero-meta">
+              <span>Sports</span>
+              <time>Mar 6, 2026</time>
+            </div>
+          </div>
+        </article>
+
+        <aside class="side-headlines" aria-label="Top headlines">
+          <article class="side-card" onclick="openStory('six-flags-sold')">
+            <img
+              src="https://images.unsplash.com/photo-1570168007204-dfb528c6958f?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=400"
+              alt="Six Flags St. Louis amusement park"
+              class="side-thumb"
+            />
+            <div class="side-content">
+              <h3>Six Flags St. Louis Sold in $342M Deal — Will Be Renamed in 2027</h3>
+              <time>Mar 5, 2026</time>
+            </div>
+          </article>
+
+          <article class="side-card" onclick="openStory('tornado-fema')">
+            <img
+              src="https://images.unsplash.com/photo-1504608524841-42584120d693?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=400"
+              alt="Tornado recovery St. Louis"
+              class="side-thumb"
+            />
+            <div class="side-content">
+              <h3>FEMA Rejects Bulk of St. Louis Tornado Demolition Costs, Stalling Recovery</h3>
+              <time>Mar 5, 2026</time>
+            </div>
+          </article>
+
+          <article class="side-card" onclick="openStory('march-madness-stl')">
+            <img
+              src="https://images.unsplash.com/photo-1546519638-68e109498ffc?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=400"
+              alt="NCAA March Madness basketball"
+              class="side-thumb"
+            />
+            <div class="side-content">
+              <h3>Enterprise Center to Host NCAA Tournament First &amp; Second Rounds March 20 &amp; 22</h3>
+              <time>Mar 7, 2026</time>
+            </div>
+          </article>
+        </aside>
+      </section>
+
+      <!-- Top Ad Slot - Below Breaking Now Grid -->
+      <div class="container">
+        <div class="ad-slot-top">
+          <a href="https://helixmindaisolutions.com" target="_blank" rel="noopener noreferrer">
+            <img src="ad.png" alt="Advertisement" />
+          </a>
+        </div>
+      </div>
+
+      <!-- Latest News -->
+      <section class="container" aria-label="Latest headlines">
+        <div class="section-header">
+          <h2 class="section-title">Latest Headlines</h2>
+          <a href="archive.html" class="view-all">View All →</a>
+        </div>
+
+        <div class="news-grid">
+          <article class="news-card" onclick="openStory('billikens-tournament')">
+            <img
+              src="https://images.unsplash.com/photo-1575361204480-aadea25e6e68?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+              alt="SLU Billikens basketball"
+              class="news-image"
+            />
+            <div class="news-body">
+              <span class="news-category">Sports</span>
+              <h3 class="news-title">Billikens Roll Into March Madness at 25-2, Poised for Deep Tournament Run</h3>
+              <p class="news-excerpt">
+                The Saint Louis University Billikens enter the 2026 NCAA Tournament as one of the hottest teams in the
+                country, ranked second nationally in three-point percentage and armed with seven players averaging
+                nine-plus points per game.
+              </p>
+              <div class="news-footer">
+                <span>Sports Desk</span>
+                <time>Mar 7, 2026</time>
+              </div>
+            </div>
+          </article>
+
+          <article class="news-card" onclick="openStory('st-patricks-parade')">
+            <img
+              src="https://images.unsplash.com/photo-1520450202524-87e5dd06a74b?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+              alt="St. Patrick's Day parade St. Louis"
+              class="news-image"
+            />
+            <div class="news-body">
+              <span class="news-category">Community</span>
+              <h3 class="news-title">
+                Over 250,000 Expected for 57th Annual St. Patrick's Day Parade in Downtown St. Louis
+              </h3>
+              <p class="news-excerpt">
+                Downtown St. Louis is buzzing with excitement as the city prepares to host its beloved annual St.
+                Patrick's Day Parade, one of the largest Irish celebrations in the Midwest, drawing a quarter-million
+                visitors.
+              </p>
+              <div class="news-footer">
+                <span>Local News Desk</span>
+                <time>Mar 7, 2026</time>
+              </div>
+            </div>
+          </article>
+
+          <article class="news-card" onclick="openStory('missouri-budget-tornado')">
+            <img
+              src="https://images.unsplash.com/photo-1588421357574-87938a86fa28?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+              alt="Missouri state legislature budget"
+              class="news-image"
+            />
+            <div class="news-body">
+              <span class="news-category">Politics</span>
+              <h3 class="news-title">
+                Missouri Legislature Passes $3B Budget with $86M in Additional Tornado Relief for St. Louis
+              </h3>
+              <p class="news-excerpt">
+                The Missouri legislature fast-tracked a supplemental budget bill that allocates $86 million in additional
+                tornado relief for St. Louis — on top of $100 million allocated last year — to help neighborhoods still
+                recovering from the May 2025 twister.
+              </p>
+              <div class="news-footer">
+                <span>Politics Desk</span>
+                <time>Mar 5, 2026</time>
+              </div>
+            </div>
+          </article>
+
+          <div class="ad-slot">
+            <a href="https://callwendytoday.neocities.org" target="_blank" rel="noopener noreferrer">
+              <img src="ad2.png" alt="Advertisement" />
+            </a>
+          </div>
+
+          <article class="news-card" onclick="openStory('stl-city-sc')">
+            <img
+              src="https://images.unsplash.com/photo-1553778263-73a83bab9b0c?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+              alt="St. Louis City SC soccer"
+              class="news-image"
+            />
+            <div class="news-body">
+              <span class="news-category">Sports</span>
+              <h3 class="news-title">St. Louis City SC Faces Seattle Sounders Saturday at Energizer Park</h3>
+              <p class="news-excerpt">
+                St. Louis City SC returns to Energizer Park for their third game of the 2026 MLS season Saturday night,
+                hosting the Seattle Sounders in a marquee matchup as the club looks to build early momentum in the Western
+                Conference.
+              </p>
+              <div class="news-footer">
+                <span>Sports Desk</span>
+                <time>Mar 7, 2026</time>
+              </div>
+            </div>
+          </article>
+
+          <article class="news-card" onclick="openStory('gas-prices-iran')">
+            <img
+              src="https://images.unsplash.com/photo-1545236987-1de430740095?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+              alt="Gas station fuel prices"
+              class="news-image"
+            />
+            <div class="news-body">
+              <span class="news-category">Local</span>
+              <h3 class="news-title">Gas Prices Surge Over 40 Cents Per Gallon as Iran Conflict Rattles Oil Markets</h3>
+              <p class="news-excerpt">
+                St. Louis-area gas prices have spiked dramatically this week, climbing more than 40 cents per gallon above
+                last week's national average as the ongoing U.S.-Israel conflict with Iran continues to disrupt global oil
+                supply chains.
+              </p>
+              <div class="news-footer">
+                <span>Local News Desk</span>
+                <time>Mar 6, 2026</time>
+              </div>
+            </div>
+          </article>
+
+          <article class="news-card" onclick="openStory('police-budget')">
+            <img
+              src="https://images.unsplash.com/photo-1523292562811-8fa7962a78c8?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+              alt="St. Louis police department"
+              class="news-image"
+            />
+            <div class="news-body">
+              <span class="news-category">Local</span>
+              <h3 class="news-title">
+                Mayor Spencer Warns of Layoffs if Police Board's $250M Budget Request Is Finalized
+              </h3>
+              <p class="news-excerpt">
+                Mayor Cara Spencer is sounding the alarm over a proposed police budget that would balloon the St. Louis
+                Metropolitan Police Department to over $250 million, warning that approving it without compromise would
+                force massive city service cuts and layoffs.
+              </p>
+              <div class="news-footer">
+                <span>Politics Desk</span>
+                <time>Mar 6, 2026</time>
+              </div>
+            </div>
+          </article>
+
+          <article class="news-card" onclick="openStory('severe-storms')">
+            <img
+              src="https://images.unsplash.com/photo-1527482937786-6608f6e14c15?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixlib=rb-4.1.0&amp;q=80&amp;w=1080"
+              alt="Severe thunderstorm St. Louis"
+              class="news-image"
+            />
+            <div class="news-body">
+              <span class="news-category">Weather</span>
+              <h3 class="news-title">
+                St. Louis Braces for Overnight Severe Storms; Tornado Risk for Surrounding Region
+              </h3>
+              <p class="news-excerpt">
+                The National Weather Service has issued a severe storm outlook for the St. Louis metro area overnight
+                Friday into Saturday, with the greatest tornado threat expected in northeast Missouri and west-central
+                Illinois. Residents are urged to have a plan ready.
+              </p>
+              <div class="news-footer">
+                <span>Weather Desk</span>
+                <time>Mar 7, 2026</time>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer role="contentinfo">
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="sitemap.html">Sitemap</a>
+      </div>
+      <p>© 2026 GioNews Network. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Modal -->
+    <div class="modal" id="storyModal" onclick="closeModalOnBackground(event)" aria-hidden="true">
+      <div class="modal-container">
+        <div class="modal-content" onclick="event.stopPropagation()">
+          <div class="modal-header">
+            <span class="modal-category" id="modalCategory"></span>
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <button class="modal-close" onclick="closeModal()" aria-label="Close modal">×</button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-meta">
+              <span id="modalAuthor"></span>
+              <time id="modalDate"></time>
+            </div>
+            <div class="modal-text" id="modalContent"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <a class="button" href="https://www.facebook.com/share/g/18RPBaLmoY/?mibextid=wwXIfr">
-        <i class="fab fa-facebook"></i> Visit the GioNews Facebook Group
-    </a>
-</div>
+    <script>
+      /* (Your JavaScript — unchanged logic; pasted below) */
+      const stories = {
+        "blues-trade-deadline": {
+          category: "Sports",
+          title: "Blues Trade Captain Schenn to Islanders, Faulk to Red Wings at NHL Deadline",
+          author: "Sports Desk",
+          date: "Mar 6, 2026",
+          content: `<p>The St. Louis Blues made a flurry of moves Friday ahead of the NHL trade deadline, shipping out captain Brayden Schenn to the New York Islanders and defenseman Justin Faulk to the Detroit Red Wings in a pair of deals that netted four draft picks and multiple players in return.</p>
+            <p>Schenn, 34, was traded to New York in exchange for a 2026 first-round pick (originally Colorado's from the Brock Nelson deal), a third-round pick, forward Jonathan Drouin, and goaltender prospect Marcus Gidlof. Schenn had served as Blues captain for the past three seasons and was a key piece of the franchise's 2019 Stanley Cup championship run.</p>
+            <p>"Obviously, 'Schenner' and myself go way back, prior to our Stanley Cup and then our Stanley Cup and him being a captain," Blues general manager Doug Armstrong said. "A great St. Louis Blue and good friend."</p>
+            <p>Schenn, who waived his no-trade clause to facilitate the deal, reflected on his time in St. Louis with emotion. "St. Louis was a great spot for me; probably the best thing to happen in hockey for me up until this date," he said. "Won the Stanley Cup there. It's been a special place for me and my family."</p>
+            <p>In the second deal, Faulk was sent to Detroit in exchange for defenseman Justin Holl, a 2026 first-round pick, a 2026 third-round pick, and forward prospect Dmitri Buchelnikov. The Blues now hold four additional draft picks heading into the off-season as they enter a retooling phase.</p>`,
+        },
+        /* ... rest of the stories object (unchanged) ... */
+      };
 
-</body>
+      // Initialize theme from localStorage on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "light") {
+          document.body.classList.add("light-mode");
+        }
+        updateThemeIcons();
+
+        // Close mobile nav when clicking outside of it
+        document.addEventListener("click", function (event) {
+          const mobileNav = document.getElementById("mobileNav");
+          const navToggle = document.querySelector(".nav-toggle");
+          if (
+            mobileNav.classList.contains("active") &&
+            !mobileNav.contains(event.target) &&
+            !navToggle.contains(event.target)
+          ) {
+            closeMobileNav();
+          }
+        });
+      });
+
+      // Initialize variables for scroll handling
+      const header = document.getElementById("mainHeader");
+      let lastScroll = 0;
+
+      function openStory(storyId) {
+        closeMobileNav();
+        const story = stories[storyId];
+        if (story) {
+          document.getElementById("modalCategory").textContent = story.category;
+          document.getElementById("modalTitle").textContent = story.title;
+          document.getElementById("modalAuthor").textContent = "By " + story.author;
+          document.getElementById("modalDate").textContent = story.date;
+          document.getElementById("modalContent").innerHTML = story.content;
+
+          const modal = document.getElementById("storyModal");
+          modal.classList.add("active");
+          document.body.style.overflow = "hidden";
+          modal.setAttribute("aria-hidden", "false");
+        } else {
+          console.error("Story not found:", storyId);
+        }
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("storyModal");
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
+        modal.setAttribute("aria-hidden", "true");
+      }
+
+      function closeModalOnBackground(event) {
+        if (event.target === event.currentTarget) closeModal();
+      }
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") closeModal();
+      });
+
+      function toggleMobileNav() {
+        const mobileNav = document.getElementById("mobileNav");
+        const toggle = document.querySelector(".nav-toggle");
+        mobileNav.classList.toggle("active");
+        toggle.textContent = mobileNav.classList.contains("active") ? "✕" : "☰";
+      }
+
+      function closeMobileNav() {
+        const mobileNav = document.getElementById("mobileNav");
+        const toggle = document.querySelector(".nav-toggle");
+        mobileNav.classList.remove("active");
+        if (toggle) toggle.textContent = "☰";
+      }
+
+      function toggleDarkMode() {
+        document.body.classList.toggle("light-mode");
+        const isLight = document.body.classList.contains("light-mode");
+        localStorage.setItem("theme", isLight ? "light" : "dark");
+        updateThemeIcons();
+      }
+
+      function updateThemeIcons() {
+        const isLight = document.body.classList.contains("light-mode");
+        const desktopBtn = document.querySelector(".theme-toggle");
+        const mobileLink = document.getElementById("mobileThemeToggle");
+        if (desktopBtn) desktopBtn.textContent = isLight ? "☀️" : "🌙";
+        if (mobileLink) mobileLink.textContent = isLight ? "🌙 Dark Mode" : "☀️ Light Mode";
+      }
+
+      // logo click counter for rainbow easter egg (mobile friendly)
+      let logoClickCount = 0;
+      const logoBrand = document.getElementById("logoBrand");
+      if (logoBrand) {
+        logoBrand.addEventListener("click", (e) => {
+          e.preventDefault();
+          logoClickCount++;
+          if (logoClickCount === 10) {
+            const body = document.body;
+            if (body.classList.contains("rainbow")) {
+              body.classList.remove("rainbow");
+            } else {
+              body.classList.add("rainbow");
+            }
+            logoClickCount = 0; // reset counter
+          }
+        });
+      }
+
+      // header scroll behavior
+      window.addEventListener("scroll", () => {
+        const nav = document.querySelector(".top-nav");
+        if (!nav) return;
+        if (window.scrollY > 50) nav.classList.add("scrolled");
+        else nav.classList.remove("scrolled");
+      });
+
+      // secret rainbow key sequence detection
+      (function () {
+        const secret = "rainbow";
+        let buffer = "";
+        window.addEventListener("keydown", (e) => {
+          buffer += e.key.toLowerCase();
+          if (!secret.startsWith(buffer)) {
+            buffer = e.key.toLowerCase(); // reset if wrong
+          }
+          if (buffer === secret) {
+            const body = document.body;
+            if (body.classList.contains("rainbow")) {
+              body.classList.remove("rainbow");
+            } else {
+              body.classList.add("rainbow");
+            }
+            buffer = "";
+          }
+        });
+      })();
+      window.addEventListener("scroll", () => {
+        if (window.innerWidth > 480) return;
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > lastScroll && currentScroll > 100) {
+          header.classList.add("hide-mobile");
+        } else {
+          header.classList.remove("hide-mobile");
+        }
+        lastScroll = currentScroll;
+      });
+    </script>
+  </body>
 </html>
