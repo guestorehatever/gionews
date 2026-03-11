@@ -368,14 +368,32 @@
       }
 
       .banner {
-        padding: 120px 24px 80px;
+        padding: 160px 24px 120px;
         text-align: center;
         position: relative;
+        background: url("louis.png") center/cover no-repeat;
+        color: white;
+        overflow: hidden;
+      }
+
+      .banner::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(2, 6, 23, 0.8),
+          rgba(2, 6, 23, 0.4) 50%,
+          rgba(2, 6, 23, 0.8)
+        );
+        z-index: 1;
       }
 
       .banner-content {
         max-width: 800px;
         margin: 0 auto;
+        position: relative;
+        z-index: 2;
       }
 
       .banner-title {
@@ -383,10 +401,11 @@
         font-size: clamp(3rem, 8vw, 5rem);
         font-weight: 900;
         margin-bottom: 16px;
-        background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+        background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         line-height: 1.1;
+        text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       }
 
       .banner-slogan {
@@ -400,8 +419,9 @@
 
       .banner-subtext {
         font-size: 1.1rem;
-        color: var(--text-muted);
+        color: #e2e8f0;
         margin-bottom: 32px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
       }
 
       .banner-cta {
